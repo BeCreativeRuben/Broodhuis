@@ -363,6 +363,72 @@ export async function markSandboxPayment(
 }
 
 /**
+ * Zet een niet-doorgegane bestelling terug klaar voor een nieuwe betaalpoging.
+ *
+ * Bij een mislukte betaling geven we de gereserveerde stuks vrij en gaat de
+ * bestelling op "failed". Wie daarna opnieuw wil betalen, moet dus opnieuw
+ * gereserveerd worden — anders zou de klant betalen zonder dat de bestelling
+ * ooit bevestigd raakt, en zonder dat de voorraad klopt.
+ */
+export async function reopenOrderForRetry(orderId: string) {
+  return prisma.$transaction(async (tx) => {
+    const order = await tx.order.findUnique({
+      where: { id: orderId },
+      select: { status: true, items: true },
+    });
+    if (!order) throw new OrderCreationError("Bestelling niet gevonden.");
+
+    if (order.status === "pending") return;
+
+    if (order.status !== "failed" && order.status !== "cancelled") {
+      throw new OrderCreationError(
+        "Deze bestelling is al betaald. Bel ons als er toch iets moet wijzigen.",
+      );
+    }
+
+    for (const item of order.items) {
+      if (!item.productId) {
+        throw new OrderCreationError(
+          `${item.name} bestaat niet meer. Plaats de bestelling opnieuw via de winkelwagen.`,
+        );
+      }
+
+      const product = await tx.product.findUnique({
+        where: { id: item.productId },
+        select: { name: true, isActive: true, trackStock: true, stock: true },
+      });
+
+      if (!product || !product.isActive) {
+        throw new OrderCreationError(
+          `${item.name} is niet meer beschikbaar. Plaats de bestelling opnieuw via de winkelwagen.`,
+        );
+      }
+
+      if (product.trackStock) {
+        if (product.stock < item.quantity) {
+          throw new OrderCreationError(
+            `Van ${product.name} ${
+              product.stock === 0
+                ? "is er niets meer"
+                : `zijn er nog maar ${product.stock} beschikbaar`
+            }. Plaats de bestelling opnieuw via de winkelwagen.`,
+          );
+        }
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { decrement: item.quantity } },
+        });
+      }
+    }
+
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: "pending", paymentStatus: "open", paidAt: null },
+    });
+  });
+}
+
+/**
  * Loopt het aanmaken van de betaling mis, dan blijft er geen bestelling
  * hangen die voorraad vasthoudt.
  */

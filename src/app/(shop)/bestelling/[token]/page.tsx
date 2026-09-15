@@ -12,6 +12,7 @@ import {
 import { ClearCart } from "@/components/cart/clear-cart";
 import { OrderDetails } from "@/components/order-details";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ButtonLink } from "@/components/ui/button-link";
 import { getOrderByToken, syncOrderPayment } from "@/lib/orders";
 import { paymentMethodLabel } from "@/lib/payments/types";
@@ -30,10 +31,10 @@ export default async function OrderPage({
   searchParams,
 }: {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ afgebroken?: string }>;
+  searchParams: Promise<{ afgebroken?: string; fout?: string }>;
 }) {
   const { token } = await params;
-  const { afgebroken } = await searchParams;
+  const { afgebroken, fout } = await searchParams;
 
   let order = await getOrderByToken(token);
   if (!order) notFound();
@@ -108,6 +109,14 @@ export default async function OrderPage({
           </>
         )}
       </header>
+
+      {fout && (
+        <Alert variant="destructive" className="mt-6 max-w-2xl">
+          <AlertTriangleIcon />
+          <AlertTitle>De betaling kon niet opnieuw gestart worden</AlertTitle>
+          <AlertDescription>{fout}</AlertDescription>
+        </Alert>
+      )}
 
       {!isPaid && (
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">

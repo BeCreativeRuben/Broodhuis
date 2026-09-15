@@ -2,11 +2,11 @@
 
 import { redirect } from "next/navigation";
 
-import type { CartItem, PricedCart } from "@/lib/cart";
+import type { CartItem } from "@/lib/cart";
 import { priceCart } from "@/lib/cart-pricing";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import type { CheckoutState } from "@/lib/form-state";
-import { addDays, currentIsoDate, formatIsoDateLong } from "@/lib/datetime";
+import { addDays, currentIsoDate } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import {
   OrderCreationError,
@@ -14,6 +14,7 @@ import {
   createOrder,
   getOrderByToken,
   recordPaymentAttempt,
+  reopenOrderForRetry,
 } from "@/lib/orders";
 import { getPaymentGateway, paymentMode } from "@/lib/payments";
 import { PaymentError } from "@/lib/payments/types";
@@ -262,35 +263,47 @@ export async function retryPayment(publicToken: string): Promise<void> {
     redirect(`/bestelling/${order.publicToken}`);
   }
 
-  const gateway = getPaymentGateway();
-  const payment = await gateway.createPayment({
-    orderId: order.id,
-    orderNumber: order.orderNumber,
-    orderToken: order.publicToken,
-    amountCents: order.totalCents,
-    description: `Bestelling ${order.orderNumber} — ${SHOP.legalName}`,
-    redirectUrl: absoluteUrl(`/bestelling/${order.publicToken}`),
-    cancelUrl: absoluteUrl(`/bestelling/${order.publicToken}?afgebroken=1`),
-    webhookUrl: webhookUrl("/api/webhooks/mollie"),
-    customerEmail: order.customerEmail,
-  });
+  let checkoutUrl: string;
 
-  await recordPaymentAttempt({
-    orderId: order.id,
-    provider: payment.provider,
-    providerPaymentId: payment.providerPaymentId,
-    amountCents: order.totalCents,
-    checkoutUrl: payment.checkoutUrl,
-    status: payment.status,
-    raw: payment.raw,
-  });
+  try {
+    // De producten opnieuw reserveren voor we een nieuwe betaling starten:
+    // bij de mislukte poging zijn ze vrijgegeven.
+    await reopenOrderForRetry(order.id);
 
-  redirect(payment.checkoutUrl);
-}
+    const gateway = getPaymentGateway();
+    const payment = await gateway.createPayment({
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      orderToken: order.publicToken,
+      amountCents: order.totalCents,
+      description: `Bestelling ${order.orderNumber} — ${SHOP.legalName}`,
+      redirectUrl: absoluteUrl(`/bestelling/${order.publicToken}`),
+      cancelUrl: absoluteUrl(`/bestelling/${order.publicToken}?afgebroken=1`),
+      webhookUrl: webhookUrl("/api/webhooks/mollie"),
+      customerEmail: order.customerEmail,
+    });
 
-/** Melding voor de checkout wanneer een product een bestelperiode heeft. */
-export async function leadTimeMessage(cart: PricedCart): Promise<string | null> {
-  if (cart.maxLeadTimeDays <= 0) return null;
-  const earliest = addDays(currentIsoDate(), cart.maxLeadTimeDays);
-  return `${cart.leadTimeProductName} moet ${cart.maxLeadTimeDays} dagen vooraf besteld worden. Het vroegste moment is ${formatIsoDateLong(earliest)}.`;
+    await recordPaymentAttempt({
+      orderId: order.id,
+      provider: payment.provider,
+      providerPaymentId: payment.providerPaymentId,
+      amountCents: order.totalCents,
+      checkoutUrl: payment.checkoutUrl,
+      status: payment.status,
+      raw: payment.raw,
+    });
+
+    checkoutUrl = payment.checkoutUrl;
+  } catch (error) {
+    const message =
+      error instanceof OrderCreationError || error instanceof PaymentError
+        ? error.message
+        : "De betaling kon niet opnieuw gestart worden. Probeer het later nog eens of bel ons.";
+    console.error("[broodhuis] Nieuwe betaalpoging mislukte:", error);
+    redirect(
+      `/bestelling/${order.publicToken}?fout=${encodeURIComponent(message)}`,
+    );
+  }
+
+  redirect(checkoutUrl);
 }

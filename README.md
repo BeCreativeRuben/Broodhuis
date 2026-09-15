@@ -208,9 +208,14 @@ providerspecifiek.
 
 Producten met voorraadbeheer worden **gereserveerd** zodra de bestelling
 aangemaakt wordt, en weer vrijgegeven als de betaling mislukt, vervalt of
-geannuleerd wordt (ook wanneer de bakker een bestelling annuleert). Verwerking
-van betaalstatussen is idempotent: de webhook van de provider en de
-terugkeerpagina van de klant mogen dat allebei en meermaals doen.
+geannuleerd wordt (ook wanneer de bakker een bestelling annuleert). Klikt de
+klant daarna op “Opnieuw betalen”, dan worden de stuks opnieuw gereserveerd —
+en als ze inmiddels weg zijn, krijgt de klant dat te zien vóór hij betaalt.
+
+Verwerking van betaalstatussen is idempotent: de webhook van de provider en de
+terugkeerpagina van de klant mogen dat allebei en meermaals doen. Twee klanten
+die tegelijk het laatste stuk bestellen, kunnen elkaar niet overschrijven: de
+voorraadcontrole zit in dezelfde transactie als het aanmaken van de bestelling.
 
 ---
 

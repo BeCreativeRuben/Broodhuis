@@ -304,7 +304,8 @@ async function main() {
       throw new Error(`Onbekende categorie: ${product.categorySlug}`);
     }
 
-    const { categorySlug: _categorySlug, ...fields } = product;
+    const fields = { ...product };
+    delete (fields as Partial<ProductSeed>).categorySlug;
     const data = {
       ...fields,
       categoryId,

@@ -1,0 +1,664 @@
+"use client";
+
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  AlertTriangleIcon,
+  CalendarClockIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  CreditCardIcon,
+  Loader2Icon,
+  LockIcon,
+  ShoppingBasketIcon,
+  StoreIcon,
+  TruckIcon,
+} from "lucide-react";
+
+import { useCart } from "@/components/cart/cart-provider";
+import { ProductImage } from "@/components/product-image";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { formatEuro } from "@/lib/money";
+import type { FulfillmentType } from "@/lib/shop-config";
+import { cn } from "@/lib/utils";
+import {
+  EMPTY_CHECKOUT_STATE,
+  getCheckoutData,
+  placeOrder,
+  type CheckoutData,
+  type SlotOption,
+} from "@/server/actions/checkout";
+
+const VISIBLE_SLOTS = 6;
+
+export function CheckoutForm({ shopCity }: { shopCity: string }) {
+  const { items, isReady } = useCart();
+  const [data, setData] = useState<CheckoutData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fulfillment, setFulfillment] = useState<FulfillmentType>("pickup");
+  const [slot, setSlot] = useState("");
+  const [showAllSlots, setShowAllSlots] = useState(false);
+  const [state, formAction, isPending] = useActionState(
+    placeOrder,
+    EMPTY_CHECKOUT_STATE,
+  );
+  const loadedSignatureRef = useRef<string>("");
+
+  const signature = useMemo(
+    () =>
+      items
+        .map((line) => `${line.productId}:${line.quantity}`)
+        .sort()
+        .join("|"),
+    [items],
+  );
+
+  useEffect(() => {
+    if (!isReady) return;
+    if (signature === loadedSignatureRef.current) return;
+    loadedSignatureRef.current = signature;
+
+    let cancelled = false;
+    setIsLoading(true);
+
+    getCheckoutData(
+      items.map((line) => ({
+        productId: line.productId,
+        quantity: line.quantity,
+      })),
+    )
+      .then((result) => {
+        if (cancelled) return;
+        setData(result);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // items veranderen samen met signature; we halen enkel opnieuw op als de
+    // inhoud van de winkelwagen echt wijzigt.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signature, isReady]);
+
+  const slotOptions = useMemo<SlotOption[]>(
+    () => data?.slots[fulfillment] ?? [],
+    [data, fulfillment],
+  );
+
+  // Eerste moment voorstellen, zodat de klant minder moet tikken.
+  useEffect(() => {
+    if (slotOptions.length === 0) {
+      setSlot("");
+      return;
+    }
+    if (!slotOptions.some((option) => option.value === slot)) {
+      setSlot(slotOptions[0].value);
+    }
+  }, [slotOptions, slot]);
+
+  if (!isReady || (isLoading && !data)) {
+    return (
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_22rem]">
+        <div className="space-y-4">
+          <Skeleton className="h-32 w-full rounded-2xl" />
+          <Skeleton className="h-64 w-full rounded-2xl" />
+          <Skeleton className="h-64 w-full rounded-2xl" />
+        </div>
+        <Skeleton className="h-72 w-full rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!data || data.cart.lines.length === 0) {
+    return (
+      <div className="mt-10 rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-secondary">
+          <ShoppingBasketIcon className="size-7 text-crust" />
+        </div>
+        <h2 className="mt-4 font-heading text-xl font-semibold">
+          Er staat niets om af te rekenen
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Leg eerst iets in je winkelwagen. Daarna kies je hier je moment en betaal
+          je online.
+        </p>
+        <Button
+          render={<Link href="/assortiment" />}
+          className="mt-5 h-12 rounded-full px-6 text-base"
+        >
+          Naar het assortiment
+        </Button>
+      </div>
+    );
+  }
+
+  const { cart } = data;
+  const deliveryFeeCents =
+    fulfillment === "delivery" ? data.deliveryFeeCents : 0;
+  const totalCents = cart.subtotalCents + deliveryFeeCents;
+  const visibleSlots = showAllSlots
+    ? slotOptions
+    : slotOptions.slice(0, VISIBLE_SLOTS);
+  const errors = state.errors;
+
+  return (
+    <form action={formAction} className="mt-8">
+      <input
+        type="hidden"
+        name="items"
+        value={JSON.stringify(
+          cart.lines.map((line) => ({
+            productId: line.productId,
+            quantity: line.quantity,
+          })),
+        )}
+      />
+      <input type="hidden" name="slot" value={slot} />
+
+      <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
+        <div className="space-y-6">
+          {state.formError && (
+            <Alert variant="destructive">
+              <AlertTriangleIcon />
+              <AlertTitle>Even nakijken</AlertTitle>
+              <AlertDescription>{state.formError}</AlertDescription>
+            </Alert>
+          )}
+
+          {data.payment.isSandbox && (
+            <Alert className="border-warning/50 bg-warning/15">
+              <AlertTriangleIcon />
+              <AlertTitle>Testmodus</AlertTitle>
+              <AlertDescription>
+                Er is nog geen Mollie-sleutel ingesteld. Je doorloopt de echte
+                flow, maar er wordt geen geld afgehouden.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+            <h2 className="font-heading text-lg font-semibold">
+              1. Afhalen of leveren?
+            </h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <FulfillmentOption
+                icon={StoreIcon}
+                title="Afhalen"
+                price="Gratis"
+                description={`In de winkel in ${shopCity}, woensdag t.e.m. zondag`}
+                value="pickup"
+                checked={fulfillment === "pickup"}
+                onSelect={() => {
+                  setFulfillment("pickup");
+                  setShowAllSlots(false);
+                }}
+              />
+              <FulfillmentOption
+                icon={TruckIcon}
+                title="Leveren"
+                price={`+ ${formatEuro(data.deliveryFeeCents)}`}
+                description="Donderdagvoormiddag, vrijdagnamiddag of zondagvoormiddag"
+                value="delivery"
+                checked={fulfillment === "delivery"}
+                onSelect={() => {
+                  setFulfillment("delivery");
+                  setShowAllSlots(false);
+                }}
+              />
+            </div>
+            {fulfillment === "delivery" && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                We leveren in postcode {data.deliveryPostalCodes.join(", ")}.
+              </p>
+            )}
+          </section>
+
+          <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+            <h2 className="font-heading text-lg font-semibold">
+              2. Wanneer past het?
+            </h2>
+
+            {cart.maxLeadTimeDays > 0 && (
+              <div className="mt-3 flex gap-3 rounded-xl border border-accent/60 bg-accent/25 p-3 text-sm">
+                <CalendarClockIcon className="mt-0.5 size-4 shrink-0 text-accent-foreground" />
+                <p>
+                  <span className="font-medium">{cart.leadTimeProductName}</span>{" "}
+                  moet {cart.maxLeadTimeDays} dagen vooraf besteld worden. Daarom
+                  zie je hieronder pas latere momenten.
+                </p>
+              </div>
+            )}
+
+            {slotOptions.length === 0 ? (
+              <Alert className="mt-4">
+                <AlertTriangleIcon />
+                <AlertTitle>Geen momenten beschikbaar</AlertTitle>
+                <AlertDescription>
+                  {fulfillment === "delivery"
+                    ? "Er zijn voorlopig geen leveringsmomenten vrij. Kies afhalen of bel ons even."
+                    : "Er zijn voorlopig geen afhaalmomenten vrij. Bel ons even, we zoeken een oplossing."}
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <>
+                <ul className="mt-4 space-y-2">
+                  {visibleSlots.map((option) => (
+                    <SlotRow
+                      key={option.value}
+                      option={option}
+                      checked={slot === option.value}
+                      onSelect={() => setSlot(option.value)}
+                    />
+                  ))}
+                </ul>
+
+                {slotOptions.length > VISIBLE_SLOTS && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="mt-3 w-full rounded-full"
+                    onClick={() => setShowAllSlots((current) => !current)}
+                  >
+                    {showAllSlots
+                      ? "Minder momenten tonen"
+                      : `Nog ${slotOptions.length - VISIBLE_SLOTS} momenten tonen`}
+                    <ChevronDownIcon
+                      className={cn("size-4 transition-transform", showAllSlots && "rotate-180")}
+                    />
+                  </Button>
+                )}
+              </>
+            )}
+
+            {errors.slot && (
+              <p className="mt-3 text-sm text-destructive">{errors.slot}</p>
+            )}
+          </section>
+
+          <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+            <h2 className="font-heading text-lg font-semibold">3. Jouw gegevens</h2>
+            <div className="mt-4 grid gap-4">
+              <Field
+                name="customerName"
+                label="Naam"
+                autoComplete="name"
+                error={errors.customerName}
+                required
+              />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field
+                  name="customerEmail"
+                  label="E-mail"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  hint="Hier sturen we je bestelbevestiging naar."
+                  error={errors.customerEmail}
+                  required
+                />
+                <Field
+                  name="customerPhone"
+                  label="Telefoon"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  hint="Zodat we je kunnen bereiken bij vragen."
+                  error={errors.customerPhone}
+                  required
+                />
+              </div>
+
+              {fulfillment === "delivery" && (
+                <div className="grid gap-4 rounded-xl bg-secondary/50 p-4">
+                  <p className="text-sm font-medium">Leveringsadres</p>
+                  <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
+                    <Field
+                      name="street"
+                      label="Straat"
+                      autoComplete="address-line1"
+                      error={errors.street}
+                      required
+                    />
+                    <Field
+                      name="houseNumber"
+                      label="Nummer"
+                      autoComplete="address-line2"
+                      error={errors.houseNumber}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-[8rem_1fr]">
+                    <Field
+                      name="postalCode"
+                      label="Postcode"
+                      inputMode="numeric"
+                      autoComplete="postal-code"
+                      defaultValue={data.deliveryPostalCodes[0] ?? ""}
+                      error={errors.postalCode}
+                      required
+                    />
+                    <Field
+                      name="city"
+                      label="Gemeente"
+                      autoComplete="address-level2"
+                      defaultValue={shopCity}
+                      error={errors.city}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="deliveryNote">
+                      Bezorginstructies{" "}
+                      <span className="font-normal text-muted-foreground">
+                        (optioneel)
+                      </span>
+                    </Label>
+                    <Input
+                      id="deliveryNote"
+                      name="deliveryNote"
+                      placeholder="Bv. bel aan bij de zijdeur"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="grid gap-2">
+                <Label htmlFor="note">
+                  Opmerking bij je bestelling{" "}
+                  <span className="font-normal text-muted-foreground">
+                    (optioneel)
+                  </span>
+                </Label>
+                <Textarea
+                  id="note"
+                  name="note"
+                  rows={3}
+                  placeholder="Bv. brood gesneden, of het opschrift voor je taart"
+                />
+                {errors.note && (
+                  <p className="text-sm text-destructive">{errors.note}</p>
+                )}
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside className="lg:sticky lg:top-32">
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-warm">
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading text-lg font-semibold">Je bestelling</h2>
+              <Link
+                href="/winkelwagen"
+                className="text-sm text-muted-foreground underline hover:text-foreground"
+              >
+                Wijzigen
+              </Link>
+            </div>
+
+            <ul className="space-y-3">
+              {cart.lines.map((line) => (
+                <li key={line.productId} className="flex items-center gap-3">
+                  <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-secondary">
+                    <ProductImage
+                      src={line.imageUrl}
+                      alt={line.name}
+                      sizes="48px"
+                    />
+                  </span>
+                  <span className="min-w-0 flex-1 text-sm">
+                    <span className="block truncate font-medium">{line.name}</span>
+                    <span className="text-muted-foreground">
+                      {line.quantity} × {formatEuro(line.unitPriceCents)}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-sm font-medium tabular-nums">
+                    {formatEuro(line.lineTotalCents)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <dl className="space-y-2 border-t border-border pt-3 text-sm">
+              <div className="flex items-center justify-between">
+                <dt className="text-muted-foreground">Subtotaal</dt>
+                <dd className="tabular-nums">{formatEuro(cart.subtotalCents)}</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-muted-foreground">
+                  {fulfillment === "delivery" ? "Levering" : "Afhalen"}
+                </dt>
+                <dd className="tabular-nums">
+                  {deliveryFeeCents === 0 ? "Gratis" : formatEuro(deliveryFeeCents)}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between border-t border-border pt-2 font-heading text-lg font-semibold">
+                <dt>Totaal</dt>
+                <dd className="tabular-nums">{formatEuro(totalCents)}</dd>
+              </div>
+            </dl>
+
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-secondary/50 p-3 text-sm">
+              <input
+                type="checkbox"
+                name="acceptTerms"
+                className="mt-0.5 size-5 shrink-0 rounded border-input accent-primary"
+              />
+              <span>
+                Ik weet dat ik nu online betaal en dat mijn bestelling pas vastligt
+                na een gelukte betaling.
+              </span>
+            </label>
+            {errors.acceptTerms && (
+              <p className="text-sm text-destructive">{errors.acceptTerms}</p>
+            )}
+
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isPending || slotOptions.length === 0}
+              className="hidden h-12 w-full rounded-full text-base lg:flex"
+            >
+              {isPending ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" /> Bezig met
+                  doorsturen…
+                </>
+              ) : (
+                <>
+                  <CreditCardIcon className="size-4" /> Betaal{" "}
+                  {formatEuro(totalCents)}
+                </>
+              )}
+            </Button>
+
+            <p className="hidden items-center justify-center gap-1.5 text-xs text-muted-foreground lg:flex">
+              <LockIcon className="size-3" />
+              Betalen via {data.payment.isSandbox ? "testmodus" : "Mollie"} —
+              Bancontact of bankkaart
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      {/* Vaste betaalbalk op gsm: totaal en knop altijd binnen duimbereik */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-warm-lg backdrop-blur lg:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs text-muted-foreground">
+              {fulfillment === "delivery" ? "Leveren" : "Afhalen"} ·{" "}
+              {slotOptions.find((option) => option.value === slot)?.dateLabelShort ??
+                "kies een moment"}
+            </p>
+            <p className="font-heading text-lg leading-tight font-semibold tabular-nums">
+              {formatEuro(totalCents)}
+            </p>
+          </div>
+          <Button
+            type="submit"
+            disabled={isPending || slotOptions.length === 0}
+            className="h-12 shrink-0 rounded-full px-5 text-base"
+          >
+            {isPending ? (
+              <Loader2Icon className="size-4 animate-spin" />
+            ) : (
+              <CreditCardIcon className="size-4" />
+            )}
+            Betalen
+          </Button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
+function FulfillmentOption({
+  icon: Icon,
+  title,
+  price,
+  description,
+  value,
+  checked,
+  onSelect,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  price: string;
+  description: string;
+  value: FulfillmentType;
+  checked: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <label
+      className={cn(
+        "flex cursor-pointer gap-3 rounded-xl border-2 p-4 transition-colors",
+        checked
+          ? "border-primary bg-accent/25"
+          : "border-border bg-card hover:bg-secondary/50",
+      )}
+    >
+      <input
+        type="radio"
+        name="fulfillmentType"
+        value={value}
+        checked={checked}
+        onChange={onSelect}
+        className="sr-only"
+      />
+      <span
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-full",
+          checked ? "bg-primary text-primary-foreground" : "bg-secondary text-crust",
+        )}
+      >
+        <Icon className="size-5" />
+      </span>
+      <span className="min-w-0">
+        <span className="flex items-center gap-2">
+          <span className="font-heading text-base font-semibold">{title}</span>
+          <span className="text-sm text-muted-foreground">{price}</span>
+        </span>
+        <span className="mt-0.5 block text-xs text-muted-foreground">
+          {description}
+        </span>
+      </span>
+    </label>
+  );
+}
+
+function SlotRow({
+  option,
+  checked,
+  onSelect,
+}: {
+  option: SlotOption;
+  checked: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <li>
+      <label
+        className={cn(
+          "flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
+          checked
+            ? "border-primary bg-accent/25"
+            : "border-border hover:bg-secondary/50",
+        )}
+      >
+        <input
+          type="radio"
+          name="slotChoice"
+          value={option.value}
+          checked={checked}
+          onChange={onSelect}
+          className="sr-only"
+        />
+        <span
+          className={cn(
+            "flex size-5 shrink-0 items-center justify-center rounded-full border-2",
+            checked ? "border-primary bg-primary" : "border-input",
+          )}
+        >
+          {checked && <CheckIcon className="size-3 text-primary-foreground" />}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-medium capitalize">{option.dateLabel}</span>
+          <span className="text-sm text-muted-foreground">{option.timeLabel}</span>
+        </span>
+      </label>
+    </li>
+  );
+}
+
+function Field({
+  name,
+  label,
+  hint,
+  error,
+  required,
+  type = "text",
+  ...inputProps
+}: {
+  name: string;
+  label: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  type?: string;
+} & React.ComponentProps<typeof Input>) {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={name}>
+        {label}
+        {required && <span className="text-destructive"> *</span>}
+      </Label>
+      <Input
+        id={name}
+        name={name}
+        type={type}
+        required={required}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${name}-error` : hint ? `${name}-hint` : undefined}
+        className="h-12"
+        {...inputProps}
+      />
+      {error ? (
+        <p id={`${name}-error`} className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={`${name}-hint`} className="text-xs text-muted-foreground">
+          {hint}
+        </p>
+      ) : null}
+    </div>
+  );
+}

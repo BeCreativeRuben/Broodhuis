@@ -74,6 +74,11 @@ model Order {
   /// Publiek bestelnummer, bv. BH-260915-0001
   orderNumber String @unique
 
+  /// Onvoorspelbare sleutel voor de bestelpagina van de klant. Het bestelnummer
+  /// loopt op en zou anders te raden zijn, waardoor iemand andermans
+  /// contactgegevens zou kunnen opvragen.
+  publicToken String @unique
+
   /// "pending" | "paid" | "failed" | "expired" | "cancelled" | "ready" | "completed"
   status      String @default("pending")
 

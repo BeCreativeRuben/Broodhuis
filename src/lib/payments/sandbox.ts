@@ -27,7 +27,7 @@ export const sandboxGateway: PaymentGateway = {
       provider: this.id,
       providerPaymentId,
       checkoutUrl: absoluteUrl(
-        `/betaling/sandbox/${encodeURIComponent(input.orderNumber)}?betaling=${providerPaymentId}`,
+        `/betaling/sandbox/${input.orderToken}?betaling=${providerPaymentId}`,
       ),
       status: "open",
       raw: { simulated: true, amountCents: input.amountCents },

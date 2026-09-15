@@ -22,6 +22,8 @@ export const FINAL_PAYMENT_STATUSES: PaymentStatus[] = [
 export type CreatePaymentInput = {
   orderId: string;
   orderNumber: string;
+  /** Onvoorspelbare sleutel van de bestelpagina van de klant */
+  orderToken: string;
   amountCents: number;
   description: string;
   /** Waar de klant na het betalen terechtkomt. */

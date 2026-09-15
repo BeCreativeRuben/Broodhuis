@@ -139,6 +139,7 @@ export async function createOrder(input: CreateOrderInput) {
         return tx.order.create({
           data: {
             orderNumber: await nextOrderNumber(tx, now),
+            publicToken: crypto.randomUUID().replace(/-/g, ""),
             status: "pending",
             fulfillmentType,
             slotDate: slot.date,
@@ -321,9 +322,9 @@ export async function applyPaymentUpdate(fetched: FetchedPayment) {
  * Zo klopt de bestelpagina ook als de webhook (nog) niet toekwam — bv. lokaal,
  * waar Mollie localhost niet kan bereiken.
  */
-export async function syncOrderPayment(orderNumber: string) {
+export async function syncOrderPayment(orderId: string) {
   const order = await prisma.order.findUnique({
-    where: { orderNumber },
+    where: { id: orderId },
     include: { payments: { orderBy: { createdAt: "desc" }, take: 1 } },
   });
 
@@ -367,6 +368,26 @@ export async function markSandboxPayment(
   });
 }
 
+/**
+ * Loopt het aanmaken van de betaling mis, dan blijft er geen bestelling
+ * hangen die voorraad vasthoudt.
+ */
+export async function abandonOrder(orderId: string) {
+  return prisma.$transaction(async (tx) => {
+    const order = await tx.order.findUnique({
+      where: { id: orderId },
+      select: { status: true },
+    });
+    if (!order || order.status !== "pending") return;
+
+    await releaseReservedStock(tx, orderId);
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: "failed", paymentStatus: "failed" },
+    });
+  });
+}
+
 export async function getOrderByNumber(orderNumber: string) {
   return prisma.order.findUnique({
     where: { orderNumber },
@@ -376,6 +397,21 @@ export async function getOrderByNumber(orderNumber: string) {
     },
   });
 }
+
+/** De klant bekijkt zijn bestelling via de onvoorspelbare publicToken. */
+export async function getOrderByToken(publicToken: string) {
+  return prisma.order.findUnique({
+    where: { publicToken },
+    include: {
+      items: { orderBy: { name: "asc" } },
+      payments: { orderBy: { createdAt: "desc" } },
+    },
+  });
+}
+
+export type CustomerOrder = NonNullable<
+  Awaited<ReturnType<typeof getOrderByToken>>
+>;
 
 export type OrderListFilters = {
   status?: OrderStatus | "open";

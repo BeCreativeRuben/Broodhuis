@@ -3,12 +3,16 @@ import "server-only";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 import { PrismaClient } from "@/generated/prisma/client";
+import { resolveDatabaseUrl } from "@/lib/database-url";
 
 // Om later naar Postgres te gaan: vervang de adapter hieronder door
 //   import { PrismaPg } from "@prisma/adapter-pg";
 //   const adapter = new PrismaPg({ connectionString: databaseUrl });
 // en zet `provider = "postgresql"` in prisma/schema.prisma.
-const databaseUrl = process.env.DATABASE_URL ?? "file:./dev.db";
+//
+// resolveDatabaseUrl() maakt van een relatief pad één absoluut pad, zodat de
+// webshop, de migraties en de seed gegarandeerd hetzelfde bestand openen.
+const databaseUrl = resolveDatabaseUrl();
 
 function createPrismaClient() {
   const adapter = new PrismaBetterSqlite3({ url: databaseUrl });

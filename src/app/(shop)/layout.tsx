@@ -5,6 +5,14 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getActiveCategories } from "@/lib/catalog";
 
+/**
+ * De categorienavigatie komt uit de database, dus deze schil (en alles
+ * eronder) wordt per aanvraag opgebouwd. Zonder dit probeert `next build`
+ * pagina's vooraf te renderen en faalt de build op een machine zonder
+ * database — bv. in CI.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function ShopLayout({
   children,
 }: {

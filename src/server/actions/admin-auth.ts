@@ -4,11 +4,8 @@ import { redirect } from "next/navigation";
 
 import { adminAuthConfig, checkCredentials } from "@/lib/auth/session";
 import { endAdminSession, startAdminSession } from "@/lib/auth/server";
+import type { LoginState } from "@/lib/form-state";
 import { loginSchema } from "@/lib/validation";
-
-export type LoginState = { error: string | null };
-
-export const EMPTY_LOGIN_STATE: LoginState = { error: null };
 
 /**
  * Heel eenvoudige bescherming tegen brute force: per proces bijhouden hoeveel

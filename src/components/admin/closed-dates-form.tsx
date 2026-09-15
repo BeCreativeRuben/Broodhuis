@@ -7,7 +7,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { EMPTY_FORM_STATE, saveClosedDates } from "@/server/actions/admin-catalog";
+import { EMPTY_FORM_STATE } from "@/lib/form-state";
+import { saveClosedDates } from "@/server/actions/admin-catalog";
 
 export function ClosedDatesForm({ dates }: { dates: string[] }) {
   const [state, formAction, isPending] = useActionState(

@@ -13,7 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ALLERGENS } from "@/lib/allergens";
 import { centsToEuroInput } from "@/lib/money";
 import { cn } from "@/lib/utils";
-import { EMPTY_FORM_STATE, saveProduct } from "@/server/actions/admin-catalog";
+import { EMPTY_FORM_STATE } from "@/lib/form-state";
+import { saveProduct } from "@/server/actions/admin-catalog";
 
 export type ProductFormValues = {
   id?: string;

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { serialiseAllergens } from "@/lib/allergens";
 import { requireAdminSession } from "@/lib/auth/server";
 import { prisma } from "@/lib/db";
+import type { FormState } from "@/lib/form-state";
 import { parseClosedDatesInput, setClosedDates } from "@/lib/settings";
 import {
   categorySchema,
@@ -13,18 +14,6 @@ import {
   productSchema,
   slugify,
 } from "@/lib/validation";
-
-export type FormState = {
-  errors: Record<string, string>;
-  formError: string | null;
-  ok: boolean;
-};
-
-export const EMPTY_FORM_STATE: FormState = {
-  errors: {},
-  formError: null,
-  ok: false,
-};
 
 function refreshShop() {
   revalidatePath("/");

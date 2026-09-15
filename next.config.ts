@@ -17,10 +17,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
   },
-  experimental: {
-    // Serveracties krijgen foto-uploads binnen; standaardlimiet is 1 MB.
-    serverActions: { bodySizeLimit: "6mb" },
-  },
 };
 
 export default nextConfig;

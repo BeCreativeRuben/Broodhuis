@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { EMPTY_FORM_STATE, saveCategory } from "@/server/actions/admin-catalog";
+import { EMPTY_FORM_STATE } from "@/lib/form-state";
+import { saveCategory } from "@/server/actions/admin-catalog";
 
 export type CategoryFormValues = {
   id?: string;

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import type { CartItem, PricedCart } from "@/lib/cart";
 import { priceCart } from "@/lib/cart-pricing";
+import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
+import type { CheckoutState } from "@/lib/form-state";
 import { addDays, currentIsoDate, formatIsoDateLong } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import {
@@ -25,31 +27,6 @@ import {
 import { getAvailableSlots, validateSlotSelection } from "@/lib/slots";
 import { absoluteUrl, webhookUrl } from "@/lib/site-url";
 import { checkoutSchema, fieldErrors } from "@/lib/validation";
-
-/** Slot zonder Date-velden, klaar om naar de browser te sturen. */
-export type SlotOption = {
-  value: string;
-  date: string;
-  dateLabel: string;
-  dateLabelShort: string;
-  timeLabel: string;
-  label: string;
-};
-
-export type CheckoutData = {
-  cart: PricedCart;
-  slots: Record<FulfillmentType, SlotOption[]>;
-  deliveryFeeCents: number;
-  deliveryMinimumCents: number;
-  deliveryPostalCodes: string[];
-  /** Vroegste datum door de bestelperiode van de producten */
-  earliestDate: string | null;
-  payment: {
-    label: string;
-    isSandbox: boolean;
-    isTestKey: boolean;
-  };
-};
 
 function toSlotOptions(
   type: FulfillmentType,
@@ -101,16 +78,6 @@ export async function getCheckoutData(
     },
   };
 }
-
-export type CheckoutState = {
-  errors: Record<string, string>;
-  formError: string | null;
-};
-
-export const EMPTY_CHECKOUT_STATE: CheckoutState = {
-  errors: {},
-  formError: null,
-};
 
 function parseItems(raw: FormDataEntryValue | null): Array<{
   productId: string;

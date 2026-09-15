@@ -7,7 +7,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EMPTY_LOGIN_STATE, login } from "@/server/actions/admin-auth";
+import { EMPTY_LOGIN_STATE } from "@/lib/form-state";
+import { login } from "@/server/actions/admin-auth";
 
 export function LoginForm({ next }: { next: string | null }) {
   const [state, formAction, isPending] = useActionState(login, EMPTY_LOGIN_STATE);

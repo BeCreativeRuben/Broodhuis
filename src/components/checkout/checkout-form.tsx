@@ -23,16 +23,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
+import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
 import type { FulfillmentType } from "@/lib/shop-config";
 import { cn } from "@/lib/utils";
-import {
-  EMPTY_CHECKOUT_STATE,
-  getCheckoutData,
-  placeOrder,
-  type CheckoutData,
-  type SlotOption,
-} from "@/server/actions/checkout";
+import { getCheckoutData, placeOrder } from "@/server/actions/checkout";
 
 const VISIBLE_SLOTS = 6;
 

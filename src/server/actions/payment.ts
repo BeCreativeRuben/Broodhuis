@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 
 import { getOrderByToken, markSandboxPayment } from "@/lib/orders";
+import { isMollieConfigured } from "@/lib/payments/mollie";
 
 /**
  * Alleen voor de ingebouwde sandbox: de klant kiest zelf of de testbetaling
@@ -10,6 +11,15 @@ import { getOrderByToken, markSandboxPayment } from "@/lib/orders";
  * voor in de flow.
  */
 export async function simulatePayment(formData: FormData): Promise<void> {
+  // Zodra er een echte betaalprovider ingesteld is, mag niemand nog een
+  // betaling "slagen" laten zonder te betalen — ook niet op een oude
+  // sandboxbetaling die nog ergens in een tabblad openstaat.
+  if (isMollieConfigured()) {
+    throw new Error(
+      "Testbetalingen zijn uitgeschakeld: deze webshop gebruikt een echte betaalprovider.",
+    );
+  }
+
   const token = String(formData.get("token") ?? "");
   const paymentId = String(formData.get("paymentId") ?? "");
   const outcome = String(formData.get("outcome") ?? "");

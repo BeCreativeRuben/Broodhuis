@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { capitalizeFirst } from "@/lib/datetime";
+import { capitalizeFirst, formatIsoDateLong } from "@/lib/datetime";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
@@ -235,8 +235,10 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 <CalendarClockIcon className="mt-0.5 size-4 shrink-0 text-accent-foreground" />
                 <p>
                   <span className="font-medium">{cart.leadTimeProductName}</span>{" "}
-                  moet {cart.maxLeadTimeDays} dagen vooraf besteld worden. Daarom
-                  zie je hieronder pas latere momenten.
+                  moet {cart.maxLeadTimeDays} dagen vooraf besteld worden.{" "}
+                  {data.earliestDate
+                    ? `Het vroegste moment is daarom ${formatIsoDateLong(data.earliestDate)}.`
+                    : "Daarom zie je hieronder pas latere momenten."}
                 </p>
               </div>
             )}

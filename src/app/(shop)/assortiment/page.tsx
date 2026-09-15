@@ -111,7 +111,7 @@ export default async function AssortimentPage({
                   <ProductCard
                     key={product.id}
                     product={product}
-                    priority={sectionIndex === 0 && productIndex < 4}
+                    priority={sectionIndex === 0 && productIndex === 0}
                   />
                 ))}
               </div>

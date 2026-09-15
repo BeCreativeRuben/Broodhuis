@@ -205,7 +205,7 @@ export default async function HomePage() {
               <ProductCard
                 key={product.id}
                 product={product}
-                priority={index < 2}
+                priority={index === 0}
               />
             ))}
           </div>

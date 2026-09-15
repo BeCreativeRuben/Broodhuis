@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { useCart } from "@/components/cart/cart-provider";
+import { useCheckoutDraft } from "@/components/checkout/checkout-draft";
 import { ProductImage } from "@/components/product-image";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -38,14 +39,23 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
   const { items, isReady } = useCart();
   const [data, setData] = useState<CheckoutData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [fulfillment, setFulfillment] = useState<FulfillmentType>("pickup");
-  const [slot, setSlot] = useState("");
   const [showAllSlots, setShowAllSlots] = useState(false);
   const [state, formAction, isPending] = useActionState(
     placeOrder,
     EMPTY_CHECKOUT_STATE,
   );
   const loadedSignatureRef = useRef<string>("");
+  const addressSeededRef = useRef(false);
+  const errorRef = useRef<HTMLDivElement>(null);
+
+  const { draft, setField } = useCheckoutDraft();
+  const fulfillment: FulfillmentType = draft.fulfillmentType;
+  const slot = draft.slot;
+
+  function chooseFulfillment(next: FulfillmentType) {
+    setField("fulfillmentType", next);
+    setShowAllSlots(false);
+  }
 
   const signature = useMemo(
     () =>
@@ -94,13 +104,30 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
   // Eerste moment voorstellen, zodat de klant minder moet tikken.
   useEffect(() => {
     if (slotOptions.length === 0) {
-      setSlot("");
+      if (slot !== "") setField("slot", "");
       return;
     }
     if (!slotOptions.some((option) => option.value === slot)) {
-      setSlot(slotOptions[0].value);
+      setField("slot", slotOptions[0].value);
     }
-  }, [slotOptions, slot]);
+  }, [slotOptions, slot, setField]);
+
+  // Postcode en gemeente één keer voorvullen: de meeste klanten wonen hier.
+  useEffect(() => {
+    if (!data || addressSeededRef.current) return;
+    addressSeededRef.current = true;
+    if (draft.postalCode === "") {
+      setField("postalCode", data.deliveryPostalCodes[0] ?? "");
+    }
+    if (draft.city === "") setField("city", shopCity);
+  }, [data, draft.postalCode, draft.city, setField, shopCity]);
+
+  // Bij een fout naar de melding scrollen; op gsm staat die anders buiten beeld.
+  useEffect(() => {
+    if (state.formError) {
+      errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [state.formError]);
 
   if (!isReady || (isLoading && !data)) {
     return (
@@ -147,7 +174,9 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
   const errors = state.errors;
 
   return (
-    <form action={formAction} className="mt-8">
+    // noValidate: anders blokkeert de browser het versturen met een Engelse
+    // tooltip en zien we onze eigen Nederlandse meldingen nooit.
+    <form action={formAction} noValidate className="mt-8">
       <input
         type="hidden"
         name="items"
@@ -162,13 +191,15 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
 
       <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
         <div className="space-y-6">
-          {state.formError && (
-            <Alert variant="destructive">
-              <AlertTriangleIcon />
-              <AlertTitle>Even nakijken</AlertTitle>
-              <AlertDescription>{state.formError}</AlertDescription>
-            </Alert>
-          )}
+          <div ref={errorRef}>
+            {state.formError && (
+              <Alert variant="destructive">
+                <AlertTriangleIcon />
+                <AlertTitle>Even nakijken</AlertTitle>
+                <AlertDescription>{state.formError}</AlertDescription>
+              </Alert>
+            )}
+          </div>
 
           {data.payment.isSandbox && (
             <Alert className="border-warning/50 bg-warning/15">
@@ -200,10 +231,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 description={`In de winkel in ${shopCity}, woensdag t.e.m. zondag`}
                 value="pickup"
                 checked={fulfillment === "pickup"}
-                onSelect={() => {
-                  setFulfillment("pickup");
-                  setShowAllSlots(false);
-                }}
+                onSelect={() => chooseFulfillment("pickup")}
               />
               <FulfillmentOption
                 icon={TruckIcon}
@@ -212,10 +240,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 description="Donderdagvoormiddag, vrijdagnamiddag of zondagvoormiddag"
                 value="delivery"
                 checked={fulfillment === "delivery"}
-                onSelect={() => {
-                  setFulfillment("delivery");
-                  setShowAllSlots(false);
-                }}
+                onSelect={() => chooseFulfillment("delivery")}
               />
             </div>
             {fulfillment === "delivery" && (
@@ -265,7 +290,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                       key={option.value}
                       option={option}
                       checked={slot === option.value}
-                      onSelect={() => setSlot(option.value)}
+                      onSelect={() => setField("slot", option.value)}
                     />
                   ))}
                 </div>
@@ -301,6 +326,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             <div className="mt-4 grid gap-4">
               <Field
                 name="customerName"
+                value={draft.customerName}
+                onChange={(event) => setField("customerName", event.target.value)}
                 label="Naam"
                 autoComplete="name"
                 error={errors.customerName}
@@ -309,6 +336,10 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field
                   name="customerEmail"
+                  value={draft.customerEmail}
+                  onChange={(event) =>
+                    setField("customerEmail", event.target.value)
+                  }
                   label="E-mail"
                   type="email"
                   inputMode="email"
@@ -319,6 +350,10 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 />
                 <Field
                   name="customerPhone"
+                  value={draft.customerPhone}
+                  onChange={(event) =>
+                    setField("customerPhone", event.target.value)
+                  }
                   label="Telefoon"
                   type="tel"
                   inputMode="tel"
@@ -335,6 +370,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
                     <Field
                       name="street"
+                      value={draft.street}
+                      onChange={(event) => setField("street", event.target.value)}
                       label="Straat"
                       autoComplete="address-line1"
                       error={errors.street}
@@ -342,6 +379,10 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                     />
                     <Field
                       name="houseNumber"
+                      value={draft.houseNumber}
+                      onChange={(event) =>
+                        setField("houseNumber", event.target.value)
+                      }
                       label="Nummer"
                       autoComplete="address-line2"
                       error={errors.houseNumber}
@@ -351,18 +392,22 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   <div className="grid gap-4 sm:grid-cols-[8rem_1fr]">
                     <Field
                       name="postalCode"
+                      value={draft.postalCode}
+                      onChange={(event) =>
+                        setField("postalCode", event.target.value)
+                      }
                       label="Postcode"
                       inputMode="numeric"
                       autoComplete="postal-code"
-                      defaultValue={data.deliveryPostalCodes[0] ?? ""}
                       error={errors.postalCode}
                       required
                     />
                     <Field
                       name="city"
+                      value={draft.city}
+                      onChange={(event) => setField("city", event.target.value)}
                       label="Gemeente"
                       autoComplete="address-level2"
-                      defaultValue={shopCity}
                       error={errors.city}
                       required
                     />
@@ -377,6 +422,10 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                     <Input
                       id="deliveryNote"
                       name="deliveryNote"
+                      value={draft.deliveryNote}
+                      onChange={(event) =>
+                        setField("deliveryNote", event.target.value)
+                      }
                       placeholder="Bv. bel aan bij de zijdeur"
                     />
                   </div>
@@ -394,6 +443,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   id="note"
                   name="note"
                   rows={3}
+                  value={draft.note}
+                  onChange={(event) => setField("note", event.target.value)}
                   placeholder="Bv. brood gesneden, of het opschrift voor je taart"
                 />
                 {errors.note && (
@@ -462,6 +513,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               <input
                 type="checkbox"
                 name="acceptTerms"
+                checked={draft.acceptTerms}
+                onChange={(event) => setField("acceptTerms", event.target.checked)}
                 className="mt-0.5 size-5 shrink-0 rounded border-input accent-primary"
               />
               <span>

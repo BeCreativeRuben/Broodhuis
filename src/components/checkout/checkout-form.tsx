@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { capitalizeFirst } from "@/lib/datetime";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
@@ -611,7 +612,9 @@ function SlotRow({
           {checked && <CheckIcon className="size-3 text-primary-foreground" />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-medium capitalize">{option.dateLabel}</span>
+          <span className="block font-medium">
+            {capitalizeFirst(option.dateLabel)}
+          </span>
           <span className="text-sm text-muted-foreground">{option.timeLabel}</span>
         </span>
       </label>

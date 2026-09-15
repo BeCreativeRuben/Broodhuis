@@ -7,6 +7,7 @@ import {
   TruckIcon,
 } from "lucide-react";
 
+import { capitalizeFirst } from "@/lib/datetime";
 import { allergenSummary } from "@/lib/allergens";
 import { formatEuro } from "@/lib/money";
 import type { CustomerOrder } from "@/lib/orders";
@@ -78,7 +79,7 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
 
           <p className="mt-3 flex items-start gap-2 text-sm">
             <CalendarClockIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-            <span className="capitalize">{order.slotLabel}</span>
+            <span>{capitalizeFirst(order.slotLabel)}</span>
           </p>
 
           <p className="mt-2 flex items-start gap-2 text-sm">

@@ -14,7 +14,7 @@ import {
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { Button } from "@/components/ui/button";
 import { allergenSummary } from "@/lib/allergens";
-import { formatInstant } from "@/lib/datetime";
+import { capitalizeFirst, formatInstant } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { getOrderById } from "@/lib/orders";
 import { paymentMethodLabel, paymentStatusLabel } from "@/lib/payments/types";
@@ -139,7 +139,9 @@ export default async function AdminOrderPage({
               )}
               {isDelivery ? "Leveren" : "Afhalen"}
             </h2>
-            <p className="mt-2 text-sm font-medium capitalize">{order.slotLabel}</p>
+            <p className="mt-2 text-sm font-medium">
+              {capitalizeFirst(order.slotLabel)}
+            </p>
             <p className="mt-2 flex items-start gap-2 text-sm text-muted-foreground">
               <MapPinIcon className="mt-0.5 size-4 shrink-0" />
               {isDelivery ? (

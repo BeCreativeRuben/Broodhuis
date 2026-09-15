@@ -191,6 +191,15 @@ export function formatIsoDateNumeric(isoDate: IsoDate): string {
   }).format(isoDateAsUtcMidnight(isoDate));
 }
 
+/**
+ * "donderdag 17 september" -> "Donderdag 17 september".
+ * Bewust in JavaScript en niet met de CSS-klasse `capitalize`: die maakt er
+ * "Donderdag 17 September" van, en in het Nederlands schrijven we maanden klein.
+ */
+export function capitalizeFirst(value: string): string {
+  return value.charAt(0).toLocaleUpperCase("nl-BE") + value.slice(1);
+}
+
 /** "08:00" -> "8:00" (Belgische schrijfwijze zonder voorloopnul) */
 export function formatTime(time: string): string {
   const [hour, minute] = time.split(":");

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/button-link";
-import { formatIsoDateShort } from "@/lib/datetime";
+import { capitalizeFirst, formatIsoDateShort } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { getAdminStats } from "@/lib/orders";
 import { paymentMode } from "@/lib/payments";
@@ -128,8 +128,8 @@ export default async function AdminDashboardPage() {
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium">{order.customerName}</span>
-                    <span className="text-xs text-muted-foreground capitalize">
-                      {order.slotLabel}
+                    <span className="text-xs text-muted-foreground">
+                      {capitalizeFirst(order.slotLabel)}
                     </span>
                   </span>
                   <span className="text-sm text-muted-foreground">

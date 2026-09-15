@@ -125,7 +125,7 @@ export default async function AdminOrdersPage({
                       </span>
                       <OrderStatusBadge status={order.status} />
                     </div>
-                    <p className="text-sm text-muted-foreground capitalize">
+                    <p className="text-sm text-muted-foreground">
                       {order.fulfillmentType === "delivery"
                         ? "Levering"
                         : "Afhaling"}{" "}

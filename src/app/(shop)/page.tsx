@@ -12,6 +12,7 @@ import {
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
 import { ButtonLink } from "@/components/ui/button-link";
+import { capitalizeFirst } from "@/lib/datetime";
 import { getActiveCategories, getFeaturedProducts } from "@/lib/catalog";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
@@ -229,7 +230,7 @@ export default async function HomePage() {
               {nextDeliverySlots.map((slot) => (
                 <li key={slot.value} className="flex items-center gap-2">
                   <ClockIcon className="size-4 shrink-0 text-crust" />
-                  <span className="capitalize">{slot.dateLabel}</span>
+                  <span>{capitalizeFirst(slot.dateLabel)}</span>
                   <span className="text-muted-foreground">{slot.timeLabel}</span>
                 </li>
               ))}

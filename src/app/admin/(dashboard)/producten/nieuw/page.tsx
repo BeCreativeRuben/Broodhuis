@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ChevronLeftIcon } from "lucide-react";
 
-import { NEW_PRODUCT, ProductForm } from "@/components/admin/product-form";
+import { ProductForm } from "@/components/admin/product-form";
+import { NEW_PRODUCT } from "@/lib/product-form-values";
 import { categoryOptions } from "@/lib/admin/catalog";
 
 export const dynamic = "force-dynamic";

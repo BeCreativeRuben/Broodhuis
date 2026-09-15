@@ -12,46 +12,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ALLERGENS } from "@/lib/allergens";
 import { centsToEuroInput } from "@/lib/money";
+import type { ProductFormValues } from "@/lib/product-form-values";
 import { cn } from "@/lib/utils";
 import { EMPTY_FORM_STATE } from "@/lib/form-state";
 import { saveProduct } from "@/server/actions/admin-catalog";
-
-export type ProductFormValues = {
-  id?: string;
-  name: string;
-  slug: string;
-  categoryId: string;
-  description: string;
-  ingredients: string;
-  allergens: string[];
-  priceCents: number;
-  unit: string;
-  imageUrl: string | null;
-  trackStock: boolean;
-  stock: number;
-  leadTimeDays: number;
-  isActive: boolean;
-  isFeatured: boolean;
-  sortOrder: number;
-};
-
-export const NEW_PRODUCT: ProductFormValues = {
-  name: "",
-  slug: "",
-  categoryId: "",
-  description: "",
-  ingredients: "",
-  allergens: [],
-  priceCents: 0,
-  unit: "per stuk",
-  imageUrl: null,
-  trackStock: false,
-  stock: 0,
-  leadTimeDays: 0,
-  isActive: true,
-  isFeatured: false,
-  sortOrder: 0,
-};
 
 export function ProductForm({
   values,

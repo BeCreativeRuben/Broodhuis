@@ -182,10 +182,17 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
           )}
 
           <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
-            <h2 className="font-heading text-lg font-semibold">
+            <h2
+              id="stap-bezorgwijze"
+              className="font-heading text-lg font-semibold"
+            >
               1. Afhalen of leveren?
             </h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div
+              role="radiogroup"
+              aria-labelledby="stap-bezorgwijze"
+              className="mt-4 grid gap-3 sm:grid-cols-2"
+            >
               <FulfillmentOption
                 icon={StoreIcon}
                 title="Afhalen"
@@ -219,7 +226,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
           </section>
 
           <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
-            <h2 className="font-heading text-lg font-semibold">
+            <h2 id="stap-moment" className="font-heading text-lg font-semibold">
               2. Wanneer past het?
             </h2>
 
@@ -246,7 +253,11 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               </Alert>
             ) : (
               <>
-                <ul className="mt-4 space-y-2">
+                <div
+                  role="radiogroup"
+                  aria-labelledby="stap-moment"
+                  className="mt-4 space-y-2"
+                >
                   {visibleSlots.map((option) => (
                     <SlotRow
                       key={option.value}
@@ -255,7 +266,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                       onSelect={() => setSlot(option.value)}
                     />
                   ))}
-                </ul>
+                </div>
 
                 {slotOptions.length > VISIBLE_SLOTS && (
                   <Button
@@ -586,39 +597,37 @@ function SlotRow({
   onSelect: () => void;
 }) {
   return (
-    <li>
-      <label
+    <label
+      className={cn(
+        "flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
+        checked
+          ? "border-primary bg-accent/25"
+          : "border-border hover:bg-secondary/50",
+      )}
+    >
+      <input
+        type="radio"
+        name="slotChoice"
+        value={option.value}
+        checked={checked}
+        onChange={onSelect}
+        className="sr-only"
+      />
+      <span
         className={cn(
-          "flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
-          checked
-            ? "border-primary bg-accent/25"
-            : "border-border hover:bg-secondary/50",
+          "flex size-5 shrink-0 items-center justify-center rounded-full border-2",
+          checked ? "border-primary bg-primary" : "border-input",
         )}
       >
-        <input
-          type="radio"
-          name="slotChoice"
-          value={option.value}
-          checked={checked}
-          onChange={onSelect}
-          className="sr-only"
-        />
-        <span
-          className={cn(
-            "flex size-5 shrink-0 items-center justify-center rounded-full border-2",
-            checked ? "border-primary bg-primary" : "border-input",
-          )}
-        >
-          {checked && <CheckIcon className="size-3 text-primary-foreground" />}
+        {checked && <CheckIcon className="size-3 text-primary-foreground" />}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-medium">
+          {capitalizeFirst(option.dateLabel)}
         </span>
-        <span className="min-w-0 flex-1">
-          <span className="block font-medium">
-            {capitalizeFirst(option.dateLabel)}
-          </span>
-          <span className="text-sm text-muted-foreground">{option.timeLabel}</span>
-        </span>
-      </label>
-    </li>
+        <span className="text-sm text-muted-foreground">{option.timeLabel}</span>
+      </span>
+    </label>
   );
 }
 

@@ -38,9 +38,7 @@ function migrate() {
 }
 
 async function countProducts(): Promise<number> {
-  const { PrismaBetterSqlite3 } = await import(
-    "@prisma/adapter-better-sqlite3"
-  );
+  const { PrismaBetterSqlite3 } = await import("@prisma/adapter-better-sqlite3");
   const { PrismaClient } = await import("../src/generated/prisma/client");
   const prisma = new PrismaClient({
     adapter: new PrismaBetterSqlite3({ url: databaseUrl }),

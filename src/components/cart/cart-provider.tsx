@@ -51,7 +51,10 @@ function readStoredCart(): CartItem[] {
     if (!Array.isArray(parsed)) return [];
     return parsed.filter(isCartItem).map((item) => ({
       ...item,
-      quantity: Math.min(Math.max(Math.trunc(item.quantity), 1), MAX_QUANTITY_PER_LINE),
+      quantity: Math.min(
+        Math.max(Math.trunc(item.quantity), 1),
+        MAX_QUANTITY_PER_LINE,
+      ),
     }));
   } catch {
     return [];
@@ -87,35 +90,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const addItem = useCallback(
-    (item: Omit<CartItem, "quantity">, quantity = 1) => {
-      setItems((current) => {
-        const existing = current.find((line) => line.productId === item.productId);
-        if (!existing) {
-          return [
-            ...current,
-            {
+  const addItem = useCallback((item: Omit<CartItem, "quantity">, quantity = 1) => {
+    setItems((current) => {
+      const existing = current.find((line) => line.productId === item.productId);
+      if (!existing) {
+        return [
+          ...current,
+          {
+            ...item,
+            quantity: Math.min(Math.max(quantity, 1), MAX_QUANTITY_PER_LINE),
+          },
+        ];
+      }
+      return current.map((line) =>
+        line.productId === item.productId
+          ? {
+              ...line,
               ...item,
-              quantity: Math.min(Math.max(quantity, 1), MAX_QUANTITY_PER_LINE),
-            },
-          ];
-        }
-        return current.map((line) =>
-          line.productId === item.productId
-            ? {
-                ...line,
-                ...item,
-                quantity: Math.min(
-                  line.quantity + quantity,
-                  MAX_QUANTITY_PER_LINE,
-                ),
-              }
-            : line,
-        );
-      });
-    },
-    [],
-  );
+              quantity: Math.min(line.quantity + quantity, MAX_QUANTITY_PER_LINE),
+            }
+          : line,
+      );
+    });
+  }, []);
 
   const setQuantity = useCallback((productId: string, quantity: number) => {
     setItems((current) => {

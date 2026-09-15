@@ -19,6 +19,7 @@ import { useCart } from "@/components/cart/cart-provider";
 import { ProductImage } from "@/components/product-image";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -126,19 +127,18 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
           Leg eerst iets in je winkelwagen. Daarna kies je hier je moment en betaal
           je online.
         </p>
-        <Button
-          render={<Link href="/assortiment" />}
+        <ButtonLink
+          href="/assortiment"
           className="mt-5 h-12 rounded-full px-6 text-base"
         >
           Naar het assortiment
-        </Button>
+        </ButtonLink>
       </div>
     );
   }
 
   const { cart } = data;
-  const deliveryFeeCents =
-    fulfillment === "delivery" ? data.deliveryFeeCents : 0;
+  const deliveryFeeCents = fulfillment === "delivery" ? data.deliveryFeeCents : 0;
   const totalCents = cart.subtotalCents + deliveryFeeCents;
   const visibleSlots = showAllSlots
     ? slotOptions
@@ -174,8 +174,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               <AlertTriangleIcon />
               <AlertTitle>Testmodus</AlertTitle>
               <AlertDescription>
-                Er is nog geen Mollie-sleutel ingesteld. Je doorloopt de echte
-                flow, maar er wordt geen geld afgehouden.
+                Er is nog geen Mollie-sleutel ingesteld. Je doorloopt de echte flow,
+                maar er wordt geen geld afgehouden.
               </AlertDescription>
             </Alert>
           )}
@@ -267,7 +267,10 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                       ? "Minder momenten tonen"
                       : `Nog ${slotOptions.length - VISIBLE_SLOTS} momenten tonen`}
                     <ChevronDownIcon
-                      className={cn("size-4 transition-transform", showAllSlots && "rotate-180")}
+                      className={cn(
+                        "size-4 transition-transform",
+                        showAllSlots && "rotate-180",
+                      )}
                     />
                   </Button>
                 )}
@@ -490,8 +493,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs text-muted-foreground">
               {fulfillment === "delivery" ? "Leveren" : "Afhalen"} ·{" "}
-              {slotOptions.find((option) => option.value === slot)?.dateLabelShort ??
-                "kies een moment"}
+              {slotOptions.find((option) => option.value === slot)
+                ?.dateLabelShort ?? "kies een moment"}
             </p>
             <p className="font-heading text-lg leading-tight font-semibold tabular-nums">
               {formatEuro(totalCents)}
@@ -552,7 +555,9 @@ function FulfillmentOption({
       <span
         className={cn(
           "flex size-10 shrink-0 items-center justify-center rounded-full",
-          checked ? "bg-primary text-primary-foreground" : "bg-secondary text-crust",
+          checked
+            ? "bg-primary text-primary-foreground"
+            : "bg-secondary text-crust",
         )}
       >
         <Icon className="size-5" />
@@ -642,7 +647,9 @@ function Field({
         type={type}
         required={required}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${name}-error` : hint ? `${name}-hint` : undefined}
+        aria-describedby={
+          error ? `${name}-error` : hint ? `${name}-hint` : undefined
+        }
         className="h-12"
         {...inputProps}
       />

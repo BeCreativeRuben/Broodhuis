@@ -47,7 +47,11 @@ export function LoginForm({ next }: { next: string | null }) {
         />
       </div>
 
-      <Button type="submit" disabled={isPending} className="h-11 w-full rounded-full">
+      <Button
+        type="submit"
+        disabled={isPending}
+        className="h-11 w-full rounded-full"
+      >
         {isPending ? (
           <>
             <Loader2Icon className="size-4 animate-spin" /> Bezig…

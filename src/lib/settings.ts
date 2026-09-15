@@ -27,9 +27,7 @@ export async function getClosedDates(): Promise<IsoDate[]> {
   }
 }
 
-export async function setClosedDates(
-  dates: readonly string[],
-): Promise<IsoDate[]> {
+export async function setClosedDates(dates: readonly string[]): Promise<IsoDate[]> {
   const cleaned = [
     ...new Set(dates.map((date) => date.trim()).filter(isIsoDate)),
   ].sort();

@@ -40,8 +40,12 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --shadow-warm: 0 1px 2px oklch(0.35 0.04 60 / 0.05), 0 8px 24px -12px oklch(0.35 0.04 60 / 0.18);
-  --shadow-warm-lg: 0 2px 4px oklch(0.35 0.04 60 / 0.06), 0 24px 48px -20px oklch(0.35 0.04 60 / 0.24);
+  --shadow-warm:
+    0 1px 2px oklch(0.35 0.04 60 / 0.05),
+    0 8px 24px -12px oklch(0.35 0.04 60 / 0.18);
+  --shadow-warm-lg:
+    0 2px 4px oklch(0.35 0.04 60 / 0.06),
+    0 24px 48px -20px oklch(0.35 0.04 60 / 0.24);
 }
 
 /*
@@ -142,8 +146,16 @@
     @apply bg-background text-foreground antialiased;
     /* Heel lichte warme gloed, geeft het papieren gevoel van een bakkerijzak */
     background-image:
-      radial-gradient(65rem 40rem at 12% -10%, oklch(0.93 0.045 82 / 0.55), transparent 60%),
-      radial-gradient(50rem 35rem at 95% 0%, oklch(0.95 0.03 60 / 0.45), transparent 55%);
+      radial-gradient(
+        65rem 40rem at 12% -10%,
+        oklch(0.93 0.045 82 / 0.55),
+        transparent 60%
+      ),
+      radial-gradient(
+        50rem 35rem at 95% 0%,
+        oklch(0.95 0.03 60 / 0.45),
+        transparent 55%
+      );
     background-repeat: no-repeat;
   }
 

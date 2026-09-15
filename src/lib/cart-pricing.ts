@@ -12,9 +12,7 @@ import { prisma } from "@/lib/db";
 
 function sanitiseQuantity(quantity: unknown): number {
   const parsed =
-    typeof quantity === "number"
-      ? quantity
-      : Number.parseInt(String(quantity), 10);
+    typeof quantity === "number" ? quantity : Number.parseInt(String(quantity), 10);
   if (!Number.isFinite(parsed)) return 0;
   return Math.min(Math.max(Math.trunc(parsed), 0), MAX_QUANTITY_PER_LINE);
 }

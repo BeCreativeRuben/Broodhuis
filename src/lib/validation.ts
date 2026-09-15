@@ -118,7 +118,10 @@ const priceField = z
       return z.NEVER;
     }
     if (cents <= 0) {
-      context.addIssue({ code: "custom", message: "De prijs moet groter zijn dan 0." });
+      context.addIssue({
+        code: "custom",
+        message: "De prijs moet groter zijn dan 0.",
+      });
       return z.NEVER;
     }
     if (cents > 100_000) {
@@ -138,7 +141,10 @@ const optionalNumber = (label: string, max: number) =>
       if (value === "") return 0;
       const parsed = Number.parseInt(value, 10);
       if (!Number.isFinite(parsed) || parsed < 0) {
-        context.addIssue({ code: "custom", message: `${label} moet 0 of meer zijn.` });
+        context.addIssue({
+          code: "custom",
+          message: `${label} moet 0 of meer zijn.`,
+        });
         return z.NEVER;
       }
       if (parsed > max) {

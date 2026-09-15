@@ -15,8 +15,10 @@ import { ProductImage } from "@/components/product-image";
 import { QuantityStepper } from "@/components/quantity-stepper";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatEuro } from "@/lib/money";
+import { cn } from "@/lib/utils";
 import type { CartNotice } from "@/lib/cart";
 import { revalidateCart } from "@/server/actions/cart";
 
@@ -90,12 +92,12 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           Kies je brood, koffiekoeken of gebak in het assortiment. Je kiest daarna
           zelf of je afhaalt of laat leveren.
         </p>
-        <Button
-          render={<Link href="/assortiment" />}
+        <ButtonLink
+          href="/assortiment"
           className="mt-5 h-12 rounded-full px-6 text-base"
         >
           Naar het assortiment
-        </Button>
+        </ButtonLink>
       </div>
     );
   }
@@ -106,7 +108,11 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
         {notices.length > 0 && (
           <div className="space-y-2">
             {notices.map((notice) => (
-              <Alert key={notice.message} variant="default" className="bg-accent/25">
+              <Alert
+                key={notice.message}
+                variant="default"
+                className="bg-accent/25"
+              >
                 <InfoIcon />
                 <AlertDescription>{notice.message}</AlertDescription>
               </Alert>
@@ -164,13 +170,9 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           ))}
         </ul>
 
-        <Button
-          render={<Link href="/assortiment" />}
-          variant="ghost"
-          className="rounded-full"
-        >
+        <ButtonLink href="/assortiment" variant="ghost" className="rounded-full">
           Verder winkelen
-        </Button>
+        </ButtonLink>
       </div>
 
       <aside className="lg:sticky lg:top-32">
@@ -198,13 +200,16 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
             de beschikbare momenten.
           </p>
 
-          <Button
-            render={<Link href="/afrekenen" />}
-            className="h-12 w-full rounded-full text-base"
-            disabled={isChecking}
+          <ButtonLink
+            href="/afrekenen"
+            aria-disabled={isChecking || undefined}
+            className={cn(
+              "h-12 w-full rounded-full text-base",
+              isChecking && "pointer-events-none opacity-70",
+            )}
           >
             Verder naar afrekenen <ArrowRightIcon className="size-4" />
-          </Button>
+          </ButtonLink>
         </div>
       </aside>
     </div>

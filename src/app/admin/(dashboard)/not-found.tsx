@@ -1,6 +1,4 @@
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 
 export default function AdminNotFound() {
   return (
@@ -9,12 +7,9 @@ export default function AdminNotFound() {
       <p className="mt-2 max-w-md text-sm text-muted-foreground">
         Dit product, deze categorie of deze bestelling bestaat niet (meer).
       </p>
-      <Button
-        render={<Link href="/admin" />}
-        className="mt-5 h-11 rounded-full px-5"
-      >
+      <ButtonLink href="/admin" className="mt-5 h-11 rounded-full px-5">
         Terug naar het overzicht
-      </Button>
+      </ButtonLink>
     </div>
   );
 }

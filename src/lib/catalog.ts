@@ -168,9 +168,9 @@ export async function getRelatedProducts(
 }
 
 /** Categorieën met hun producten, in de volgorde die de bakker instelde. */
-export async function getCatalogSections(categorySlug?: string): Promise<
-  Array<{ category: CatalogCategory; products: CatalogProduct[] }>
-> {
+export async function getCatalogSections(
+  categorySlug?: string,
+): Promise<Array<{ category: CatalogCategory; products: CatalogProduct[] }>> {
   const [categories, products] = await Promise.all([
     getActiveCategories(),
     getActiveProducts(),

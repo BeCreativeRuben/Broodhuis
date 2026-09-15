@@ -7,6 +7,7 @@ import { MapPinIcon, MenuIcon, PhoneIcon, WheatIcon } from "lucide-react";
 
 import { CartButton } from "@/components/cart/cart-button";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   Sheet,
   SheetContent,
@@ -147,15 +148,15 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <Button
-            render={<a href={`tel:${SHOP.phoneHref}`} />}
+          <ButtonLink
+            href={`tel:${SHOP.phoneHref}`}
             variant="ghost"
             size="icon"
             className="size-11 rounded-full lg:hidden"
             aria-label={`Bel de bakkerij op ${SHOP.phone}`}
           >
             <PhoneIcon className="size-5" />
-          </Button>
+          </ButtonLink>
           <CartButton />
         </div>
       </div>

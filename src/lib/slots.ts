@@ -136,8 +136,7 @@ export function groupSlotsByDate(slots: Slot[]): Array<{
 }
 
 export type SlotValidation =
-  | { ok: true; slot: Slot }
-  | { ok: false; reason: string };
+  { ok: true; slot: Slot } | { ok: false; reason: string };
 
 /**
  * Controleert een door de klant gekozen moment opnieuw op de server:

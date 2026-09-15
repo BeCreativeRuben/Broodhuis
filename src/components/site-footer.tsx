@@ -62,10 +62,15 @@ export function SiteFooter() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="font-heading text-base font-semibold">Afhalen in de winkel</h2>
+          <h2 className="font-heading text-base font-semibold">
+            Afhalen in de winkel
+          </h2>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
             {hours.map((entry) => (
-              <li key={entry.day} className="flex items-center justify-between gap-4">
+              <li
+                key={entry.day}
+                className="flex items-center justify-between gap-4"
+              >
                 <span className="capitalize">{entry.day}</span>
                 <span className="tabular-nums">{entry.hours}</span>
               </li>
@@ -111,8 +116,8 @@ export function SiteFooter() {
             </li>
           </ul>
           <p className="text-xs text-muted-foreground">
-            Levering in {SHOP.city} voor {formatEuro(FULFILLMENT.deliveryFeeCents)} —
-            donderdagvoormiddag, vrijdagnamiddag en zondagvoormiddag.
+            Levering in {SHOP.city} voor {formatEuro(FULFILLMENT.deliveryFeeCents)}{" "}
+            — donderdagvoormiddag, vrijdagnamiddag en zondagvoormiddag.
           </p>
         </div>
       </div>
@@ -123,8 +128,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {SHOP.legalName} — {SHOP.city}
           </p>
           <p>
-            Betalen met Bancontact of bankkaart · Online besteld is online
-            betaald.
+            Betalen met Bancontact of bankkaart · Online besteld is online betaald.
           </p>
         </div>
       </div>

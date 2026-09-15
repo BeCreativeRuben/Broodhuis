@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRightIcon } from "lucide-react";
 
 import { useCart } from "@/components/cart/cart-provider";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { formatEuro } from "@/lib/money";
 
 /**
@@ -36,12 +35,12 @@ export function MobileCartBar() {
               {formatEuro(subtotalCents)}
             </p>
           </div>
-          <Button
-            render={<Link href="/afrekenen" />}
+          <ButtonLink
+            href="/afrekenen"
             className="h-12 shrink-0 rounded-full px-5 text-base"
           >
             Afrekenen <ArrowRightIcon className="size-4" />
-          </Button>
+          </ButtonLink>
         </div>
       </div>
     </>

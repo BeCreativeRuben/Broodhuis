@@ -47,6 +47,7 @@ in **testmodus**: de volledige flow werkt, maar er wordt geen geld verplaatst.
 | `npm run db:reset` | Database leegmaken, migreren en opnieuw seeden |
 | `npm run db:studio` | Prisma Studio, om rechtstreeks in de data te kijken |
 | `npm test` | Tests op de tijdsloten, deadlines, bestelperiodes en bedragen |
+| `npm run smoke` | Doorloopt de hele keten zonder browser: winkelwagen → moment → bestelling → betaling → betaald |
 | `npm run lint` / `npm run typecheck` | ESLint en TypeScript |
 
 ---

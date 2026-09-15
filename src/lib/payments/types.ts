@@ -5,12 +5,7 @@
  */
 
 export type PaymentStatus =
-  | "open"
-  | "pending"
-  | "paid"
-  | "failed"
-  | "canceled"
-  | "expired";
+  "open" | "pending" | "paid" | "failed" | "canceled" | "expired";
 
 export const FINAL_PAYMENT_STATUSES: PaymentStatus[] = [
   "paid",

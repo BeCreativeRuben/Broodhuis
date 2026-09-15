@@ -11,7 +11,7 @@ import {
 
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getActiveCategories, getFeaturedProducts } from "@/lib/catalog";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
@@ -64,26 +64,26 @@ export default async function HomePage() {
             </h1>
             <p className="max-w-prose text-base text-muted-foreground sm:text-lg">
               Bestel je brood, koffiekoeken en gebak online bij {SHOP.name} in{" "}
-              {SHOP.city}. Betaal meteen met Bancontact en haal je bestelling af
-              in de winkel of laat ze leveren.
+              {SHOP.city}. Betaal meteen met Bancontact en haal je bestelling af in
+              de winkel of laat ze leveren.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                render={<Link href="/assortiment" />}
+              <ButtonLink
+                href="/assortiment"
                 size="lg"
                 className="h-12 rounded-full px-6 text-base"
               >
                 Naar het assortiment <ArrowRightIcon className="size-4" />
-              </Button>
-              <Button
-                render={<Link href="/info" />}
+              </ButtonLink>
+              <ButtonLink
+                href="/info"
                 variant="outline"
                 size="lg"
                 className="h-12 rounded-full px-6 text-base"
               >
                 Hoe werkt het?
-              </Button>
+              </ButtonLink>
             </div>
 
             <dl className="grid gap-3 pt-2 sm:grid-cols-3">
@@ -123,9 +123,7 @@ export default async function HomePage() {
               </span>
               <div className="text-sm leading-tight">
                 <p className="font-medium">Elke bakdag versgebakken</p>
-                <p className="text-muted-foreground">
-                  Nooit van de dag voordien
-                </p>
+                <p className="text-muted-foreground">Nooit van de dag voordien</p>
               </div>
             </div>
           </div>
@@ -164,13 +162,9 @@ export default async function HomePage() {
               Waar heb je vandaag zin in?
             </h2>
           </div>
-          <Button
-            render={<Link href="/assortiment" />}
-            variant="ghost"
-            className="rounded-full"
-          >
+          <ButtonLink href="/assortiment" variant="ghost" className="rounded-full">
             Alles bekijken <ArrowRightIcon className="size-4" />
-          </Button>
+          </ButtonLink>
         </div>
 
         <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-3 sm:overflow-visible lg:grid-cols-5">
@@ -228,8 +222,8 @@ export default async function HomePage() {
             </h2>
             <p className="text-sm text-muted-foreground">
               Zo blijft alles vers en rijden we efficiënt rond in {SHOP.city}:
-              donderdagvoormiddag, vrijdagnamiddag en zondagvoormiddag. Een
-              levering kost {formatEuro(FULFILLMENT.deliveryFeeCents)}.
+              donderdagvoormiddag, vrijdagnamiddag en zondagvoormiddag. Een levering
+              kost {formatEuro(FULFILLMENT.deliveryFeeCents)}.
             </p>
             <ul className="space-y-1.5 text-sm">
               {nextDeliverySlots.map((slot) => (
@@ -256,20 +250,17 @@ export default async function HomePage() {
               Afhalen in de winkel
             </h2>
             <p className="text-sm text-muted-foreground">
-              {SHOP.street}, {SHOP.postalCode} {SHOP.city}. Afhalen kan van
-              woensdag tot en met zondag in de voormiddag. Je krijgt je moment te
-              zien bij het afrekenen.
+              {SHOP.street}, {SHOP.postalCode} {SHOP.city}. Afhalen kan van woensdag
+              tot en met zondag in de voormiddag. Je krijgt je moment te zien bij
+              het afrekenen.
             </p>
             <p className="text-sm text-muted-foreground">
               Bestel tot {FULFILLMENT.orderCutoff.hour}u de dag vóór je afhaalt of
               laat leveren.
             </p>
-            <Button
-              render={<Link href="/assortiment" />}
-              className="h-11 rounded-full"
-            >
+            <ButtonLink href="/assortiment" className="h-11 rounded-full">
               Beginnen met bestellen
-            </Button>
+            </ButtonLink>
           </div>
         </div>
       </section>

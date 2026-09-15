@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   AlertTriangleIcon,
@@ -13,6 +12,7 @@ import {
 import { ClearCart } from "@/components/cart/clear-cart";
 import { OrderDetails } from "@/components/order-details";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getOrderByToken, syncOrderPayment } from "@/lib/orders";
 import { paymentMethodLabel } from "@/lib/payments/types";
 import { SHOP } from "@/lib/shop-config";
@@ -125,42 +125,42 @@ export default async function OrderPage({
               <CreditCardIcon className="size-4" /> Opnieuw betalen
             </Button>
           </form>
-          <Button
-            render={<Link href="/assortiment" />}
+          <ButtonLink
+            href="/assortiment"
             variant="outline"
             size="lg"
             className="h-12 rounded-full px-6 text-base"
           >
             Verder winkelen
-          </Button>
-          <Button
-            render={<a href={`tel:${SHOP.phoneHref}`} />}
+          </ButtonLink>
+          <ButtonLink
+            href={`tel:${SHOP.phoneHref}`}
             variant="ghost"
             size="lg"
             className="h-12 rounded-full px-6 text-base"
           >
             <PhoneIcon className="size-4" /> {SHOP.phone}
-          </Button>
+          </ButtonLink>
         </div>
       )}
 
       {isPaid && (
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Button
-            render={<Link href="/assortiment" />}
+          <ButtonLink
+            href="/assortiment"
             size="lg"
             className="h-12 rounded-full px-6 text-base"
           >
             Nog iets bestellen
-          </Button>
-          <Button
-            render={<a href={`tel:${SHOP.phoneHref}`} />}
+          </ButtonLink>
+          <ButtonLink
+            href={`tel:${SHOP.phoneHref}`}
             variant="outline"
             size="lg"
             className="h-12 rounded-full px-6 text-base"
           >
             <PhoneIcon className="size-4" /> Iets aanpassen? Bel {SHOP.phone}
-          </Button>
+          </ButtonLink>
         </div>
       )}
 

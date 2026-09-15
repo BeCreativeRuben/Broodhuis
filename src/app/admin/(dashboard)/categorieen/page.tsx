@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   AlertTriangleIcon,
   CheckCircle2Icon,
@@ -10,6 +9,7 @@ import {
 import { CategoryForm } from "@/components/admin/category-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { listCategoriesForAdmin } from "@/lib/admin/catalog";
 import { deleteCategory } from "@/server/actions/admin-catalog";
 
@@ -82,10 +82,7 @@ export default async function AdminCategoriesPage({
 
       <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
         {categories.map((category) => (
-          <li
-            key={category.id}
-            className="flex flex-wrap items-center gap-3 p-4"
-          >
+          <li key={category.id} className="flex flex-wrap items-center gap-3 p-4">
             <span aria-hidden className="text-2xl">
               {category.icon ?? "•"}
             </span>
@@ -108,14 +105,14 @@ export default async function AdminCategoriesPage({
               </span>
             </span>
 
-            <Button
-              render={<Link href={`/admin/categorieen?id=${category.id}`} />}
+            <ButtonLink
+              href={`/admin/categorieen?id=${category.id}`}
               variant="outline"
               size="sm"
               className="rounded-full"
             >
               <PencilIcon className="size-3.5" /> Aanpassen
-            </Button>
+            </ButtonLink>
 
             {category._count.products === 0 && (
               <form action={deleteCategory}>

@@ -20,7 +20,11 @@ type AddToCartProps = {
   className?: string;
 };
 
-export function AddToCart({ product, variant = "compact", className }: AddToCartProps) {
+export function AddToCart({
+  product,
+  variant = "compact",
+  className,
+}: AddToCartProps) {
   const { addItem, openCart, quantityOf } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
@@ -89,7 +93,9 @@ export function AddToCart({ product, variant = "compact", className }: AddToCart
   }
 
   return (
-    <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center", className)}>
+    <div
+      className={cn("flex flex-col gap-3 sm:flex-row sm:items-center", className)}
+    >
       <QuantityStepper
         value={quantity}
         onChange={(next) => setQuantity(Math.max(1, next))}

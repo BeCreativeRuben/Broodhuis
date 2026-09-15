@@ -7,6 +7,7 @@ import { useCart } from "@/components/cart/cart-provider";
 import { ProductImage } from "@/components/product-image";
 import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   Sheet,
   SheetContent,
@@ -18,8 +19,15 @@ import { formatEuro } from "@/lib/money";
 import { FULFILLMENT } from "@/lib/shop-config";
 
 export function CartSheet() {
-  const { isOpen, closeCart, items, itemCount, subtotalCents, setQuantity, removeItem } =
-    useCart();
+  const {
+    isOpen,
+    closeCart,
+    items,
+    itemCount,
+    subtotalCents,
+    setQuantity,
+    removeItem,
+  } = useCart();
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => (open ? undefined : closeCart())}>
@@ -49,13 +57,13 @@ export function CartSheet() {
                 Vers brood, koffiekoeken en gebak staan klaar in het assortiment.
               </p>
             </div>
-            <Button
-              render={<Link href="/assortiment" />}
+            <ButtonLink
+              href="/assortiment"
               onClick={closeCart}
               className="h-11 rounded-full px-6"
             >
               Naar het assortiment
-            </Button>
+            </ButtonLink>
           </div>
         ) : (
           <>
@@ -127,21 +135,21 @@ export function CartSheet() {
                 Afhalen is gratis. Leveren kost{" "}
                 {formatEuro(FULFILLMENT.deliveryFeeCents)} extra.
               </p>
-              <Button
-                render={<Link href="/afrekenen" />}
+              <ButtonLink
+                href="/afrekenen"
                 onClick={closeCart}
                 className="h-12 w-full rounded-full text-base"
               >
                 Afrekenen
-              </Button>
-              <Button
-                render={<Link href="/winkelwagen" />}
+              </ButtonLink>
+              <ButtonLink
+                href="/winkelwagen"
                 onClick={closeCart}
                 variant="ghost"
                 className="h-10 w-full rounded-full"
               >
                 Winkelwagen bekijken
-              </Button>
+              </ButtonLink>
             </div>
           </>
         )}

@@ -9,7 +9,7 @@ import {
   TruckIcon,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { formatIsoDateShort } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { getAdminStats } from "@/lib/orders";
@@ -96,14 +96,14 @@ export default async function AdminDashboardPage() {
           <h2 className="font-heading text-lg font-semibold">
             Eerstvolgende bestellingen
           </h2>
-          <Button
-            render={<Link href="/admin/bestellingen" />}
+          <ButtonLink
+            href="/admin/bestellingen"
             variant="ghost"
             size="sm"
             className="rounded-full"
           >
             Alles bekijken <ArrowRightIcon className="size-4" />
-          </Button>
+          </ButtonLink>
         </div>
 
         {stats.upcoming.length === 0 ? (
@@ -161,17 +161,15 @@ export default async function AdminDashboardPage() {
               >
                 <span className="font-medium">{product.name}</span>
                 <span className="flex items-center gap-3">
-                  <span className="text-sm tabular-nums">
-                    nog {product.stock}
-                  </span>
-                  <Button
-                    render={<Link href={`/admin/producten/${product.id}`} />}
+                  <span className="text-sm tabular-nums">nog {product.stock}</span>
+                  <ButtonLink
+                    href={`/admin/producten/${product.id}`}
                     variant="outline"
                     size="sm"
                     className="rounded-full"
                   >
                     Aanpassen
-                  </Button>
+                  </ButtonLink>
                 </span>
               </li>
             ))}
@@ -197,9 +195,7 @@ function StatCard({
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Icon className="size-4" />
-        <span className="text-xs font-medium tracking-wide uppercase">
-          {label}
-        </span>
+        <span className="text-xs font-medium tracking-wide uppercase">{label}</span>
       </div>
       <p className="mt-2 font-heading text-3xl font-semibold tabular-nums">
         {value}

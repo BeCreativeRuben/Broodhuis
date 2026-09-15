@@ -36,8 +36,8 @@ export function ClosedDatesForm({ dates }: { dates: string[] }) {
           className="font-mono text-sm"
         />
         <p className="text-xs text-muted-foreground">
-          Eén datum per lijn, als 25/12/2026 of 2026-12-25. Op die dagen kan er
-          niet afgehaald of geleverd worden.
+          Eén datum per lijn, als 25/12/2026 of 2026-12-25. Op die dagen kan er niet
+          afgehaald of geleverd worden.
         </p>
         {state.errors.closedDates && (
           <p className="text-sm text-destructive">{state.errors.closedDates}</p>

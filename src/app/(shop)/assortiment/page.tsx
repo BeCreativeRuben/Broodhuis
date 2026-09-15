@@ -73,8 +73,8 @@ export default async function AssortimentPage({
             Hier staat nog niets
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            In deze categorie zijn er momenteel geen producten. Bekijk het
-            volledige assortiment of bel ons voor een bestelling op maat.
+            In deze categorie zijn er momenteel geen producten. Bekijk het volledige
+            assortiment of bel ons voor een bestelling op maat.
           </p>
           <Link
             href="/assortiment"
@@ -86,7 +86,10 @@ export default async function AssortimentPage({
       ) : (
         <div className="mt-8 space-y-12">
           {sections.map((section, sectionIndex) => (
-            <section key={section.category.id} aria-labelledby={section.category.slug}>
+            <section
+              key={section.category.id}
+              aria-labelledby={section.category.slug}
+            >
               {!isFiltered && (
                 <div className="mb-4 flex items-end justify-between gap-3">
                   <h2

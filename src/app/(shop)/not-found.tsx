@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { CroissantIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { SHOP } from "@/lib/shop-config";
 
 export default function ShopNotFound() {
@@ -14,23 +13,23 @@ export default function ShopNotFound() {
         Deze pagina bestaat niet
       </h1>
       <p className="mt-2 max-w-md text-muted-foreground">
-        Misschien is het product uit het assortiment gehaald, of klopt de link
-        niet meer. Bekijk gerust wat er vandaag wél in de rekken ligt.
+        Misschien is het product uit het assortiment gehaald, of klopt de link niet
+        meer. Bekijk gerust wat er vandaag wél in de rekken ligt.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <Button
-          render={<Link href="/assortiment" />}
+        <ButtonLink
+          href="/assortiment"
           className="h-12 rounded-full px-6 text-base"
         >
           Naar het assortiment
-        </Button>
-        <Button
-          render={<a href={`tel:${SHOP.phoneHref}`} />}
+        </ButtonLink>
+        <ButtonLink
+          href={`tel:${SHOP.phoneHref}`}
           variant="outline"
           className="h-12 rounded-full px-6 text-base"
         >
           Bel {SHOP.phone}
-        </Button>
+        </ButtonLink>
       </div>
     </div>
   );

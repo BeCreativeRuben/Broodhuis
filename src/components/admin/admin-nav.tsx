@@ -86,7 +86,12 @@ export function AdminNav({ user }: { user: string }) {
             <p className="text-xs text-muted-foreground">Beheer · {user}</p>
           </div>
           <form action={logout}>
-            <Button type="submit" variant="ghost" size="sm" className="rounded-full">
+            <Button
+              type="submit"
+              variant="ghost"
+              size="sm"
+              className="rounded-full"
+            >
               <LogOutIcon className="size-4" /> Afmelden
             </Button>
           </form>

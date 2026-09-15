@@ -228,7 +228,9 @@ export default async function AdminOrderPage({
                 <input type="hidden" name="status" value={action.status} />
                 <Button
                   type="submit"
-                  variant={action.status === "cancelled" ? "destructive" : "outline"}
+                  variant={
+                    action.status === "cancelled" ? "destructive" : "outline"
+                  }
                   className="rounded-full"
                   title={action.hint}
                 >

@@ -89,7 +89,9 @@ export default async function ProductPage({
               <span className="text-sm text-muted-foreground">{product.unit}</span>
             </div>
             {product.description && (
-              <p className="text-base text-muted-foreground">{product.description}</p>
+              <p className="text-base text-muted-foreground">
+                {product.description}
+              </p>
             )}
           </div>
 
@@ -166,9 +168,9 @@ export default async function ProductPage({
             <h2 className="font-heading text-lg font-semibold">Allergenen</h2>
             <AllergenList codes={product.allergens} />
             <p className="text-xs text-muted-foreground">
-              Al onze producten worden gebakken in een bakkerij waar gluten,
-              melk, eieren, noten en sesam gebruikt worden. Sporen zijn dus nooit
-              helemaal uit te sluiten.
+              Al onze producten worden gebakken in een bakkerij waar gluten, melk,
+              eieren, noten en sesam gebruikt worden. Sporen zijn dus nooit helemaal
+              uit te sluiten.
             </p>
           </section>
         </div>

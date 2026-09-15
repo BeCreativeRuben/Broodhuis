@@ -1,4 +1,8 @@
-import { isMollieConfigured, mollieGateway, mollieIsTestKey } from "@/lib/payments/mollie";
+import {
+  isMollieConfigured,
+  mollieGateway,
+  mollieIsTestKey,
+} from "@/lib/payments/mollie";
 import { sandboxGateway } from "@/lib/payments/sandbox";
 import type { PaymentGateway } from "@/lib/payments/types";
 

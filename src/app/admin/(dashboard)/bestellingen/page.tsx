@@ -34,9 +34,7 @@ export default async function AdminOrdersPage({
 
   const orders = await listOrders({
     status:
-      activeStatus === ""
-        ? undefined
-        : (activeStatus as OrderStatus | "open"),
+      activeStatus === "" ? undefined : (activeStatus as OrderStatus | "open"),
     search: zoek,
   });
 

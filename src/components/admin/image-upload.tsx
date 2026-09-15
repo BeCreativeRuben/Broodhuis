@@ -53,7 +53,11 @@ export function ImageUpload({
 
       <div className="flex items-start gap-4">
         <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary">
-          <ProductImage src={value} alt={productName || "Productfoto"} sizes="96px" />
+          <ProductImage
+            src={value}
+            alt={productName || "Productfoto"}
+            sizes="96px"
+          />
         </div>
 
         <div className="min-w-0 flex-1 space-y-2">
@@ -67,8 +71,7 @@ export function ImageUpload({
             >
               {isUploading ? (
                 <>
-                  <Loader2Icon className="size-4 animate-spin" /> Bezig met
-                  opladen…
+                  <Loader2Icon className="size-4 animate-spin" /> Bezig met opladen…
                 </>
               ) : (
                 <>

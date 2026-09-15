@@ -1,11 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
 import { AlertTriangleIcon, Loader2Icon, SaveIcon } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -108,7 +108,11 @@ export function CategoryForm({ values }: { values: CategoryFormValues }) {
       </label>
 
       <div className="flex flex-wrap gap-2">
-        <Button type="submit" disabled={isPending} className="h-11 rounded-full px-5">
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="h-11 rounded-full px-5"
+        >
           {isPending ? (
             <>
               <Loader2Icon className="size-4 animate-spin" /> Bewaren…
@@ -120,13 +124,13 @@ export function CategoryForm({ values }: { values: CategoryFormValues }) {
           )}
         </Button>
         {values.id && (
-          <Button
-            render={<Link href="/admin/categorieen" />}
+          <ButtonLink
+            href="/admin/categorieen"
             variant="ghost"
             className="h-11 rounded-full px-5"
           >
             Nieuwe categorie in plaats daarvan
-          </Button>
+          </ButtonLink>
         )}
       </div>
     </form>

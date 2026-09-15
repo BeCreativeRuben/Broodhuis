@@ -44,10 +44,7 @@ test("zomer- en wintertijd worden correct omgezet", () => {
 
 test("de huidige dag wordt in de bakkerij-tijdzone bepaald", () => {
   // 23:30 UTC is in Brussel al de volgende dag
-  assert.equal(
-    currentIsoDate(new Date("2026-09-15T23:30:00.000Z")),
-    "2026-09-16",
-  );
+  assert.equal(currentIsoDate(new Date("2026-09-15T23:30:00.000Z")), "2026-09-16");
 });
 
 test("leveren kan enkel donderdag, vrijdag en zondag", () => {

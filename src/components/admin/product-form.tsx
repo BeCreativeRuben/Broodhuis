@@ -1,12 +1,12 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import Link from "next/link";
 import { AlertTriangleIcon, Loader2Icon, SaveIcon } from "lucide-react";
 
 import { ImageUpload } from "@/components/admin/image-upload";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -186,7 +186,11 @@ export function ProductForm({
           </AdminField>
         </div>
 
-        <ImageUpload name="imageUrl" defaultValue={values.imageUrl} productName={name} />
+        <ImageUpload
+          name="imageUrl"
+          defaultValue={values.imageUrl}
+          productName={name}
+        />
       </section>
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
@@ -239,9 +243,7 @@ export function ProductForm({
       </section>
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
-        <h2 className="font-heading text-lg font-semibold">
-          Beschikbaarheid
-        </h2>
+        <h2 className="font-heading text-lg font-semibold">Beschikbaarheid</h2>
 
         <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-secondary/50 p-4 text-sm">
           <input
@@ -255,13 +257,15 @@ export function ProductForm({
             <span className="block font-medium">Voorraad bijhouden</span>
             <span className="text-muted-foreground">
               Vink dit aan voor producten met een beperkt aantal per bakdag (bv.
-              rijsttaarten). Laat het uit voor dagelijks brood: dat blijft altijd
-              te bestellen.
+              rijsttaarten). Laat het uit voor dagelijks brood: dat blijft altijd te
+              bestellen.
             </span>
           </span>
         </label>
 
-        <div className={cn("grid gap-4 sm:grid-cols-2", !trackStock && "opacity-60")}>
+        <div
+          className={cn("grid gap-4 sm:grid-cols-2", !trackStock && "opacity-60")}
+        >
           <AdminField
             label="Voorraad"
             name="stock"
@@ -365,13 +369,13 @@ export function ProductForm({
             </>
           )}
         </Button>
-        <Button
-          render={<Link href="/admin/producten" />}
+        <ButtonLink
+          href="/admin/producten"
           variant="ghost"
           className="h-12 rounded-full px-6 text-base"
         >
           Annuleren
-        </Button>
+        </ButtonLink>
       </div>
     </form>
   );

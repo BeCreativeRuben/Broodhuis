@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   CalendarClockIcon,
   CheckCircle2Icon,
@@ -10,6 +9,7 @@ import {
 import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { allergenSummary } from "@/lib/allergens";
 import { listProductsForAdmin } from "@/lib/admin/catalog";
 import { formatEuro } from "@/lib/money";
@@ -39,12 +39,12 @@ export default async function AdminProductsPage({
             foto&rsquo;s aan wanneer je wil.
           </p>
         </div>
-        <Button
-          render={<Link href="/admin/producten/nieuw" />}
+        <ButtonLink
+          href="/admin/producten/nieuw"
           className="h-11 rounded-full px-5"
         >
           <PlusIcon className="size-4" /> Nieuw product
-        </Button>
+        </ButtonLink>
       </header>
 
       {(opgeslagen || verwijderd) && (
@@ -56,20 +56,18 @@ export default async function AdminProductsPage({
 
       {products.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border p-10 text-center">
-          <h2 className="font-heading text-lg font-semibold">
-            Nog geen producten
-          </h2>
+          <h2 className="font-heading text-lg font-semibold">Nog geen producten</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Voeg je eerste product toe, of zet het startassortiment terug met{" "}
             <code className="rounded bg-secondary px-1.5 py-0.5">npm run seed</code>
             .
           </p>
-          <Button
-            render={<Link href="/admin/producten/nieuw" />}
+          <ButtonLink
+            href="/admin/producten/nieuw"
             className="mt-4 h-11 rounded-full px-5"
           >
             <PlusIcon className="size-4" /> Nieuw product
-          </Button>
+          </ButtonLink>
         </div>
       ) : (
         <ul className="space-y-3">
@@ -172,14 +170,14 @@ export default async function AdminProductsPage({
                       </Button>
                     </form>
 
-                    <Button
-                      render={<Link href={`/admin/producten/${product.id}`} />}
+                    <ButtonLink
+                      href={`/admin/producten/${product.id}`}
                       variant="outline"
                       size="sm"
                       className="rounded-full"
                     >
                       <PencilIcon className="size-3.5" /> Aanpassen
-                    </Button>
+                    </ButtonLink>
                   </div>
                 </div>
               </li>

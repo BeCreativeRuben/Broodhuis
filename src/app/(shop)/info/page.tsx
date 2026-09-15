@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   BanknoteIcon,
   CakeSliceIcon,
@@ -13,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { AllergenReference } from "@/components/allergen-list";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { formatTime, WEEKDAY_NAMES_NL } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
@@ -65,7 +64,8 @@ export default function InfoPage() {
                   {WEEKDAY_NAMES_NL[serviceWindow.weekday]}
                 </span>
                 <span className="tabular-nums">
-                  {formatTime(serviceWindow.start)} - {formatTime(serviceWindow.end)}
+                  {formatTime(serviceWindow.start)} -{" "}
+                  {formatTime(serviceWindow.end)}
                 </span>
               </li>
             ))}
@@ -86,19 +86,15 @@ export default function InfoPage() {
             </span>
           </address>
 
-          <Button
-            render={
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
-                target="_blank"
-                rel="noreferrer"
-              />
-            }
+          <ButtonLink
+            href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
+            target="_blank"
+            rel="noreferrer"
             variant="outline"
             className="mt-4 rounded-full"
           >
             Route naar de winkel
-          </Button>
+          </ButtonLink>
         </section>
 
         <section className="rounded-2xl border border-border bg-card p-6">
@@ -124,7 +120,8 @@ export default function InfoPage() {
                   {serviceWindow.label.toLowerCase()}
                 </span>
                 <span className="tabular-nums">
-                  {formatTime(serviceWindow.start)} - {formatTime(serviceWindow.end)}
+                  {formatTime(serviceWindow.start)} -{" "}
+                  {formatTime(serviceWindow.end)}
                 </span>
               </li>
             ))}
@@ -169,7 +166,9 @@ export default function InfoPage() {
             <li className="flex gap-3">
               <CroissantIcon className="mt-0.5 size-4 shrink-0 text-crust" />
               <span>
-                <span className="font-medium">Dagelijks brood en koffiekoeken:</span>{" "}
+                <span className="font-medium">
+                  Dagelijks brood en koffiekoeken:
+                </span>{" "}
                 tot {FULFILLMENT.orderCutoff.hour}u de dag vóór je afhaalt of laat
                 leveren. Zo weet de bakker &apos;s avonds wat er moet gebakken
                 worden.
@@ -179,8 +178,8 @@ export default function InfoPage() {
               <CakeSliceIcon className="mt-0.5 size-4 shrink-0 text-crust" />
               <span>
                 <span className="font-medium">Taarten en feestgebak:</span> bij die
-                producten staat hoeveel dagen we nodig hebben. Een feesttaart op maat
-                bijvoorbeeld minstens 14 dagen vooraf.
+                producten staat hoeveel dagen we nodig hebben. Een feesttaart op
+                maat bijvoorbeeld minstens 14 dagen vooraf.
               </span>
             </li>
             <li className="flex gap-3">
@@ -200,8 +199,8 @@ export default function InfoPage() {
           <h2 className="mt-3 font-heading text-xl font-semibold">Betalen</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Online bestellen betekent online betalen: met Bancontact of je
-            bankkaart. Je bestelling is pas definitief wanneer de betaling gelukt
-            is — dan krijg je je bestelnummer te zien.
+            bankkaart. Je bestelling is pas definitief wanneer de betaling gelukt is
+            — dan krijg je je bestelnummer te zien.
           </p>
           <ul className="mt-3 space-y-2 text-sm">
             <li className="flex gap-2">
@@ -238,27 +237,25 @@ export default function InfoPage() {
 
       <section className="mt-6 flex flex-col items-start gap-4 rounded-2xl bg-secondary/60 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">
-            Nog een vraag?
-          </h2>
+          <h2 className="font-heading text-xl font-semibold">Nog een vraag?</h2>
           <p className="text-sm text-muted-foreground">
             Bel ons tijdens de openingsuren, of spring binnen in de winkel.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
-            render={<a href={`tel:${SHOP.phoneHref}`} />}
+          <ButtonLink
+            href={`tel:${SHOP.phoneHref}`}
             className="h-11 rounded-full px-5"
           >
             <PhoneIcon className="size-4" /> {SHOP.phone}
-          </Button>
-          <Button
-            render={<Link href="/assortiment" />}
+          </ButtonLink>
+          <ButtonLink
+            href="/assortiment"
             variant="outline"
             className="h-11 rounded-full px-5"
           >
             Naar het assortiment
-          </Button>
+          </ButtonLink>
         </div>
       </section>
     </div>

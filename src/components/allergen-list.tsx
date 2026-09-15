@@ -17,10 +17,7 @@ export function AllergenList({ codes }: { codes: AllergenCode[] }) {
           key={code}
           className="flex items-center gap-2 rounded-lg bg-secondary/70 px-3 py-2 text-sm"
         >
-          <span
-            aria-hidden
-            className="size-1.5 shrink-0 rounded-full bg-crust"
-          />
+          <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-crust" />
           {allergenLabel(code)}
         </li>
       ))}

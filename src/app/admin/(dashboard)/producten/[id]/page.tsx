@@ -4,6 +4,7 @@ import { ChevronLeftIcon, ExternalLinkIcon, Trash2Icon } from "lucide-react";
 
 import { ProductForm } from "@/components/admin/product-form";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { categoryOptions, getProductForAdmin } from "@/lib/admin/catalog";
 import { parseAllergens } from "@/lib/allergens";
 import { deleteProduct } from "@/server/actions/admin-catalog";
@@ -46,16 +47,15 @@ export default async function EditProductPage({
           <h1 className="font-heading text-2xl font-semibold sm:text-3xl">
             {product.name}
           </h1>
-          <Button
-            render={
-              <Link href={`/product/${product.slug}`} target="_blank" />
-            }
+          <ButtonLink
+            href={`/product/${product.slug}`}
+            target="_blank"
             variant="outline"
             size="sm"
             className="rounded-full"
           >
             <ExternalLinkIcon className="size-3.5" /> Bekijk in de webshop
-          </Button>
+          </ButtonLink>
         </div>
       </div>
 
@@ -86,10 +86,10 @@ export default async function EditProductPage({
           Product verwijderen
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Wil je het maar even uit de webshop halen? Vink dan hierboven &ldquo;In
-          de webshop&rdquo; uit — dan blijft alles bewaard. Verwijderen kan niet
-          ongedaan gemaakt worden; oude bestellingen houden wel de naam en prijs
-          van toen.
+          Wil je het maar even uit de webshop halen? Vink dan hierboven &ldquo;In de
+          webshop&rdquo; uit — dan blijft alles bewaard. Verwijderen kan niet
+          ongedaan gemaakt worden; oude bestellingen houden wel de naam en prijs van
+          toen.
         </p>
         <form action={deleteProduct} className="mt-4">
           <input type="hidden" name="id" value={product.id} />

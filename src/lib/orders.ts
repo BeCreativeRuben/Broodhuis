@@ -10,12 +10,7 @@ import type { Slot } from "@/lib/slots";
 
 /** Status van de bestelling zelf, los van de betaalstatus. */
 export type OrderStatus =
-  | "pending"
-  | "paid"
-  | "failed"
-  | "cancelled"
-  | "ready"
-  | "completed";
+  "pending" | "paid" | "failed" | "cancelled" | "ready" | "completed";
 
 export const ORDER_STATUS_FLOW: OrderStatus[] = [
   "pending",
@@ -296,8 +291,7 @@ export async function applyPaymentUpdate(fetched: FetchedPayment) {
           status: nextOrderStatus,
           paymentStatus: fetched.status,
           paymentMethod: fetched.method ?? undefined,
-          paidAt:
-            fetched.status === "paid" ? (fetched.paidAt ?? new Date()) : null,
+          paidAt: fetched.status === "paid" ? (fetched.paidAt ?? new Date()) : null,
         },
       });
     } else {

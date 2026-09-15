@@ -84,7 +84,11 @@ export default async function SandboxPaymentPage({
         <div className="space-y-2">
           <form action={simulatePayment}>
             <input type="hidden" name="token" value={token} />
-            <input type="hidden" name="paymentId" value={payment.providerPaymentId} />
+            <input
+              type="hidden"
+              name="paymentId"
+              value={payment.providerPaymentId}
+            />
             <input type="hidden" name="outcome" value="paid" />
             <Button
               type="submit"
@@ -97,7 +101,11 @@ export default async function SandboxPaymentPage({
 
           <form action={simulatePayment}>
             <input type="hidden" name="token" value={token} />
-            <input type="hidden" name="paymentId" value={payment.providerPaymentId} />
+            <input
+              type="hidden"
+              name="paymentId"
+              value={payment.providerPaymentId}
+            />
             <input type="hidden" name="outcome" value="failed" />
             <Button
               type="submit"
@@ -110,9 +118,17 @@ export default async function SandboxPaymentPage({
 
           <form action={simulatePayment}>
             <input type="hidden" name="token" value={token} />
-            <input type="hidden" name="paymentId" value={payment.providerPaymentId} />
+            <input
+              type="hidden"
+              name="paymentId"
+              value={payment.providerPaymentId}
+            />
             <input type="hidden" name="outcome" value="canceled" />
-            <Button type="submit" variant="ghost" className="h-11 w-full rounded-full">
+            <Button
+              type="submit"
+              variant="ghost"
+              className="h-11 w-full rounded-full"
+            >
               Annuleren
             </Button>
           </form>

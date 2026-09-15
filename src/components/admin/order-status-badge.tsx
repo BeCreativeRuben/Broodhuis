@@ -25,7 +25,10 @@ export function OrderStatusBadge({
   className?: string;
 }) {
   return (
-    <Badge variant="outline" className={cn("rounded-full", tone(status), className)}>
+    <Badge
+      variant="outline"
+      className={cn("rounded-full", tone(status), className)}
+    >
       {orderStatusLabel(status)}
     </Badge>
   );

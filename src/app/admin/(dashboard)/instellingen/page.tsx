@@ -37,8 +37,8 @@ export default async function AdminSettingsPage() {
           <CalendarOffIcon className="size-4" /> Sluitingsdagen
         </h2>
         <p className="mt-1 mb-4 text-sm text-muted-foreground">
-          Handig voor feestdagen, een verlof of een bakvrije dag. Klanten kunnen
-          die dagen dan niet meer kiezen.
+          Handig voor feestdagen, een verlof of een bakvrije dag. Klanten kunnen die
+          dagen dan niet meer kiezen.
         </p>
 
         <ClosedDatesForm dates={closedDates} />
@@ -93,9 +93,9 @@ export default async function AdminSettingsPage() {
           </div>
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          Om live te gaan: zet je Mollie live-sleutel in MOLLIE_API_KEY. Wil je
-          geen kredietkaartkosten? Zet dan enkel Bancontact aan in je
-          Mollie-dashboard, of gebruik MOLLIE_METHODS=bancontact.
+          Om live te gaan: zet je Mollie live-sleutel in MOLLIE_API_KEY. Wil je geen
+          kredietkaartkosten? Zet dan enkel Bancontact aan in je Mollie-dashboard,
+          of gebruik MOLLIE_METHODS=bancontact.
         </p>
       </section>
 
@@ -152,8 +152,8 @@ export default async function AdminSettingsPage() {
           {FULFILLMENT.orderCutoff.daysBefore === 1
             ? "de dag vóór"
             : `${FULFILLMENT.orderCutoff.daysBefore} dagen vóór`}{" "}
-          het gekozen moment. Klanten kunnen tot{" "}
-          {FULFILLMENT.weeksAhead} weken vooruit boeken.
+          het gekozen moment. Klanten kunnen tot {FULFILLMENT.weeksAhead} weken
+          vooruit boeken.
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
           Winkel: {SHOP.street}, {SHOP.postalCode} {SHOP.city} · {SHOP.phone}

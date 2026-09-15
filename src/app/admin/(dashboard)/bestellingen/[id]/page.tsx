@@ -213,7 +213,7 @@ export default async function AdminOrderPage({
         </div>
       </div>
 
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className="print-hidden rounded-2xl border border-border bg-card p-5">
         <h2 className="font-heading text-lg font-semibold">Status bijwerken</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Zo weet je in één blik welke bestellingen nog moeten gebakken of

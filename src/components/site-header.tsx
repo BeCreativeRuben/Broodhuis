@@ -33,7 +33,7 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur">
+    <header className="print-hidden sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur">
       <div className="hidden border-b border-border/60 bg-secondary/50 lg:block">
         <div className="page-shell flex h-9 items-center justify-between text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">

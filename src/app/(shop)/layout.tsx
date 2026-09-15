@@ -22,7 +22,7 @@ export default async function ShopLayout({
             icon: category.icon,
           }))}
         />
-        <main className="flex-1 pb-mobile-bar">{children}</main>
+        <main className="flex-1">{children}</main>
         <SiteFooter />
       </div>
       <CartSheet />

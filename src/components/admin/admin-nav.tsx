@@ -35,7 +35,7 @@ export function AdminNav({ user }: { user: string }) {
   return (
     <>
       {/* Zijbalk op desktop */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-card lg:flex">
+      <aside className="print-hidden hidden w-60 shrink-0 flex-col border-r border-border bg-card lg:flex">
         <div className="border-b border-border p-4">
           <p className="font-heading text-lg font-semibold">{"'t Broodhuis"}</p>
           <p className="text-xs text-muted-foreground">Beheer · {user}</p>
@@ -79,7 +79,7 @@ export function AdminNav({ user }: { user: string }) {
       </aside>
 
       {/* Bovenbalk + horizontale navigatie op gsm */}
-      <div className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur lg:hidden">
+      <div className="print-hidden sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur lg:hidden">
         <div className="flex items-center justify-between px-4 py-3">
           <div>
             <p className="font-heading text-base font-semibold">{"'t Broodhuis"}</p>

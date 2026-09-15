@@ -17,7 +17,7 @@ export function SiteFooter() {
   const hours = openingHours();
 
   return (
-    <footer className="mt-16 border-t border-border bg-secondary/40">
+    <footer className="print-hidden mt-16 border-t border-border bg-secondary/40">
       <div className="page-shell grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
           <div className="flex items-center gap-2.5">

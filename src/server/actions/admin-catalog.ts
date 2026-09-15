@@ -7,7 +7,8 @@ import { serialiseAllergens } from "@/lib/allergens";
 import { requireAdminSession } from "@/lib/auth/server";
 import { prisma } from "@/lib/db";
 import type { FormState } from "@/lib/form-state";
-import { parseClosedDatesInput, setClosedDates } from "@/lib/settings";
+import { parseClosedDatesInput } from "@/lib/closed-dates";
+import { setClosedDates } from "@/lib/settings";
 import {
   categorySchema,
   fieldErrors,

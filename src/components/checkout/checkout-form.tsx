@@ -296,7 +296,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  hint="Hier sturen we je bestelbevestiging naar."
+                  hint="Zo vinden we je bestelling terug."
                   error={errors.customerEmail}
                   required
                 />
@@ -485,7 +485,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
       </div>
 
       {/* Vaste betaalbalk op gsm: totaal en knop altijd binnen duimbereik */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-warm-lg backdrop-blur lg:hidden">
+      <div className="print-hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-warm-lg backdrop-blur lg:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs text-muted-foreground">

@@ -185,10 +185,26 @@
   color: var(--muted-foreground);
 }
 
-/* Ruimte onderaan zodat de vaste mobiele balk niets bedekt */
-@utility pb-mobile-bar {
-  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
-  @variant lg {
-    padding-bottom: 0;
+/*
+ * Afdrukken: de bakker print een bestelling uit voor het atelier. Navigatie,
+ * zijbalk, voettekst en vaste balken horen dan niet op papier.
+ */
+@media print {
+  .print-hidden,
+  [data-slot="sheet-content"],
+  [data-slot="sheet-overlay"] {
+    display: none !important;
+  }
+
+  body {
+    background: none;
+  }
+
+  * {
+    box-shadow: none !important;
+  }
+
+  a[href]::after {
+    content: "";
   }
 }

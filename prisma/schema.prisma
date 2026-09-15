@@ -1,0 +1,174 @@
+// Bakkerij 't Broodhuis — webshop datamodel
+//
+// Provider staat op sqlite voor lokale ontwikkeling. Om naar Postgres te gaan:
+//   1. zet `provider = "postgresql"` hieronder
+//   2. installeer `@prisma/adapter-pg pg` en wissel de adapter in src/lib/db.ts
+//   3. zet DATABASE_URL naar de Postgres connection string en run `prisma migrate dev`
+// Het model gebruikt bewust geen enums en geen scalar lists (niet ondersteund door
+// SQLite), zodat dezelfde schema-definitie op beide databases werkt.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  /// Emoji of klein icoon voor de categorienavigatie
+  icon        String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  @@index([sortOrder])
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  /// Korte wervende beschrijving voor de webshop
+  description String?
+  /// Vrij tekstveld: ingrediëntenlijst zoals de bakker die opgeeft
+  ingredients String?
+  /// Komma-gescheiden allergeencodes, zie src/lib/allergens.ts (EU-lijst van 14)
+  allergens   String  @default("")
+  priceCents  Int
+  /// Eenheid die naast de prijs staat, bv. "per brood", "per stuk", "per 6 stuks"
+  unit        String  @default("per stuk")
+  imageUrl    String?
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  /// false = onbeperkt beschikbaar (dagelijks gebakken), true = voorraad aftellen
+  trackStock  Boolean @default(false)
+  stock       Int     @default(0)
+
+  /// Aantal dagen dat dit product vooraf besteld moet worden (bv. 14 voor een feesttaart)
+  leadTimeDays Int    @default(0)
+
+  isActive    Boolean @default(true)
+  isFeatured  Boolean @default(false)
+  sortOrder   Int     @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems  OrderItem[]
+
+  @@index([categoryId, sortOrder])
+  @@index([isActive])
+}
+
+model Order {
+  id          String @id @default(cuid())
+  /// Publiek bestelnummer, bv. BH-260915-0001
+  orderNumber String @unique
+
+  /// "pending" | "paid" | "failed" | "expired" | "cancelled" | "ready" | "completed"
+  status      String @default("pending")
+
+  /// "pickup" | "delivery"
+  fulfillmentType String
+
+  /// Kalenderdatum van het gekozen moment (YYYY-MM-DD, tijdzone Europe/Brussels)
+  slotDate    String
+  /// Id van het tijdslot uit src/lib/shop-config.ts, bv. "delivery-thu-am"
+  slotId      String
+  /// Voorberekend label, bv. "donderdag 17 september, 9:00 - 12:00"
+  slotLabel   String
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  /// Alleen bij levering
+  street      String?
+  houseNumber String?
+  postalCode  String?
+  city        String?
+  deliveryNote String?
+
+  note        String?
+
+  subtotalCents    Int
+  deliveryFeeCents Int @default(0)
+  totalCents       Int
+
+  /// "sandbox" | "mollie" | later "worldline"
+  paymentProvider String?
+  /// "open" | "pending" | "paid" | "failed" | "canceled" | "expired"
+  paymentStatus   String  @default("open")
+  paymentMethod   String?
+  paidAt          DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items    OrderItem[]
+  payments Payment[]
+
+  @@index([status])
+  @@index([slotDate])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  /// Blijft bewaard als het product later verwijderd wordt
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  /// Snapshot van het product op moment van bestellen
+  name           String
+  unit           String @default("per stuk")
+  unitPriceCents Int
+  quantity       Int
+  lineTotalCents Int
+  allergens      String @default("")
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+}
+
+/// Audittrail per betaalpoging. Handig voor terugzoeken bij Mollie-support.
+model Payment {
+  id       String @id @default(cuid())
+  orderId  String
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  provider          String
+  providerPaymentId String @unique
+  status            String @default("open")
+  method            String?
+  amountCents       Int
+  checkoutUrl       String?
+  /// Ruwe provider-respons als JSON-string, voor debugging
+  rawPayload        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+/// Sleutel-waarde instellingen die de bakker later via de admin kan aanpassen
+/// zonder deploy (bv. tijdelijke sluitingsdagen).
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

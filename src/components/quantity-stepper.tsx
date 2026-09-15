@@ -1,0 +1,74 @@
+"use client";
+
+import { MinusIcon, PlusIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { MAX_QUANTITY_PER_LINE } from "@/lib/cart";
+import { cn } from "@/lib/utils";
+
+type QuantityStepperProps = {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number | null;
+  label: string;
+  size?: "default" | "lg";
+  className?: string;
+};
+
+/**
+ * Grote plus/min-knoppen: op een telefoon is dat veel vlotter dan een
+ * keuzelijst of een tekstveld waar je op moet mikken.
+ */
+export function QuantityStepper({
+  value,
+  onChange,
+  min = 1,
+  max,
+  label,
+  size = "default",
+  className,
+}: QuantityStepperProps) {
+  const upperBound = Math.min(max ?? MAX_QUANTITY_PER_LINE, MAX_QUANTITY_PER_LINE);
+  const buttonSize = size === "lg" ? "size-11" : "size-9";
+
+  return (
+    <div
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full border border-border bg-card p-1",
+        className,
+      )}
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className={cn("rounded-full", buttonSize)}
+        onClick={() => onChange(Math.max(value - 1, min - 1))}
+        aria-label={`Eén ${label} minder`}
+      >
+        <MinusIcon className="size-4" />
+      </Button>
+      <span
+        aria-live="polite"
+        className={cn(
+          "min-w-8 text-center font-medium tabular-nums",
+          size === "lg" && "min-w-10 text-lg",
+        )}
+      >
+        {value}
+      </span>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className={cn("rounded-full", buttonSize)}
+        onClick={() => onChange(Math.min(value + 1, upperBound))}
+        disabled={value >= upperBound}
+        aria-label={`Eén ${label} meer`}
+      >
+        <PlusIcon className="size-4" />
+      </Button>
+    </div>
+  );
+}

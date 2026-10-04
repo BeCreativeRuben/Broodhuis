@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-import { resolveDatabaseUrl } from "./src/lib/database-url";
+import { resolveMigrationDatabaseUrl } from "./src/lib/database-url";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -10,8 +10,9 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    // Zonder .env valt de webshop terug op prisma/dev.db, zodat
-    // `npm install && npm run dev` meteen werkt.
-    url: resolveDatabaseUrl(),
+    // Directe Neon-URL als die er is, anders de gepoolde URL.
+    // Zonder omgeving blijft dit een lokale placeholder zodat `prisma generate`
+    // (postinstall, CI) niet naar een database hoeft te verbinden.
+    url: resolveMigrationDatabaseUrl(),
   },
 });

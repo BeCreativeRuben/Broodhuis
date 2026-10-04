@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Assortiment",
   description:
-    "Alles wat je bij 't Broodhuis online kan bestellen: brood, klein brood, koffiekoeken, patisserie en feesttaarten.",
+    "Alles wat je bij 't Broodhuis online kan bestellen: brood, gebak en het winkelassortiment.",
 };
 
 export default async function AssortimentPage({
@@ -33,11 +33,11 @@ export default async function AssortimentPage({
       <header className="max-w-2xl space-y-3">
         <p className="eyebrow">Assortiment</p>
         <h1 className="font-heading text-3xl font-semibold sm:text-4xl">
-          {activeCategory ? activeCategory.name : "Alles van onze bakdagen"}
+          {activeCategory ? activeCategory.name : "Alles uit de winkel"}
         </h1>
         <p className="text-muted-foreground">
           {activeCategory?.description ??
-            `Kies wat je wil, wij bakken het vers. Bij elk product vind je de ingrediënten en de allergenen. Vragen? Bel ons op ${SHOP.phone}.`}
+            `Brood en gebak bakken we vers. Daarnaast neem je thee, dranken, zuivel en ijs mee. Vragen? Bel ons op ${SHOP.phone}.`}
         </p>
       </header>
 

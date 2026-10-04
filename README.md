@@ -21,10 +21,11 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:4317>. Dat is alles: `npm run dev` zet bij de eerste
-start automatisch de database klaar (SQLite), voert de migraties uit en vult het
-startassortiment (5 categorieën, 13 producten). Zonder `.env` draait de webshop
-in **testmodus**: de volledige flow werkt, maar er wordt geen geld verplaatst.
+Open <http://localhost:4317>. Zet daarvoor `DATABASE_URL` naar Postgres (zie
+hieronder). Op Vercel is dat al de Neon-database `neon-broodhuis`
+(`STORAGE_DATABASE_URL`); die catalogus wordt niet opnieuw geseed. Zonder
+betaalsleutel draait de webshop in **testmodus**: de volledige flow werkt, maar
+er wordt geen geld verplaatst.
 
 | Wat | Waar |
 | --- | --- |
@@ -59,7 +60,7 @@ werkende standaardwaarde.
 
 | Variabele | Standaard | Waarvoor |
 | --- | --- | --- |
-| `DATABASE_URL` | `file:./prisma/dev.db` | SQLite lokaal, of een Postgres-URL |
+| `DATABASE_URL` | — | Postgres-URL. Op Vercel wint `STORAGE_DATABASE_URL` van de Neon-koppeling |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:4317` | Basis voor betaal-redirects en webhook |
 | `ADMIN_USER` | `marie` (enkel in dev) | Gebruikersnaam voor `/admin` |
 | `ADMIN_PASSWORD` | `broodhuis` (enkel in dev) | Wachtwoord voor `/admin` |
@@ -225,7 +226,7 @@ voorraadcontrole zit in dezelfde transactie als het aanmaken van de bestelling.
 | --- | --- |
 | Framework | Next.js 15 (App Router), React 19, TypeScript |
 | Stijl | Tailwind CSS v4 met shadcn/ui, warm crème/broodkorst-palet |
-| Data | Prisma 7 met SQLite via `better-sqlite3`-adapter |
+| Data | Prisma 7 met Postgres (Neon) via de `pg`-adapter |
 | Betalingen | Mollie (REST) met sandbox-fallback |
 | Sessies | Ondertekende cookie (HMAC-SHA256, Web Crypto) |
 | Validatie | Zod, zowel voor de checkout als voor de admin |
@@ -263,19 +264,18 @@ Enkele bewuste keuzes:
 - **De admin controleert de sessie in de pagina’s en in elke server action**,
   niet enkel in de middleware.
 
-### Naar Postgres
+### Database
 
-1. Zet `provider = "postgresql"` in
-   [`prisma/schema.prisma`](prisma/schema.prisma).
-2. `npm i @prisma/adapter-pg pg` en wissel de adapter in
-   [`src/lib/db.ts`](src/lib/db.ts) (`PrismaPg({ connectionString })`).
-   `better-sqlite3` mag dan ook uit `serverExternalPackages` in
-   `next.config.ts`.
-3. Zet `DATABASE_URL` naar de Postgres-connectiestring en run
-   `npx prisma migrate dev`.
+Productie gebruikt de Neon-Postgres die al aan het Vercel-project hangt
+(`neon-broodhuis`). De webshop leest `STORAGE_DATABASE_URL` (gezet door die
+koppeling) of, als die er niet is, `DATABASE_URL`. Het oude SQLite-bestand
+werkt niet op Vercel: de map bestaat daar niet en de schijf bewaart geen
+bestellingen.
 
-Het datamodel is bewust neutraal gehouden, dus de modellen hoeven niet mee te
-wijzigen.
+De live database heeft het assortiment al. `npm run build` voegt hoogstens de
+nullable kolom `Category.icon` toe en seedt alleen een lege database. Draai
+geen `prisma db push` tegen productie: de database heeft extra tabellen
+(varianten, medewerkers) die dit schema niet beschrijft.
 
 ---
 

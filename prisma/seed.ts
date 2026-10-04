@@ -1,23 +1,18 @@
 /**
  * Startassortiment voor Bakkerij 't Broodhuis.
  *
- * Run met `npm run seed`. De seed werkt met upserts op de slug, dus je mag
- * hem veilig opnieuw uitvoeren: bestaande producten worden bijgewerkt, wat de
- * bakker zelf toevoegde blijft staan.
+ * Run met `npm run seed`. Staat er al een assortiment, dan stopt het script
+ * zodat de echte producten blijven staan. Op een lege database vult het het
+ * startassortiment via upserts op de slug. `SEED_FORCE=1` overschrijft die
+ * slugs alsnog — niet doen tegen de productiedatabase.
  *
  * Prijzen en foto's zijn placeholders — Marie past ze aan via /admin.
  */
 import "dotenv/config";
 
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { createPrismaClient } from "../src/lib/prisma-client";
 
-import { PrismaClient } from "../src/generated/prisma/client";
-import { resolveDatabaseUrl } from "../src/lib/database-url";
-
-const databaseUrl = resolveDatabaseUrl();
-const prisma = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: databaseUrl }),
-});
+const prisma = createPrismaClient();
 
 type CategorySeed = {
   slug: string;
@@ -280,6 +275,14 @@ const products: ProductSeed[] = [
 ];
 
 async function main() {
+  const existing = await prisma.product.count();
+  if (existing > 0 && process.env.SEED_FORCE !== "1") {
+    console.log(
+      `[broodhuis] Database heeft al ${existing} producten. Seed wordt overgeslagen zodat het assortiment blijft staan.`,
+    );
+    return;
+  }
+
   console.log("Assortiment van 't Broodhuis klaarzetten…");
 
   const categoryIdBySlug = new Map<string, string>();

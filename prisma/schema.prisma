@@ -1,11 +1,10 @@
 // Bakkerij 't Broodhuis — webshop datamodel
 //
-// Provider staat op sqlite voor lokale ontwikkeling. Om naar Postgres te gaan:
-//   1. zet `provider = "postgresql"` hieronder
-//   2. installeer `@prisma/adapter-pg pg` en wissel de adapter in src/lib/db.ts
-//   3. zet DATABASE_URL naar de Postgres connection string en run `prisma migrate dev`
-// Het model gebruikt bewust geen enums en geen scalar lists (niet ondersteund door
-// SQLite), zodat dezelfde schema-definitie op beide databases werkt.
+// Productie gebruikt Neon Postgres (Vercel-koppeling neon-broodhuis).
+// Het model houdt geen enums en geen scalar lists, zodat het dezelfde vorm
+// houdt als de bestaande tabellen. De live database heeft extra kolommen
+// (varianten, medewerkers, …); die blijven staan en worden hier niet
+// verwijderd. `prisma db push` niet tegen productie draaien.
 
 generator client {
   provider = "prisma-client"
@@ -13,7 +12,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model Category {

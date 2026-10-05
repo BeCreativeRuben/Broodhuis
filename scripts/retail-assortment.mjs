@@ -4,6 +4,8 @@
  * Actief = prijs staat op de prijslijst. Anders isActive false en
  * "Prijs bevestigen bij Marie" in de beschrijving.
  * Coca-Cola original volgt de prijs van Coca-Cola Zero (€2,50), op vraag van Ruben.
+ * Prijzen die Marie later doorgaf: BARÚ-blik €7,95, BARÚ-testzakje €1,50,
+ * Rabeko €3,85 (framboos €4,50), OR TEA?-doosje €4,99. Torrefactory blijft open.
  */
 
 export const PRICE_NOTE = "Prijs bevestigen bij Marie.";
@@ -79,7 +81,7 @@ export const products = [
   tea("or-tea-queen-berry-doosje", "OR TEA? Queen Berry, doosje", 499, "per doosje", 20, "Vruchtenthee, doosje van 10 zakjes."),
   tea("or-tea-queen-berry-blik", "OR TEA? Queen Berry, blik", 1290, "per blik", 21, "Vruchtenthee in een blik van 100 g."),
   tea("or-tea-tiffanys-breakfast-doosje", "OR TEA? Tiffany's Breakfast, doosje", 499, "per doosje", 25, "Ontbijtthee, doosje van 10 zakjes."),
-  pending("thee", "or-tea-playful-pear-doosje", "OR TEA? Playful Pear, doosje", "per doosje", 23, "Perenthee, doosje van 10 zakjes. Staat niet op de prijslijst."),
+  tea("or-tea-playful-pear-doosje", "OR TEA? Playful Pear, doosje", 499, "per doosje", 23, "Perenthee, doosje van 10 zakjes."),
 
   // Dranken
   drink("coca-cola-zero", "Coca-Cola Zero", 250, "per fles 50 cl", 49, "Fles van 50 cl."),
@@ -119,13 +121,13 @@ export const products = [
   dairy("inex-halfvolle-melk", "Inex halfvolle melk", 165, "per fles 500 ml", 86, "Halfvolle Inex-melk, fles van 500 ml.", "melk"),
   dairy("inex-volle-melk", "Inex volle melk", 220, "per fles", 87, "Volle Inex-melk. De fles is 900 ml; dat sluit het dichtst aan bij de literprijs van €2,20.", "melk"),
 
-  // Confituur — niet op de prijslijst
-  pending("confituur", "rabeko-light-aardbei", "Rabeko Light aardbei", "per pot", 63, "Lichte confituur, aardbei."),
-  pending("confituur", "rabeko-light-zwarte-kers", "Rabeko Light zwarte kers", "per pot", 64, "Lichte confituur, zwarte kers."),
-  pending("confituur", "rabeko-light-pruim", "Rabeko Light pruim", "per pot", 65, "Lichte confituur, pruim."),
-  pending("confituur", "rabeko-light-abrikoos", "Rabeko Light abrikoos", "per pot", 66, "Lichte confituur, abrikoos."),
-  pending("confituur", "rabeko-light-framboos", "Rabeko Light framboos", "per pot", 67, "Lichte confituur, framboos."),
-  pending("confituur", "rabeko-light-bosvruchten", "Rabeko Light bosvruchten", "per pot", 68, "Lichte confituur, bosvruchten."),
+  // Confituur — Marie: €3,85, framboos €4,50
+  jam("rabeko-light-aardbei", "Rabeko Light aardbei", 385, 63, "Lichte confituur, aardbei."),
+  jam("rabeko-light-zwarte-kers", "Rabeko Light zwarte kers", 385, 64, "Lichte confituur, zwarte kers."),
+  jam("rabeko-light-pruim", "Rabeko Light pruim", 385, 65, "Lichte confituur, pruim."),
+  jam("rabeko-light-abrikoos", "Rabeko Light abrikoos", 385, 66, "Lichte confituur, abrikoos."),
+  jam("rabeko-light-framboos", "Rabeko Light framboos", 450, 67, "Lichte confituur, framboos."),
+  jam("rabeko-light-bosvruchten", "Rabeko Light bosvruchten", 385, 68, "Lichte confituur, bosvruchten."),
 
   // Snoepgoed — mixfoto's, geen losse tablet
   pending("snoepgoed", "chocoladetabletten", "Chocoladetabletten", "per tablet", 71, "De foto toont een mix van tabletten, niet één smaak. Op de prijslijst staan losse tabletten van €3,95 tot €4,95.", "melk"),
@@ -146,13 +148,19 @@ export const products = [
   ice("missault-portie-noten", "Missault portie Brésil", 415, "per stuk", 102, "Portie Brésil.", "melk,noten"),
   pending("ijs", "missault-portie-framboos", "Missault portie met frambozen", "per stuk", 103, "Roomgebakje met frambozen, geen naam die op de lijst past.", "melk"),
 
-  // Koffie en BARÚ — niet op de prijslijst
-  pending("koffie", "baru-spiced-chai-latte", "BARÚ spiced chai latte", "per blik", 26, "Blik chai latte."),
-  pending("koffie", "baru-vanilla-chai-latte", "BARÚ vanilla chai latte", "per blik", 29, "Blik vanilla chai latte."),
-  pending("koffie", "baru-matcha-latte", "BARÚ matcha latte", "per blik", 32, "Blik matcha latte."),
-  pending("koffie", "baru-pure-chocolade", "BARÚ pure warme chocolade", "per blik", 35, "Blik dark hot chocolate."),
-  pending("koffie", "baru-swirly-chocolade", "BARÚ swirly warme chocolade", "per blik", 37, "Blik swirly hot chocolate."),
-  pending("koffie", "baru-pumpkin-spice-latte", "BARÚ pumpkin spice latte", "per blik", 39, "Blik pumpkin spice latte."),
+  // BARÚ — Marie: blik €7,95, testzakje €1,50. Torrefactory blijft open.
+  coffee("baru-spiced-chai-latte", "BARÚ spiced chai latte", 795, "per blik", 26, "Blik chai latte."),
+  coffee("baru-spiced-chai-latte-testzakje", "BARÚ spiced chai latte, testzakje", 150, "per zakje", 27, "Testzakje voor één portie."),
+  coffee("baru-vanilla-chai-latte", "BARÚ vanilla chai latte", 795, "per blik", 29, "Blik vanilla chai latte."),
+  coffee("baru-vanilla-chai-latte-testzakje", "BARÚ vanilla chai latte, testzakje", 150, "per zakje", 30, "Testzakje voor één portie."),
+  coffee("baru-matcha-latte", "BARÚ matcha latte", 795, "per blik", 32, "Blik matcha latte."),
+  coffee("baru-matcha-latte-testzakje", "BARÚ matcha latte, testzakje", 150, "per zakje", 33, "Testzakje voor één portie."),
+  coffee("baru-pure-chocolade", "BARÚ pure warme chocolade", 795, "per blik", 35, "Blik dark hot chocolate."),
+  coffee("baru-pure-chocolade-testzakje", "BARÚ pure warme chocolade, testzakje", 150, "per zakje", 36, "Testzakje voor één portie."),
+  coffee("baru-swirly-chocolade", "BARÚ swirly warme chocolade", 795, "per blik", 37, "Blik swirly hot chocolate."),
+  coffee("baru-swirly-chocolade-testzakje", "BARÚ swirly warme chocolade, testzakje", 150, "per zakje", 38, "Testzakje voor één portie."),
+  coffee("baru-pumpkin-spice-latte", "BARÚ pumpkin spice latte", 795, "per blik", 39, "Blik pumpkin spice latte."),
+  coffee("baru-pumpkin-spice-latte-testzakje", "BARÚ pumpkin spice latte, testzakje", 150, "per zakje", 40, "Testzakje voor één portie."),
   pending("koffie", "torrefactory-moka", "Torrefactory Moka Blend", "per pak", 89, "Gemalen koffie, Moka Blend."),
   pending("koffie", "torrefactory-espresso-bio", "Torrefactory Espresso Bio", "per pak", 90, "Gemalen koffie, Espresso Bio Blend."),
 ];
@@ -168,6 +176,12 @@ function dairy(slug, name, priceCents, unit, photo, description, allergens = "")
 }
 function ice(slug, name, priceCents, unit, photo, description, allergens) {
   return item("ijs", slug, name, priceCents, unit, photo, true, description, allergens);
+}
+function jam(slug, name, priceCents, photo, description) {
+  return item("confituur", slug, name, priceCents, "per pot", photo, true, description, "");
+}
+function coffee(slug, name, priceCents, unit, photo, description) {
+  return item("koffie", slug, name, priceCents, unit, photo, true, description, "");
 }
 function pending(category, slug, name, unit, photo, why, allergens = "") {
   return item(category, slug, name, TBD, unit, photo, false, `${PRICE_NOTE} ${why}`, allergens);

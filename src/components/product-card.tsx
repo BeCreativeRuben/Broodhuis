@@ -19,7 +19,7 @@ export function ProductCard({
   const allergens = allergenSummary(product.allergens.join(","));
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-warm transition-shadow hover:shadow-warm-lg">
+    <article className="group flex flex-col overflow-hidden border border-border bg-card shadow-warm transition-shadow hover:shadow-warm-lg">
       <Link
         href={`/product/${product.slug}`}
         className="relative aspect-4/3 overflow-hidden bg-secondary"
@@ -76,7 +76,8 @@ export function ProductCard({
         {product.variants.length > 0 ? (
           <ButtonLink
             href={`/product/${product.slug}`}
-            className="h-11 w-full rounded-full text-sm"
+            variant="outline"
+            className="h-11 w-full rounded-none text-sm"
           >
             Kies een smaak
           </ButtonLink>

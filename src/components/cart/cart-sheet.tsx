@@ -61,7 +61,7 @@ export function CartSheet() {
             <ButtonLink
               href="/assortiment"
               onClick={closeCart}
-              className="h-11 rounded-full px-6"
+              className="h-11 rounded-none px-6"
             >
               Naar het assortiment
             </ButtonLink>
@@ -139,7 +139,7 @@ export function CartSheet() {
               <ButtonLink
                 href="/afrekenen"
                 onClick={closeCart}
-                className="h-12 w-full rounded-full text-base"
+                className="h-12 w-full rounded-none text-base"
               >
                 Afrekenen
               </ButtonLink>
@@ -147,7 +147,7 @@ export function CartSheet() {
                 href="/winkelwagen"
                 onClick={closeCart}
                 variant="ghost"
-                className="h-10 w-full rounded-full"
+                className="h-10 w-full rounded-none"
               >
                 Winkelwagen bekijken
               </ButtonLink>

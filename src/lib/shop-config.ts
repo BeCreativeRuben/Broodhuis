@@ -24,16 +24,22 @@ export type ServiceWindow = {
 export const SHOP = {
   name: "'t Broodhuis",
   legalName: "Bakkerij 't Broodhuis",
-  tagline: "Ambachtelijke bakkerij in Waasmunster",
+  tagline: "Hét adres voor dagvers brood & banket",
   street: "Sint-Franciscusstraat 4",
   postalCode: "9250",
   city: "Waasmunster",
   phone: "052 51 95 39",
   /** Klikbaar telefoonnummer voor mobiel */
   phoneHref: "+3252519539",
-  /** Vul aan zodra het besteladres bekend is; leeg = niet tonen. */
+  /**
+   * De contactpagina toont geen e-mailadres, alleen telefoon, adres en
+   * Messenger (https://bakkerij-tbroodhuis.be/assortiment-2/). Leeg laten.
+   */
   email: "",
   website: "https://bakkerij-tbroodhuis.be",
+  facebook: "https://www.facebook.com/bakkerijtbroodhuis",
+  instagram: "https://www.instagram.com/bakkerij_tbroodhuis/",
+  vat: "BE 0751.932.815",
   timeZone: BAKERY_TIME_ZONE,
 } as const;
 

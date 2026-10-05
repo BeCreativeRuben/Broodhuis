@@ -9,6 +9,7 @@ import {
   TruckIcon,
 } from "lucide-react";
 
+import { CategoryIcon } from "@/components/category-icon";
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
 import { ButtonLink } from "@/components/ui/button-link";
@@ -54,41 +55,41 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-border/60">
-        <div className="page-shell grid items-center gap-10 py-12 lg:grid-cols-2 lg:gap-16 lg:py-20">
+      <section className="relative overflow-hidden">
+        <div className="page-shell grid items-center gap-10 py-12 lg:grid-cols-2 lg:gap-16 lg:py-16">
           <div className="space-y-6">
             <p className="eyebrow">{SHOP.tagline}</p>
-            <h1 className="font-heading text-4xl leading-[1.05] font-semibold sm:text-5xl lg:text-6xl">
-              Vers gebakken,
+            <h1 className="font-heading text-4xl leading-[1.15] sm:text-5xl lg:text-[3.4rem]">
+              Dagvers brood &amp; banket,
               <br />
-              <span className="text-crust">jij kiest wanneer.</span>
+              <em className="text-crust not-italic">met liefde gebakken</em>
             </h1>
             <p className="max-w-prose text-base text-muted-foreground sm:text-lg">
-              Bestel je brood, koffiekoeken en gebak online bij {SHOP.name} in{" "}
-              {SHOP.city}. Betaal meteen met Bancontact en haal je bestelling af in
-              de winkel of laat ze leveren.
+              Sinds augustus 2020 dé warme bakker van {SHOP.city} voor brood, gebak,
+              confiserie en belegde broodjes. Bestel online, betaal met Bancontact
+              en haal af of laat leveren.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <ButtonLink
                 href="/assortiment"
                 size="lg"
-                className="h-12 rounded-full px-6 text-base"
+                className="h-12 rounded-none px-7 text-base"
               >
-                Naar het assortiment <ArrowRightIcon className="size-4" />
+                Beginnen met bestellen <ArrowRightIcon className="size-4" />
               </ButtonLink>
               <ButtonLink
                 href="/info"
                 variant="outline"
                 size="lg"
-                className="h-12 rounded-full px-6 text-base"
+                className="h-12 rounded-none px-7 text-base"
               >
                 Hoe werkt het?
               </ButtonLink>
             </div>
 
             <dl className="grid gap-3 pt-2 sm:grid-cols-3">
-              <div className="rounded-xl border border-border/70 bg-card/60 p-3">
+              <div className="border border-border/80 bg-card/70 p-3">
                 <dt className="text-xs text-muted-foreground">Afhalen</dt>
                 <dd className="text-sm font-medium">
                   {nextPickupSlot
@@ -96,13 +97,13 @@ export default async function HomePage() {
                     : "Woensdag t.e.m. zondag"}
                 </dd>
               </div>
-              <div className="rounded-xl border border-border/70 bg-card/60 p-3">
+              <div className="border border-border/80 bg-card/70 p-3">
                 <dt className="text-xs text-muted-foreground">Leveren</dt>
                 <dd className="text-sm font-medium">
                   do · vr · zo — {formatEuro(FULFILLMENT.deliveryFeeCents)}
                 </dd>
               </div>
-              <div className="rounded-xl border border-border/70 bg-card/60 p-3">
+              <div className="border border-border/80 bg-card/70 p-3">
                 <dt className="text-xs text-muted-foreground">Betalen</dt>
                 <dd className="text-sm font-medium">Bancontact of bankkaart</dd>
               </div>
@@ -110,16 +111,16 @@ export default async function HomePage() {
           </div>
 
           <div className="relative">
-            <div className="relative aspect-4/3 overflow-hidden rounded-3xl bg-crumb shadow-warm-lg">
+            <div className="relative aspect-4/3 overflow-hidden bg-crumb">
               <ProductImage
-                src="/images/bakkerij-toonbank.jpg"
-                alt="Toonbank van bakkerij 't Broodhuis met versgebakken brood"
+                src="/images/bakkerij-hero.jpg"
+                alt="Vers brood op de rekken van bakkerij 't Broodhuis"
                 priority
                 sizes="(min-width: 1024px) 50vw, 100vw"
               />
             </div>
-            <div className="absolute -bottom-5 left-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-warm-lg sm:left-8">
-              <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
+            <div className="absolute -bottom-4 left-4 flex items-center gap-3 border border-border bg-card px-4 py-3 shadow-warm sm:left-6">
+              <span className="flex size-10 items-center justify-center bg-accent text-accent-foreground">
                 <CroissantIcon className="size-5" />
               </span>
               <div className="text-sm leading-tight">
@@ -131,12 +132,30 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <div className="mt-8 border-y border-border bg-secondary/40">
+        <p className="page-shell flex flex-wrap items-center justify-center gap-x-6 gap-y-2 py-3 text-center text-[13px] tracking-wide text-foreground/80 uppercase">
+          <span>brood &amp; patisserie</span>
+          <span aria-hidden className="hidden text-crust sm:inline">
+            ·
+          </span>
+          <span>belegde broodjes</span>
+          <span aria-hidden className="hidden text-crust sm:inline">
+            ·
+          </span>
+          <span>feesttaarten</span>
+          <span aria-hidden className="hidden text-crust sm:inline">
+            ·
+          </span>
+          <span>online bestellen</span>
+        </p>
+      </div>
+
       <section className="page-shell py-12 lg:py-16">
         <div className="grid gap-4 sm:grid-cols-3">
           {steps.map((step, index) => (
             <div
               key={step.title}
-              className="rounded-2xl border border-border bg-card p-5 shadow-warm"
+              className="border border-border bg-card p-5 shadow-warm"
             >
               <div className="flex items-center gap-3">
                 <span className="flex size-10 items-center justify-center rounded-full bg-secondary text-crust">
@@ -163,8 +182,8 @@ export default async function HomePage() {
               Waar heb je vandaag zin in?
             </h2>
           </div>
-          <ButtonLink href="/assortiment" variant="ghost" className="rounded-full">
-            Alles bekijken <ArrowRightIcon className="size-4" />
+          <ButtonLink href="/assortiment" variant="ghost" className="rounded-none">
+            Beginnen met bestellen <ArrowRightIcon className="size-4" />
           </ButtonLink>
         </div>
 
@@ -173,11 +192,9 @@ export default async function HomePage() {
             <Link
               key={category.slug}
               href={`/assortiment?categorie=${category.slug}`}
-              className="min-w-[45%] snap-start rounded-2xl border border-border bg-card p-4 shadow-warm transition-colors hover:bg-secondary/60 sm:min-w-0"
+              className="min-w-[45%] snap-start border border-border bg-card p-4 shadow-warm transition-colors hover:bg-secondary/60 sm:min-w-0"
             >
-              <span aria-hidden className="text-2xl">
-                {category.icon ?? "🥖"}
-              </span>
+              <CategoryIcon category={category} className="size-6 text-crust" />
               <p className="mt-2 font-heading text-base font-semibold">
                 {category.name}
               </p>
@@ -213,7 +230,7 @@ export default async function HomePage() {
       )}
 
       <section className="page-shell pb-16">
-        <div className="grid gap-4 rounded-3xl border border-border bg-card p-6 shadow-warm sm:grid-cols-2 lg:p-8">
+        <div className="grid gap-4 border border-border bg-card p-6 shadow-warm sm:grid-cols-2 lg:p-8">
           <div className="space-y-3">
             <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
               <TruckIcon className="size-5" />
@@ -243,7 +260,7 @@ export default async function HomePage() {
             </ul>
           </div>
 
-          <div className="space-y-3 rounded-2xl bg-secondary/60 p-5">
+          <div className="space-y-3 bg-secondary/60 p-5">
             <span className="flex size-10 items-center justify-center rounded-full bg-card text-crust">
               <StoreIcon className="size-5" />
             </span>
@@ -259,7 +276,7 @@ export default async function HomePage() {
               Bestel tot {FULFILLMENT.orderCutoff.hour}u de dag vóór je afhaalt of
               laat leveren.
             </p>
-            <ButtonLink href="/assortiment" className="h-11 rounded-full">
+            <ButtonLink href="/assortiment" className="h-11 rounded-none">
               Beginnen met bestellen
             </ButtonLink>
           </div>

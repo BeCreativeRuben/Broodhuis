@@ -27,7 +27,6 @@ export default async function ShopLayout({
           categories={categories.map((category) => ({
             slug: category.slug,
             name: category.name,
-            icon: category.icon,
           }))}
         />
         <main className="flex-1">{children}</main>

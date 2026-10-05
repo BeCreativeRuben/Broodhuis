@@ -37,7 +37,7 @@ export function MobileCartBar() {
           </div>
           <ButtonLink
             href="/afrekenen"
-            className="h-12 shrink-0 rounded-full px-5 text-base"
+            className="h-12 shrink-0 rounded-none px-5 text-base"
           >
             Afrekenen <ArrowRightIcon className="size-4" />
           </ButtonLink>

@@ -15,7 +15,7 @@ export function CartButton({ className }: { className?: string }) {
       type="button"
       variant="outline"
       onClick={openCart}
-      className={cn("relative h-11 gap-2 rounded-full pr-4 pl-3", className)}
+      className={cn("relative h-11 gap-2 rounded-none pr-4 pl-3", className)}
       aria-label={
         itemCount > 0
           ? `Winkelwagen openen, ${itemCount} stuks, ${formatEuro(subtotalCents)}`

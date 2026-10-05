@@ -9,7 +9,7 @@ import type { CartItem, PricedCart } from "@/lib/cart";
  * nog voor je begint af te rekenen.
  */
 export async function revalidateCart(
-  items: Array<Pick<CartItem, "productId" | "quantity">>,
+  items: Array<Pick<CartItem, "productId" | "variantId" | "quantity">>,
 ): Promise<PricedCart> {
   return priceCart(items);
 }

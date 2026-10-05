@@ -2,9 +2,10 @@
 //
 // Productie gebruikt Neon Postgres (Vercel-koppeling neon-broodhuis).
 // Het model houdt geen enums en geen scalar lists, zodat het dezelfde vorm
-// houdt als de bestaande tabellen. De live database heeft extra kolommen
-// (varianten, medewerkers, …); die blijven staan en worden hier niet
-// verwijderd. `prisma db push` niet tegen productie draaien.
+// houdt als de bestaande tabellen. ProductVariant en OrderItem.variantLabel
+// bestaan al in productie (taarten: één product, keuzes als varianten).
+// Andere extra tabellen (medewerkers, …) blijven hier buiten.
+// `prisma db push` niet tegen productie draaien.
 
 generator client {
   provider = "prisma-client"
@@ -63,9 +64,29 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   orderItems  OrderItem[]
+  variants    ProductVariant[]
 
   @@index([categoryId, sortOrder])
   @@index([isActive])
+}
+
+/// Keuze bij één product, zoals deeg/personen bij een taart of smaak bij thee.
+/// De tabel staat al in productie. Geen migratie: dit model beschrijft haar alleen.
+model ProductVariant {
+  id          String  @id
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku         String? @unique
+  /// Slug van het vroegere losse product, zodat oude links naar de keuze wijzen.
+  sourceSlug  String? @unique
+  label       String
+  optionsJson String  @default("{}")
+  priceCents  Int
+  unit        String  @default("per stuk")
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  @@index([productId, sortOrder])
 }
 
 model Order {
@@ -142,6 +163,8 @@ model OrderItem {
   quantity       Int
   lineTotalCents Int
   allergens      String @default("")
+  /// Keuze die de klant maakte, bv. "Beeee Calm" of "4 personen".
+  variantLabel   String?
 
   createdAt DateTime @default(now())
 

@@ -9,6 +9,8 @@ import type { AllergenCode } from "@/lib/allergens";
 /** Wat de browser bewaart: id en aantal, plus een snapshot voor snelle weergave. */
 export type CartItem = {
   productId: string;
+  /** Gekozen variant, bv. een theesmaak. Leeg bij een product zonder keuze. */
+  variantId?: string;
   quantity: number;
   name: string;
   slug: string;
@@ -17,10 +19,20 @@ export type CartItem = {
   imageUrl: string | null;
 };
 
+/** Twee smaken van hetzelfde product zijn twee lijnen. */
+export function cartLineKey(item: {
+  productId: string;
+  variantId?: string | null;
+}): string {
+  return item.variantId ? `${item.productId}:${item.variantId}` : item.productId;
+}
+
 export const MAX_QUANTITY_PER_LINE = 40;
 
 export type PricedLine = {
   productId: string;
+  variantId?: string;
+  variantLabel: string | null;
   slug: string;
   name: string;
   unit: string;

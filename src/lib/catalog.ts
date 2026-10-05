@@ -1,11 +1,23 @@
 import { parseAllergens, type AllergenCode } from "@/lib/allergens";
 import { prisma } from "@/lib/db";
+import { parseOptions, type VariantOptions } from "@/lib/variants";
 
 /**
  * De webshop werkt met eigen, platte types in plaats van rechtstreeks met de
  * Prisma-modellen. Zo blijven de componenten los van het datamodel en kunnen
  * we later van SQLite naar Postgres of naar een andere bron wisselen.
  */
+export type CatalogVariant = {
+  id: string;
+  label: string;
+  priceCents: number;
+  unit: string;
+  options: VariantOptions;
+  imageUrl: string | null;
+  description: string | null;
+  sortOrder: number;
+};
+
 export type CatalogProduct = {
   id: string;
   slug: string;
@@ -22,6 +34,12 @@ export type CatalogProduct = {
   stock: number;
   /** Kan de klant dit nu in de winkelwagen leggen? */
   inStock: boolean;
+  /**
+   * Leeg voor gewone producten. Bij thee: de smaken van het doosje of blik.
+   * Taarten hebben dezelfde tabel, maar die keuzes blijven op hun eigen pagina
+   * zoals ze nu verkocht worden.
+   */
+  variants: CatalogVariant[];
   category: {
     id: string;
     slug: string;
@@ -72,12 +90,77 @@ type ProductRow = {
   category: { id: string; slug: string; name: string };
 };
 
-function toCatalogProduct(row: ProductRow): CatalogProduct {
+function toCatalogProduct(
+  row: ProductRow,
+  variants: CatalogVariant[] = [],
+): CatalogProduct {
   return {
     ...row,
     allergens: parseAllergens(row.allergens),
     inStock: !row.trackStock || row.stock > 0,
+    variants,
   };
+}
+
+/** Alleen thee toont de keuzes in de winkel. Andere varianten blijven onaangeroerd. */
+async function variantsFor(rows: ProductRow[]): Promise<Map<string, CatalogVariant[]>> {
+  const productIds = rows
+    .filter((row) => row.category.slug === "thee")
+    .map((row) => row.id);
+  const byProduct = new Map<string, CatalogVariant[]>();
+  if (productIds.length === 0) return byProduct;
+
+  const variantRows = await prisma.productVariant.findMany({
+    where: { productId: { in: productIds }, isActive: true },
+    orderBy: [{ sortOrder: "asc" }, { label: "asc" }],
+  });
+  const sourceSlugs = variantRows.flatMap((variant) =>
+    variant.sourceSlug ? [variant.sourceSlug] : [],
+  );
+  const sources =
+    sourceSlugs.length === 0
+      ? []
+      : await prisma.product.findMany({
+          where: { slug: { in: sourceSlugs } },
+          select: { slug: true, imageUrl: true, description: true },
+        });
+  const sourceBySlug = new Map(sources.map((source) => [source.slug, source]));
+
+  for (const variant of variantRows) {
+    const source = variant.sourceSlug
+      ? sourceBySlug.get(variant.sourceSlug)
+      : undefined;
+    const list = byProduct.get(variant.productId) ?? [];
+    list.push({
+      id: variant.id,
+      label: variant.label,
+      priceCents: variant.priceCents,
+      unit: variant.unit,
+      options: parseOptions(variant.optionsJson),
+      imageUrl: source?.imageUrl ?? null,
+      description: source?.description ?? null,
+      sortOrder: variant.sortOrder,
+    });
+    byProduct.set(variant.productId, list);
+  }
+
+  return byProduct;
+}
+
+async function toCatalogProducts(rows: ProductRow[]): Promise<CatalogProduct[]> {
+  const variants = await variantsFor(rows);
+  return rows.map((row) => toCatalogProduct(row, variants.get(row.id) ?? []));
+}
+
+export async function getVariantRedirect(
+  sourceSlug: string,
+): Promise<{ productSlug: string; variantId: string } | null> {
+  const variant = await prisma.productVariant.findFirst({
+    where: { sourceSlug, isActive: true, product: { isActive: true } },
+    select: { id: true, product: { select: { slug: true } } },
+  });
+  if (!variant) return null;
+  return { productSlug: variant.product.slug, variantId: variant.id };
 }
 
 export async function getActiveCategories(): Promise<CatalogCategory[]> {
@@ -124,7 +207,7 @@ export async function getActiveProducts(options?: {
     select: productSelect,
   });
 
-  return rows.map(toCatalogProduct);
+  return toCatalogProducts(rows);
 }
 
 export async function getFeaturedProducts(limit = 4): Promise<CatalogProduct[]> {
@@ -135,7 +218,7 @@ export async function getFeaturedProducts(limit = 4): Promise<CatalogProduct[]> 
     select: productSelect,
   });
 
-  return rows.map(toCatalogProduct);
+  return toCatalogProducts(rows);
 }
 
 export async function getProductBySlug(
@@ -146,7 +229,9 @@ export async function getProductBySlug(
     select: productSelect,
   });
 
-  return row ? toCatalogProduct(row) : null;
+  if (!row) return null;
+  const [product] = await toCatalogProducts([row]);
+  return product ?? null;
 }
 
 export async function getRelatedProducts(
@@ -164,7 +249,7 @@ export async function getRelatedProducts(
     select: productSelect,
   });
 
-  return rows.map(toCatalogProduct);
+  return toCatalogProducts(rows);
 }
 
 /** Categorieën met hun producten, in de volgorde die de bakker instelde. */

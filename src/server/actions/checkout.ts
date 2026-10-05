@@ -50,7 +50,7 @@ function toSlotOptions(
  * bestelperiode van die producten passen.
  */
 export async function getCheckoutData(
-  items: Array<Pick<CartItem, "productId" | "quantity">>,
+  items: Array<Pick<CartItem, "productId" | "variantId" | "quantity">>,
 ): Promise<CheckoutData> {
   const [cart, closedDates] = await Promise.all([
     priceCart(items),
@@ -82,6 +82,7 @@ export async function getCheckoutData(
 
 function parseItems(raw: FormDataEntryValue | null): Array<{
   productId: string;
+  variantId?: string;
   quantity: number;
 }> {
   if (typeof raw !== "string" || raw.trim() === "") return [];
@@ -90,7 +91,7 @@ function parseItems(raw: FormDataEntryValue | null): Array<{
     if (!Array.isArray(parsed)) return [];
     return parsed
       .filter(
-        (item): item is { productId: string; quantity: number } =>
+        (item): item is { productId: string; variantId?: string; quantity: number } =>
           typeof item === "object" &&
           item !== null &&
           typeof (item as { productId?: unknown }).productId === "string" &&
@@ -98,6 +99,10 @@ function parseItems(raw: FormDataEntryValue | null): Array<{
       )
       .map((item) => ({
         productId: item.productId,
+        variantId:
+          typeof item.variantId === "string" && item.variantId !== ""
+            ? item.variantId
+            : undefined,
         quantity: Number(item.quantity),
       }));
   } catch {

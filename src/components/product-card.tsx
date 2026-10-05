@@ -4,6 +4,7 @@ import { CalendarClockIcon } from "lucide-react";
 import { AddToCart } from "@/components/cart/add-to-cart";
 import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button-link";
 import { allergenSummary } from "@/lib/allergens";
 import type { CatalogProduct } from "@/lib/catalog";
 import { formatEuro } from "@/lib/money";
@@ -72,19 +73,28 @@ export function ProductCard({
           </p>
         )}
 
-        <AddToCart
-          product={{
-            id: product.id,
-            slug: product.slug,
-            name: product.name,
-            priceCents: product.priceCents,
-            unit: product.unit,
-            imageUrl: product.imageUrl,
-            inStock: product.inStock,
-            stock: product.stock,
-            trackStock: product.trackStock,
-          }}
-        />
+        {product.variants.length > 0 ? (
+          <ButtonLink
+            href={`/product/${product.slug}`}
+            className="h-11 w-full rounded-full text-sm"
+          >
+            Kies een smaak
+          </ButtonLink>
+        ) : (
+          <AddToCart
+            product={{
+              id: product.id,
+              slug: product.slug,
+              name: product.name,
+              priceCents: product.priceCents,
+              unit: product.unit,
+              imageUrl: product.imageUrl,
+              inStock: product.inStock,
+              stock: product.stock,
+              trackStock: product.trackStock,
+            }}
+          />
+        )}
       </div>
     </article>
   );

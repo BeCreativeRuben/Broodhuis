@@ -14,7 +14,7 @@ type AddToCartProps = {
   product: Pick<
     CatalogProduct,
     "id" | "slug" | "name" | "priceCents" | "unit" | "imageUrl" | "inStock"
-  > & { stock?: number; trackStock?: boolean };
+  > & { stock?: number; trackStock?: boolean; variantId?: string };
   /** "compact" = één knop in een productkaart, "full" = met aantalkiezer */
   variant?: "compact" | "full";
   className?: string;
@@ -31,12 +31,13 @@ export function AddToCart({
 
   const maxQuantity =
     product.trackStock && typeof product.stock === "number" ? product.stock : null;
-  const inCart = quantityOf(product.id);
+  const inCart = quantityOf(product.id, product.variantId);
 
   function handleAdd() {
     addItem(
       {
         productId: product.id,
+        variantId: product.variantId,
         slug: product.slug,
         name: product.name,
         priceCents: product.priceCents,

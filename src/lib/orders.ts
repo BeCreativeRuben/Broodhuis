@@ -162,6 +162,7 @@ export async function createOrder(input: CreateOrderInput) {
                 quantity: line.quantity,
                 lineTotalCents: line.lineTotalCents,
                 allergens: serialiseAllergens(line.allergens),
+                variantLabel: line.variantLabel,
               })),
             },
           },

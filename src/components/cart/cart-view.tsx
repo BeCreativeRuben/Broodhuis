@@ -19,7 +19,7 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatEuro } from "@/lib/money";
 import { cn } from "@/lib/utils";
-import type { CartNotice } from "@/lib/cart";
+import { cartLineKey, type CartNotice } from "@/lib/cart";
 import { revalidateCart } from "@/server/actions/cart";
 
 export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
@@ -35,7 +35,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
     if (!isReady) return;
 
     const signature = items
-      .map((line) => `${line.productId}:${line.quantity}`)
+      .map((line) => `${cartLineKey(line)}:${line.quantity}`)
       .sort()
       .join("|");
     if (signature === lastSyncedRef.current) return;
@@ -50,6 +50,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
       const priced = await revalidateCart(
         items.map((line) => ({
           productId: line.productId,
+          variantId: line.variantId,
           quantity: line.quantity,
         })),
       );
@@ -57,14 +58,14 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
       setNotices(priced.notices);
 
       const pricedById = new Map(
-        priced.lines.map((line) => [line.productId, line]),
+        priced.lines.map((line) => [cartLineKey(line), line]),
       );
       for (const line of items) {
-        const server = pricedById.get(line.productId);
+        const server = pricedById.get(cartLineKey(line));
         if (!server) {
-          removeItem(line.productId);
+          removeItem(cartLineKey(line));
         } else if (server.quantity !== line.quantity) {
-          setQuantity(line.productId, server.quantity);
+          setQuantity(cartLineKey(line), server.quantity);
         }
       }
     });
@@ -122,7 +123,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
 
         <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
           {items.map((line) => (
-            <li key={line.productId} className="flex gap-4 p-4">
+            <li key={cartLineKey(line)} className="flex gap-4 p-4">
               <Link
                 href={`/product/${line.slug}`}
                 className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
@@ -151,7 +152,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                 <div className="mt-3 flex items-center gap-2">
                   <QuantityStepper
                     value={line.quantity}
-                    onChange={(next) => setQuantity(line.productId, next)}
+                    onChange={(next) => setQuantity(cartLineKey(line), next)}
                     label={line.name}
                   />
                   <Button
@@ -159,7 +160,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                     variant="ghost"
                     size="icon"
                     className="size-9 rounded-full text-muted-foreground"
-                    onClick={() => removeItem(line.productId)}
+                    onClick={() => removeItem(cartLineKey(line))}
                     aria-label={`${line.name} verwijderen`}
                   >
                     <Trash2Icon className="size-4" />

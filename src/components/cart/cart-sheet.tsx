@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShoppingBasketIcon, Trash2Icon } from "lucide-react";
 
 import { useCart } from "@/components/cart/cart-provider";
+import { cartLineKey } from "@/lib/cart";
 import { ProductImage } from "@/components/product-image";
 import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,7 @@ export function CartSheet() {
           <>
             <ul className="flex-1 divide-y divide-border overflow-y-auto px-4">
               {items.map((line) => (
-                <li key={line.productId} className="flex gap-3 py-4">
+                <li key={cartLineKey(line)} className="flex gap-3 py-4">
                   <Link
                     href={`/product/${line.slug}`}
                     onClick={closeCart}
@@ -104,7 +105,7 @@ export function CartSheet() {
                     <div className="mt-2 flex items-center gap-2">
                       <QuantityStepper
                         value={line.quantity}
-                        onChange={(next) => setQuantity(line.productId, next)}
+                        onChange={(next) => setQuantity(cartLineKey(line), next)}
                         min={1}
                         label={line.name}
                       />
@@ -113,7 +114,7 @@ export function CartSheet() {
                         variant="ghost"
                         size="icon"
                         className="size-9 rounded-full text-muted-foreground"
-                        onClick={() => removeItem(line.productId)}
+                        onClick={() => removeItem(cartLineKey(line))}
                         aria-label={`${line.name} verwijderen`}
                       >
                         <Trash2Icon className="size-4" />

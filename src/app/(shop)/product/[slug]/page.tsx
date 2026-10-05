@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   CalendarClockIcon,
   ChevronLeftIcon,
@@ -11,11 +11,12 @@ import {
 
 import { AllergenList } from "@/components/allergen-list";
 import { AddToCart } from "@/components/cart/add-to-cart";
+import { ProductChoices } from "@/components/product-choices";
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getProductBySlug, getRelatedProducts } from "@/lib/catalog";
+import { getProductBySlug, getRelatedProducts, getVariantRedirect } from "@/lib/catalog";
 import { addDays, currentIsoDate, formatIsoDateLong } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
@@ -41,12 +42,21 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ keuze?: string }>;
 }) {
   const { slug } = await params;
+  const { keuze } = await searchParams;
   const product = await getProductBySlug(slug);
-  if (!product) notFound();
+  if (!product) {
+    const target = await getVariantRedirect(slug);
+    if (target) {
+      redirect(`/product/${target.productSlug}?keuze=${target.variantId}`);
+    }
+    notFound();
+  }
 
   const related = await getRelatedProducts(product);
   const earliestDate =
@@ -65,6 +75,18 @@ export default async function ProductPage({
       </Link>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-2 lg:gap-12">
+        {product.variants.length > 0 ? (
+          <ProductChoices
+            product={product}
+            initialVariantId={keuze}
+            earliestDateLabel={
+              earliestDate ? formatIsoDateLong(earliestDate) : null
+            }
+            deliveryFeeLabel={formatEuro(FULFILLMENT.deliveryFeeCents)}
+            cutoffHour={FULFILLMENT.orderCutoff.hour}
+          />
+        ) : (
+          <>
         <div className="relative aspect-4/3 overflow-hidden rounded-3xl bg-crumb shadow-warm-lg">
           <ProductImage
             src={product.imageUrl}
@@ -174,6 +196,8 @@ export default async function ProductPage({
             </p>
           </section>
         </div>
+          </>
+        )}
       </div>
 
       {related.length > 0 && (

@@ -2,6 +2,7 @@ import "server-only";
 
 import { parseAllergens } from "@/lib/allergens";
 import {
+  cartLineKey,
   EMPTY_CART,
   MAX_QUANTITY_PER_LINE,
   type CartNotice,
@@ -23,20 +24,34 @@ function sanitiseQuantity(quantity: unknown): number {
  * Producten die verdwenen of uitverkocht zijn, vallen eruit met een melding.
  */
 export async function priceCart(
-  items: Array<{ productId: string; quantity: number | string }>,
+  items: Array<{
+    productId: string;
+    quantity: number | string;
+    variantId?: string | null;
+  }>,
 ): Promise<PricedCart> {
-  const wanted = new Map<string, number>();
+  const wanted = new Map<
+    string,
+    { productId: string; variantId?: string; quantity: number }
+  >();
   for (const item of items) {
     if (typeof item?.productId !== "string" || item.productId === "") continue;
     const quantity = sanitiseQuantity(item.quantity);
     if (quantity <= 0) continue;
-    wanted.set(item.productId, (wanted.get(item.productId) ?? 0) + quantity);
+    const variantId =
+      typeof item.variantId === "string" && item.variantId !== ""
+        ? item.variantId
+        : undefined;
+    const key = cartLineKey({ productId: item.productId, variantId });
+    const existing = wanted.get(key);
+    if (existing) existing.quantity += quantity;
+    else wanted.set(key, { productId: item.productId, variantId, quantity });
   }
 
   if (wanted.size === 0) return EMPTY_CART;
 
   const products = await prisma.product.findMany({
-    where: { id: { in: [...wanted.keys()] } },
+    where: { id: { in: [...wanted.values()].map((line) => line.productId) } },
     select: {
       id: true,
       slug: true,
@@ -53,12 +68,35 @@ export async function priceCart(
     },
   });
 
+  const variantIds = [...wanted.values()].flatMap((line) =>
+    line.variantId ? [line.variantId] : [],
+  );
+  const variantRows =
+    variantIds.length === 0
+      ? []
+      : await prisma.productVariant.findMany({
+          where: { id: { in: variantIds } },
+        });
+  const variantById = new Map(variantRows.map((variant) => [variant.id, variant]));
+  const sourceSlugs = variantRows.flatMap((variant) =>
+    variant.sourceSlug ? [variant.sourceSlug] : [],
+  );
+  const sources =
+    sourceSlugs.length === 0
+      ? []
+      : await prisma.product.findMany({
+          where: { slug: { in: sourceSlugs } },
+          select: { slug: true, imageUrl: true },
+        });
+  const imageBySlug = new Map(sources.map((source) => [source.slug, source.imageUrl]));
+
   const byId = new Map(products.map((product) => [product.id, product]));
   const lines: PricedLine[] = [];
   const notices: CartNotice[] = [];
 
-  for (const [productId, requested] of wanted) {
-    const product = byId.get(productId);
+  for (const [, request] of wanted) {
+    const requested = request.quantity;
+    const product = byId.get(request.productId);
 
     if (!product || !product.isActive || !product.category.isActive) {
       notices.push({
@@ -92,15 +130,38 @@ export async function priceCart(
       });
     }
 
+    const variant = request.variantId
+      ? variantById.get(request.variantId)
+      : undefined;
+    if (
+      request.variantId &&
+      (!variant || !variant.isActive || variant.productId !== product.id)
+    ) {
+      notices.push({
+        kind: "removed",
+        message: `Een gekozen smaak van ${product.name} is niet meer beschikbaar en is uit je winkelwagen gehaald.`,
+      });
+      continue;
+    }
+
+    const unitPriceCents = variant?.priceCents ?? product.priceCents;
+    const unit = variant?.unit ?? product.unit;
+    const name = variant ? `${product.name} — ${variant.label}` : product.name;
+    const imageUrl =
+      (variant?.sourceSlug ? imageBySlug.get(variant.sourceSlug) : null) ??
+      product.imageUrl;
+
     lines.push({
       productId: product.id,
+      variantId: variant?.id,
+      variantLabel: variant?.label ?? null,
       slug: product.slug,
-      name: product.name,
-      unit: product.unit,
-      imageUrl: product.imageUrl,
-      unitPriceCents: product.priceCents,
+      name,
+      unit,
+      imageUrl,
+      unitPriceCents,
       quantity,
-      lineTotalCents: product.priceCents * quantity,
+      lineTotalCents: unitPriceCents * quantity,
       allergens: parseAllergens(product.allergens),
       leadTimeDays: product.leadTimeDays,
       maxQuantity,

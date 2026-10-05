@@ -64,24 +64,52 @@ export const categories = [
 
 const TBD = 999;
 
+/**
+ * Smaken van OR TEA?. Het losse product blijft in de database (foto + oude slug)
+ * maar is niet meer zelf te koop: het wordt een variant van het doosje of het blik.
+ * @type {Array<{ slug: string, name: string, priceCents: number, unit: string, description: string, flavors: Array<[string, string]> }>}
+ */
+export const teaPacks = [
+  {
+    slug: "or-tea-doosje",
+    name: "OR TEA?, doosje",
+    priceCents: 499,
+    unit: "per doosje",
+    description: "Doosje van 10 zakjes. Kies je smaak.",
+    flavors: [
+      ["or-tea-beeee-calm-doosje", "Beeee Calm"],
+      ["or-tea-dragon-jasmine-green-doosje", "Dragon Jasmine Green"],
+      ["or-tea-dukes-blues-doosje", "Duke's Blues"],
+      ["or-tea-energinger-doosje", "EnerGinger"],
+      ["or-tea-lychee-white-peony-doosje", "Lychee White Peony"],
+      ["or-tea-merry-peppermint-doosje", "Merry Peppermint"],
+      ["or-tea-mount-feather-doosje", "Mount Feather"],
+      ["or-tea-playful-pear-doosje", "Playful Pear"],
+      ["or-tea-queen-berry-doosje", "Queen Berry"],
+      ["or-tea-tiffanys-breakfast-doosje", "Tiffany's Breakfast"],
+    ],
+  },
+  {
+    slug: "or-tea-blik",
+    name: "OR TEA?, blik",
+    priceCents: 1290,
+    unit: "per blik",
+    description: "Blik om thuis te zetten. Kies je smaak.",
+    flavors: [
+      ["or-tea-beeee-calm-blik", "Beeee Calm"],
+      ["or-tea-energinger-blik", "EnerGinger"],
+      ["or-tea-merry-peppermint-blik", "Merry Peppermint"],
+      ["or-tea-mount-feather-blik", "Mount Feather"],
+      ["or-tea-queen-berry-blik", "Queen Berry"],
+    ],
+  },
+];
+
 /** @type {Array<Record<string, unknown>>} */
 export const products = [
-  // Thee — doosje €4,99, blik €12,90
-  tea("or-tea-beeee-calm-doosje", "OR TEA? Beeee Calm, doosje", 499, "per doosje", 2, "Kamillethee, doosje van 10 zakjes."),
-  tea("or-tea-beeee-calm-blik", "OR TEA? Beeee Calm, blik", 1290, "per blik", 3, "Kamillethee in een blik van 50 g."),
-  tea("or-tea-dragon-jasmine-green-doosje", "OR TEA? Dragon Jasmine Green, doosje", 499, "per doosje", 5, "Groene jasmijnthee, doosje van 10 zakjes."),
-  tea("or-tea-dukes-blues-doosje", "OR TEA? Duke's Blues, doosje", 499, "per doosje", 7, "Zwarte thee, doosje van 10 zakjes."),
-  tea("or-tea-energinger-doosje", "OR TEA? EnerGinger, doosje", 499, "per doosje", 9, "Gemberthee, doosje van 10 zakjes."),
-  tea("or-tea-energinger-blik", "OR TEA? EnerGinger, blik", 1290, "per blik", 10, "Gemberthee in een blik van 75 g."),
-  tea("or-tea-merry-peppermint-doosje", "OR TEA? Merry Peppermint, doosje", 499, "per doosje", 12, "Pepermuntthee, doosje van 10 zakjes."),
-  tea("or-tea-merry-peppermint-blik", "OR TEA? Merry Peppermint, blik", 1290, "per blik", 13, "Pepermuntthee in een blik van 75 g."),
-  tea("or-tea-lychee-white-peony-doosje", "OR TEA? Lychee White Peony, doosje", 499, "per doosje", 15, "Witte thee met lychee, doosje van 10 zakjes."),
-  tea("or-tea-mount-feather-doosje", "OR TEA? Mount Feather, doosje", 499, "per doosje", 17, "Groene thee, doosje van 10 zakjes."),
-  tea("or-tea-mount-feather-blik", "OR TEA? Mount Feather, blik", 1290, "per blik", 18, "Groene thee in een blik van 75 g."),
-  tea("or-tea-queen-berry-doosje", "OR TEA? Queen Berry, doosje", 499, "per doosje", 20, "Vruchtenthee, doosje van 10 zakjes."),
-  tea("or-tea-queen-berry-blik", "OR TEA? Queen Berry, blik", 1290, "per blik", 21, "Vruchtenthee in een blik van 100 g."),
-  tea("or-tea-tiffanys-breakfast-doosje", "OR TEA? Tiffany's Breakfast, doosje", 499, "per doosje", 25, "Ontbijtthee, doosje van 10 zakjes."),
-  tea("or-tea-playful-pear-doosje", "OR TEA? Playful Pear, doosje", 499, "per doosje", 23, "Perenthee, doosje van 10 zakjes."),
+  // Thee — één product per verpakking, smaak als variant (zoals een taart).
+  tea("or-tea-doosje", "OR TEA?, doosje", 499, "per doosje", 2, "Doosje van 10 zakjes. Kies je smaak."),
+  tea("or-tea-blik", "OR TEA?, blik", 1290, "per blik", 3, "Blik om thuis te zetten. Kies je smaak."),
 
   // Dranken
   drink("coca-cola-zero", "Coca-Cola Zero", 250, "per fles 50 cl", 49, "Fles van 50 cl."),

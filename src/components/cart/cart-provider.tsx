@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-import { MAX_QUANTITY_PER_LINE, type CartItem } from "@/lib/cart";
+import { cartLineKey, MAX_QUANTITY_PER_LINE, type CartItem } from "@/lib/cart";
 
 const STORAGE_KEY = "broodhuis-winkelwagen-v1";
 
@@ -23,10 +23,10 @@ type CartContextValue = {
   openCart: () => void;
   closeCart: () => void;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  setQuantity: (productId: string, quantity: number) => void;
-  removeItem: (productId: string) => void;
+  setQuantity: (lineKey: string, quantity: number) => void;
+  removeItem: (lineKey: string) => void;
   clear: () => void;
-  quantityOf: (productId: string) => number;
+  quantityOf: (productId: string, variantId?: string) => number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -38,7 +38,8 @@ function isCartItem(value: unknown): value is CartItem {
     typeof item.productId === "string" &&
     typeof item.quantity === "number" &&
     typeof item.name === "string" &&
-    typeof item.priceCents === "number"
+    typeof item.priceCents === "number" &&
+    (item.variantId === undefined || typeof item.variantId === "string")
   );
 }
 
@@ -92,7 +93,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = useCallback((item: Omit<CartItem, "quantity">, quantity = 1) => {
     setItems((current) => {
-      const existing = current.find((line) => line.productId === item.productId);
+      const key = cartLineKey(item);
+      const existing = current.find((line) => cartLineKey(line) === key);
       if (!existing) {
         return [
           ...current,
@@ -103,7 +105,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ];
       }
       return current.map((line) =>
-        line.productId === item.productId
+        cartLineKey(line) === key
           ? {
               ...line,
               ...item,
@@ -114,21 +116,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const setQuantity = useCallback((productId: string, quantity: number) => {
+  const setQuantity = useCallback((lineKey: string, quantity: number) => {
     setItems((current) => {
       if (quantity <= 0) {
-        return current.filter((line) => line.productId !== productId);
+        return current.filter((line) => cartLineKey(line) !== lineKey);
       }
       return current.map((line) =>
-        line.productId === productId
+        cartLineKey(line) === lineKey
           ? { ...line, quantity: Math.min(quantity, MAX_QUANTITY_PER_LINE) }
           : line,
       );
     });
   }, []);
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((current) => current.filter((line) => line.productId !== productId));
+  const removeItem = useCallback((lineKey: string) => {
+    setItems((current) => current.filter((line) => cartLineKey(line) !== lineKey));
   }, []);
 
   const clear = useCallback(() => setItems([]), []);
@@ -152,8 +154,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setQuantity,
       removeItem,
       clear,
-      quantityOf: (productId: string) =>
-        items.find((line) => line.productId === productId)?.quantity ?? 0,
+      quantityOf: (productId: string, variantId?: string) =>
+        items.find(
+          (line) => cartLineKey(line) === cartLineKey({ productId, variantId }),
+        )?.quantity ?? 0,
     };
   }, [items, isReady, isOpen, addItem, setQuantity, removeItem, clear]);
 

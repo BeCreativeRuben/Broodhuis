@@ -26,6 +26,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { capitalizeFirst, formatIsoDateLong } from "@/lib/datetime";
+import { cartLineKey } from "@/lib/cart";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
@@ -60,7 +61,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
   const signature = useMemo(
     () =>
       items
-        .map((line) => `${line.productId}:${line.quantity}`)
+        .map((line) => `${cartLineKey(line)}:${line.quantity}`)
         .sort()
         .join("|"),
     [items],
@@ -77,6 +78,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
     getCheckoutData(
       items.map((line) => ({
         productId: line.productId,
+        variantId: line.variantId,
         quantity: line.quantity,
       })),
     )
@@ -183,6 +185,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         value={JSON.stringify(
           cart.lines.map((line) => ({
             productId: line.productId,
+            variantId: line.variantId,
             quantity: line.quantity,
           })),
         )}
@@ -469,7 +472,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
 
             <ul className="space-y-3">
               {cart.lines.map((line) => (
-                <li key={line.productId} className="flex items-center gap-3">
+                <li key={cartLineKey(line)} className="flex items-center gap-3">
                   <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-secondary">
                     <ProductImage
                       src={line.imageUrl}

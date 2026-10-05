@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { CategoryIcon } from "@/components/category-icon";
 import { ProductCard } from "@/components/product-card";
 import { getActiveCategories, getCatalogSections } from "@/lib/catalog";
 import { SHOP } from "@/lib/shop-config";
@@ -43,7 +44,7 @@ export default async function AssortimentPage({
 
       <nav
         aria-label="Categorieën"
-        className="sticky top-16 z-30 -mx-4 mt-6 border-b border-border/60 bg-background/95 px-4 py-3 backdrop-blur lg:top-[7.25rem] lg:mx-0 lg:rounded-full lg:border lg:border-border lg:px-3"
+        className="sticky top-16 z-30 -mx-4 mt-6 border-b border-border/60 bg-background/95 px-4 py-3 backdrop-blur lg:top-[5.5rem] lg:mx-0 lg:border lg:border-border lg:px-3"
       >
         <ul className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
           <li>
@@ -57,9 +58,7 @@ export default async function AssortimentPage({
                 href={`/assortiment?categorie=${category.slug}`}
                 active={category.slug === categorie}
               >
-                <span aria-hidden className="mr-1">
-                  {category.icon}
-                </span>
+                <CategoryIcon category={category} className="mr-2 size-4" />
                 {category.name}
               </CategoryChip>
             </li>
@@ -68,7 +67,7 @@ export default async function AssortimentPage({
       </nav>
 
       {sections.length === 0 ? (
-        <div className="mt-12 rounded-2xl border border-dashed border-border bg-card/60 p-10 text-center">
+        <div className="mt-12 border border-dashed border-border bg-card/60 p-10 text-center">
           <h2 className="font-heading text-xl font-semibold">
             Hier staat nog niets
           </h2>
@@ -78,7 +77,7 @@ export default async function AssortimentPage({
           </p>
           <Link
             href="/assortiment"
-            className="mt-4 inline-block rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+            className="mt-4 inline-block bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
           >
             Volledig assortiment
           </Link>
@@ -94,11 +93,12 @@ export default async function AssortimentPage({
                 <div className="mb-4 flex items-end justify-between gap-3">
                   <h2
                     id={section.category.slug}
-                    className="font-heading text-2xl font-semibold"
+                    className="flex items-center gap-2.5 font-heading text-2xl font-semibold"
                   >
-                    <span aria-hidden className="mr-2">
-                      {section.category.icon}
-                    </span>
+                    <CategoryIcon
+                      category={section.category}
+                      className="size-5 text-crust"
+                    />
                     {section.category.name}
                   </h2>
                   <p className="hidden max-w-sm text-sm text-muted-foreground sm:block">
@@ -136,7 +136,7 @@ function CategoryChip({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-10 items-center rounded-full border px-4 text-sm font-medium whitespace-nowrap transition-colors",
+        "inline-flex h-10 items-center border px-4 text-sm font-medium tracking-wide whitespace-nowrap uppercase transition-colors",
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card hover:bg-secondary",

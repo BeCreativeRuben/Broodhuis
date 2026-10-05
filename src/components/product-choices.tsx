@@ -55,7 +55,7 @@ export function ProductChoices({
 
   return (
     <>
-      <div className="relative aspect-4/3 overflow-hidden rounded-3xl bg-crumb shadow-warm-lg">
+      <div className="relative aspect-4/3 overflow-hidden bg-crumb shadow-warm-lg">
         <ProductImage
           src={image}
           alt={`${product.name}, ${selected.label}`}
@@ -66,7 +66,7 @@ export function ProductChoices({
 
       <div className="space-y-6">
         <div className="space-y-3">
-          <Badge variant="secondary" className="rounded-full">
+          <Badge variant="secondary">
             {product.category.name}
           </Badge>
           <h1 className="font-heading text-3xl font-semibold sm:text-4xl">

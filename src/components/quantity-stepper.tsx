@@ -35,7 +35,7 @@ export function QuantityStepper({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border border-border bg-card p-1",
+        "inline-flex items-center gap-1 border border-border bg-card p-1",
         className,
       )}
     >
@@ -43,7 +43,7 @@ export function QuantityStepper({
         type="button"
         variant="ghost"
         size="icon"
-        className={cn("rounded-full", buttonSize)}
+        className={cn("rounded-none", buttonSize)}
         onClick={() => onChange(Math.max(value - 1, min - 1))}
         aria-label={`Eén ${label} minder`}
       >
@@ -62,7 +62,7 @@ export function QuantityStepper({
         type="button"
         variant="ghost"
         size="icon"
-        className={cn("rounded-full", buttonSize)}
+        className={cn("rounded-none", buttonSize)}
         onClick={() => onChange(Math.min(value + 1, upperBound))}
         disabled={value >= upperBound}
         aria-label={`Eén ${label} meer`}

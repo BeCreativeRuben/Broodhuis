@@ -3,9 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapPinIcon, MenuIcon, PhoneIcon, WheatIcon } from "lucide-react";
+import { MenuIcon, PhoneIcon } from "lucide-react";
 
+import { BrandLogo } from "@/components/brand-logo";
 import { CartButton } from "@/components/cart/cart-button";
+import { CategoryIcon } from "@/components/category-icon";
+import { SocialLinks } from "@/components/social-links";
 import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
 import {
@@ -21,10 +24,10 @@ import { cn } from "@/lib/utils";
 type NavCategory = {
   slug: string;
   name: string;
-  icon: string | null;
 };
 
 const mainLinks = [
+  { href: "/bestellen", label: "Bestellen" },
   { href: "/assortiment", label: "Assortiment" },
   { href: "/info", label: "Praktisch" },
 ];
@@ -34,130 +37,108 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
   const pathname = usePathname();
 
   return (
-    <header className="print-hidden sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur">
-      <div className="hidden border-b border-border/60 bg-secondary/50 lg:block">
-        <div className="page-shell flex h-9 items-center justify-between text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <MapPinIcon className="size-3.5" />
-            {SHOP.street}, {SHOP.postalCode} {SHOP.city}
-          </span>
-          <span className="inline-flex items-center gap-4">
-            <span>Afhalen woensdag t.e.m. zondag</span>
-            <span aria-hidden>·</span>
-            <span>Leveren donderdag, vrijdag &amp; zondag</span>
-            <a
-              href={`tel:${SHOP.phoneHref}`}
-              className="inline-flex items-center gap-1.5 font-medium text-foreground hover:underline"
+    <header className="print-hidden sticky top-0 z-40 border-b border-border/70 bg-background/95 backdrop-blur">
+      <div className="page-shell grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-2 lg:h-[5.5rem]">
+        <div className="flex items-center gap-1">
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-11 rounded-none lg:hidden"
+                  aria-label="Menu openen"
+                />
+              }
             >
-              <PhoneIcon className="size-3.5" />
-              {SHOP.phone}
-            </a>
-          </span>
-        </div>
-      </div>
+              <MenuIcon className="size-5" />
+            </SheetTrigger>
+            <SheetContent side="left" className="data-[side=left]:w-[85%]">
+              <SheetHeader className="border-b border-border pb-4">
+                <SheetTitle>
+                  <BrandLogo className="h-8" />
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-1 px-2">
+                {mainLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="px-3 py-3 text-base font-medium hover:bg-secondary"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <p className="eyebrow mt-4 px-3">Categorieën</p>
+                {categories.map((category) => (
+                  <Link
+                    key={category.slug}
+                    href={`/assortiment?categorie=${category.slug}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-3 text-base hover:bg-secondary"
+                  >
+                    <CategoryIcon
+                      category={category}
+                      className="size-4 text-crust"
+                    />
+                    {category.name}
+                  </Link>
+                ))}
+              </nav>
+              <div className="mt-auto space-y-2 border-t border-border p-4 text-sm text-muted-foreground">
+                <SocialLinks />
+                <a
+                  href={`tel:${SHOP.phoneHref}`}
+                  className="flex items-center gap-2 font-medium text-foreground"
+                >
+                  <PhoneIcon className="size-4" /> {SHOP.phone}
+                </a>
+                <p>
+                  {SHOP.street}
+                  <br />
+                  {SHOP.postalCode} {SHOP.city}
+                </p>
+              </div>
+            </SheetContent>
+          </Sheet>
 
-      <div className="page-shell flex h-16 items-center gap-3 lg:h-20">
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-11 rounded-full lg:hidden"
-                aria-label="Menu openen"
-              />
-            }
-          >
-            <MenuIcon className="size-5" />
-          </SheetTrigger>
-          <SheetContent side="left" className="data-[side=left]:w-[85%]">
-            <SheetHeader className="border-b border-border pb-4">
-              <SheetTitle>
-                <span className="font-heading text-lg">{SHOP.name}</span>
-              </SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-1 px-2">
-              {mainLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-3 text-base font-medium hover:bg-secondary"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <p className="eyebrow mt-4 px-3">Categorieën</p>
-              {categories.map((category) => (
-                <Link
-                  key={category.slug}
-                  href={`/assortiment?categorie=${category.slug}`}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-3 text-base hover:bg-secondary"
-                >
-                  <span aria-hidden className="text-lg">
-                    {category.icon ?? "•"}
-                  </span>
-                  {category.name}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-auto space-y-1 border-t border-border p-4 text-sm text-muted-foreground">
-              <a
-                href={`tel:${SHOP.phoneHref}`}
-                className="flex items-center gap-2 font-medium text-foreground"
+          <nav className="hidden items-center gap-1 lg:flex">
+            {mainLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "px-3 py-2 text-[13px] font-medium tracking-wide uppercase transition-colors hover:text-crust",
+                  pathname.startsWith(link.href) && "text-crust",
+                )}
               >
-                <PhoneIcon className="size-4" /> {SHOP.phone}
-              </a>
-              <p>
-                {SHOP.street}
-                <br />
-                {SHOP.postalCode} {SHOP.city}
-              </p>
-            </div>
-          </SheetContent>
-        </Sheet>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground lg:size-11">
-            <WheatIcon className="size-5" />
-          </span>
-          <span className="leading-none">
-            <span className="block font-heading text-xl font-semibold tracking-tight lg:text-2xl">
-              {SHOP.name}
-            </span>
-            <span className="hidden text-xs text-muted-foreground sm:block">
-              Bakkerij · {SHOP.city}
-            </span>
-          </span>
+        <Link
+          href="/"
+          className="justify-self-center"
+          aria-label="Naar de startpagina"
+        >
+          <BrandLogo priority />
         </Link>
 
-        <nav className="ml-6 hidden items-center gap-1 lg:flex">
-          {mainLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary",
-                pathname.startsWith(link.href) && "bg-secondary",
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center justify-end gap-1">
+          <SocialLinks className="hidden lg:flex" />
           <ButtonLink
             href={`tel:${SHOP.phoneHref}`}
             variant="ghost"
             size="icon"
-            className="size-11 rounded-full lg:hidden"
+            className="size-11 rounded-none lg:hidden"
             aria-label={`Bel de bakkerij op ${SHOP.phone}`}
           >
             <PhoneIcon className="size-5" />
           </ButtonLink>
-          <CartButton />
+          <CartButton className="rounded-none" />
         </div>
       </div>
     </header>

@@ -159,7 +159,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         </p>
         <ButtonLink
           href="/assortiment"
-          className="mt-5 h-12 rounded-full px-6 text-base"
+          className="mt-5 h-12 rounded-none px-6 text-base"
         >
           Naar het assortiment
         </ButtonLink>
@@ -215,7 +215,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             </Alert>
           )}
 
-          <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+          <section className="border border-border bg-card p-5 shadow-warm">
             <h2
               id="stap-bezorgwijze"
               className="font-heading text-lg font-semibold"
@@ -253,7 +253,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             )}
           </section>
 
-          <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+          <section className="border border-border bg-card p-5 shadow-warm">
             <h2 id="stap-moment" className="font-heading text-lg font-semibold">
               2. Wanneer past het?
             </h2>
@@ -302,7 +302,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   <Button
                     type="button"
                     variant="ghost"
-                    className="mt-3 w-full rounded-full"
+                    className="mt-3 w-full rounded-none"
                     onClick={() => setShowAllSlots((current) => !current)}
                   >
                     {showAllSlots
@@ -324,7 +324,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             )}
           </section>
 
-          <section className="rounded-2xl border border-border bg-card p-5 shadow-warm">
+          <section className="border border-border bg-card p-5 shadow-warm">
             <h2 className="font-heading text-lg font-semibold">3. Jouw gegevens</h2>
             <div className="mt-4 grid gap-4">
               <Field
@@ -459,7 +459,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         </div>
 
         <aside className="lg:sticky lg:top-32">
-          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-warm">
+          <div className="space-y-4 border border-border bg-card p-5 shadow-warm">
             <div className="flex items-center justify-between">
               <h2 className="font-heading text-lg font-semibold">Je bestelling</h2>
               <Link
@@ -533,7 +533,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               type="submit"
               size="lg"
               disabled={isPending || slotOptions.length === 0}
-              className="hidden h-12 w-full rounded-full text-base lg:flex"
+              className="hidden h-12 w-full rounded-none text-base lg:flex"
             >
               {isPending ? (
                 <>
@@ -573,7 +573,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
           <Button
             type="submit"
             disabled={isPending || slotOptions.length === 0}
-            className="h-12 shrink-0 rounded-full px-5 text-base"
+            className="h-12 shrink-0 rounded-none px-5 text-base"
           >
             {isPending ? (
               <Loader2Icon className="size-4 animate-spin" />

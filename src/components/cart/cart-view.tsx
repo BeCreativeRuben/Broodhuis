@@ -95,7 +95,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
         </p>
         <ButtonLink
           href="/assortiment"
-          className="mt-5 h-12 rounded-full px-6 text-base"
+          className="mt-5 h-12 rounded-none px-6 text-base"
         >
           Naar het assortiment
         </ButtonLink>
@@ -121,7 +121,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           </div>
         )}
 
-        <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+        <ul className="divide-y divide-border overflow-hidden border border-border bg-card">
           {items.map((line) => (
             <li key={cartLineKey(line)} className="flex gap-4 p-4">
               <Link
@@ -171,13 +171,13 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           ))}
         </ul>
 
-        <ButtonLink href="/assortiment" variant="ghost" className="rounded-full">
+        <ButtonLink href="/assortiment" variant="ghost" className="rounded-none">
           Verder winkelen
         </ButtonLink>
       </div>
 
       <aside className="lg:sticky lg:top-32">
-        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-warm">
+        <div className="space-y-4 border border-border bg-card p-5 shadow-warm">
           <h2 className="font-heading text-lg font-semibold">Overzicht</h2>
 
           <dl className="space-y-2 text-sm">
@@ -205,7 +205,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
             href="/afrekenen"
             aria-disabled={isChecking || undefined}
             className={cn(
-              "h-12 w-full rounded-full text-base",
+              "h-12 w-full rounded-none text-base",
               isChecking && "pointer-events-none opacity-70",
             )}
           >

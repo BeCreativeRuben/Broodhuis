@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Montserrat, Playfair_Display } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
 import { SHOP } from "@/lib/shop-config";
@@ -7,13 +7,13 @@ import { siteUrl } from "@/lib/site-url";
 
 import "./globals.css";
 
-const display = Fraunces({
+const display = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
 });
 
-const body = Inter({
+const body = Montserrat({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: `%s · ${SHOP.name}`,
   },
   description:
-    "Bestel online bij Bakkerij 't Broodhuis in Waasmunster: vers brood, koffiekoeken, patisserie en feesttaarten. Afhalen in de winkel of laten leveren.",
+    "Bakkerij 't Broodhuis is sinds augustus 2020 dé warme bakker bij uitstek voor brood, gebak, confiserie en belegde broodjes. Bestel online in Waasmunster, betaal met Bancontact en haal af of laat leveren.",
   openGraph: {
     type: "website",
     locale: "nl_BE",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f6efe2",
+  themeColor: "#FFFCF6",
   width: "device-width",
   initialScale: 1,
 };

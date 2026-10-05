@@ -42,7 +42,7 @@ export default function InfoPage() {
       </header>
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-border bg-card p-6">
+        <section className="border border-border bg-card p-6">
           <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-crust">
             <StoreIcon className="size-5" />
           </span>
@@ -91,13 +91,13 @@ export default function InfoPage() {
             target="_blank"
             rel="noreferrer"
             variant="outline"
-            className="mt-4 rounded-full"
+            className="mt-4 rounded-none"
           >
             Route naar de winkel
           </ButtonLink>
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-6">
+        <section className="border border-border bg-card p-6">
           <span className="flex size-11 items-center justify-center rounded-full bg-accent text-accent-foreground">
             <TruckIcon className="size-5" />
           </span>
@@ -155,7 +155,7 @@ export default function InfoPage() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-6">
+        <section className="border border-border bg-card p-6">
           <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-crust">
             <ClockIcon className="size-5" />
           </span>
@@ -192,7 +192,7 @@ export default function InfoPage() {
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-6">
+        <section className="border border-border bg-card p-6">
           <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-crust">
             <BanknoteIcon className="size-5" />
           </span>
@@ -217,7 +217,7 @@ export default function InfoPage() {
         </section>
       </div>
 
-      <section className="mt-10 rounded-2xl border border-border bg-card p-6">
+      <section className="mt-10 border border-border bg-card p-6">
         <h2 className="font-heading text-xl font-semibold">
           Allergenen en ingrediënten
         </h2>
@@ -235,7 +235,7 @@ export default function InfoPage() {
         </p>
       </section>
 
-      <section className="mt-6 flex flex-col items-start gap-4 rounded-2xl bg-secondary/60 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <section className="mt-6 flex flex-col items-start gap-4 bg-secondary/60 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-heading text-xl font-semibold">Nog een vraag?</h2>
           <p className="text-sm text-muted-foreground">
@@ -245,14 +245,14 @@ export default function InfoPage() {
         <div className="flex flex-wrap gap-2">
           <ButtonLink
             href={`tel:${SHOP.phoneHref}`}
-            className="h-11 rounded-full px-5"
+            className="h-11 rounded-none px-5"
           >
             <PhoneIcon className="size-4" /> {SHOP.phone}
           </ButtonLink>
           <ButtonLink
             href="/assortiment"
             variant="outline"
-            className="h-11 rounded-full px-5"
+            className="h-11 rounded-none px-5"
           >
             Naar het assortiment
           </ButtonLink>

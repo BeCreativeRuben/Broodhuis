@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { ClockIcon, MapPinIcon, PhoneIcon, WheatIcon } from "lucide-react";
+import { ClockIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
+import { BrandLogo } from "@/components/brand-logo";
+import { SocialLinks } from "@/components/social-links";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
-import { formatTime } from "@/lib/datetime";
-import { WEEKDAY_NAMES_NL } from "@/lib/datetime";
+import { formatTime, WEEKDAY_NAMES_NL } from "@/lib/datetime";
 
 function openingHours() {
   return FULFILLMENT.pickupWindows.map((serviceWindow) => ({
@@ -17,23 +18,19 @@ export function SiteFooter() {
   const hours = openingHours();
 
   return (
-    <footer className="print-hidden mt-16 border-t border-border bg-secondary/40">
+    <footer className="print-hidden mt-16 border-t border-border bg-secondary/50">
       <div className="page-shell grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="space-y-3">
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <WheatIcon className="size-5" />
-            </span>
-            <span className="font-heading text-xl font-semibold">{SHOP.name}</span>
-          </div>
+        <div className="space-y-4">
+          <BrandLogo className="h-9 lg:h-10" />
           <p className="text-sm text-muted-foreground">
             {SHOP.tagline}. Elke bakdag versgebakken brood, koffiekoeken en
             patisserie — online besteld, klaar wanneer jij het wil.
           </p>
+          <SocialLinks />
         </div>
 
         <div className="space-y-3">
-          <h2 className="font-heading text-base font-semibold">Waar vind je ons</h2>
+          <h2 className="font-heading text-lg">Waar vind je ons</h2>
           <address className="space-y-2 text-sm text-muted-foreground not-italic">
             <span className="flex items-start gap-2">
               <MapPinIcon className="mt-0.5 size-4 shrink-0" />
@@ -50,21 +47,19 @@ export function SiteFooter() {
               <PhoneIcon className="size-4 shrink-0" />
               {SHOP.phone}
             </a>
-            {SHOP.email ? (
-              <a
-                href={`mailto:${SHOP.email}`}
-                className="flex items-center gap-2 hover:text-foreground"
-              >
-                {SHOP.email}
-              </a>
-            ) : null}
+            <a
+              href={SHOP.facebook}
+              target="_blank"
+              rel="noreferrer"
+              className="block hover:text-foreground"
+            >
+              Contacteer ons op messenger
+            </a>
           </address>
         </div>
 
         <div className="space-y-3">
-          <h2 className="font-heading text-base font-semibold">
-            Afhalen in de winkel
-          </h2>
+          <h2 className="font-heading text-lg">Afhalen in de winkel</h2>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
             {hours.map((entry) => (
               <li
@@ -87,16 +82,16 @@ export function SiteFooter() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="font-heading text-base font-semibold">Bestellen</h2>
+          <h2 className="font-heading text-lg">Bestellen</h2>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
             <li>
-              <Link href="/assortiment" className="hover:text-foreground">
-                Assortiment
+              <Link href="/bestellen" className="hover:text-foreground">
+                Bestellen
               </Link>
             </li>
             <li>
-              <Link href="/winkelwagen" className="hover:text-foreground">
-                Winkelwagen
+              <Link href="/assortiment" className="hover:text-foreground">
+                Assortiment
               </Link>
             </li>
             <li>
@@ -111,7 +106,7 @@ export function SiteFooter() {
                 rel="noreferrer"
                 className="hover:text-foreground"
               >
-                Onze website
+                bakkerij-tbroodhuis.be
               </a>
             </li>
           </ul>
@@ -125,7 +120,7 @@ export function SiteFooter() {
       <div className="border-t border-border/70">
         <div className="page-shell flex flex-col gap-2 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {SHOP.legalName} — {SHOP.city}
+            © {new Date().getFullYear()} {SHOP.legalName} — {SHOP.vat}
           </p>
           <p>
             Betalen met Bancontact of bankkaart · Online besteld is online betaald.

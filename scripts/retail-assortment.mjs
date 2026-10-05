@@ -3,6 +3,7 @@
  * photo = nummer van de WebP. Alleen het duidelijkste packshot.
  * Actief = prijs staat op de prijslijst. Anders isActive false en
  * "Prijs bevestigen bij Marie" in de beschrijving.
+ * Coca-Cola original volgt de prijs van Coca-Cola Zero (€2,50), op vraag van Ruben.
  */
 
 export const PRICE_NOTE = "Prijs bevestigen bij Marie.";
@@ -96,7 +97,7 @@ export const products = [
   drink("fruji-rabarber", "Fruji rabarber", 350, "per fles 25 cl", 54, "Bruisende rabarberlimonade, fles van 25 cl."),
   drink("fruji-vlierbloesem", "Fruji vlierbloesem", 350, "per fles 25 cl", 52, "Bruisende vlierbloesemlimonade, fles van 25 cl."),
   drink("fruji-pompelmoes-gember", "Fruji pompelmoes & gember", 350, "per fles 75 cl", 58, "Bruisende pompelmoes-gemberlimonade, fles van 75 cl."),
-  pending("dranken", "coca-cola-original", "Coca-Cola original", "per fles", 50, "De prijslijst vermeldt alleen Coca-Cola Zero."),
+  drink("coca-cola-original", "Coca-Cola original", 250, "per fles 50 cl", 50, "Fles van 50 cl. Zelfde prijs als Coca-Cola Zero."),
 
   juice("sinaasappelaere", "De Sinaasappelaere", 59),
   juice("appelaere", "De Appelaere", 62),
@@ -115,8 +116,8 @@ export const products = [
   dairy("klaartjes-kaas-jong", "Klaartjes Kaas jong", 2233, "per kg", 73, "Romig jong. De prijs is per kilogram.", "melk"),
   dairy("klaartjes-kaas-belegen", "Klaartjes Kaas belegen", 2608, "per kg", 74, "Pittig belegen. De prijs is per kilogram.", "melk"),
   dairy("klaartjes-kaas-oud", "Klaartjes Kaas oud", 3274, "per kg", 72, "Perfect oud. De prijs is per kilogram.", "melk"),
-  pending("zuivel", "inex-halfvolle-melk", "Inex halfvolle melk", "per fles", 86, "De prijslijst heeft halfvolle melk van 500 ml (€1,65). Op de foto staat geen inhoud.", "melk"),
-  pending("zuivel", "inex-volle-melk", "Inex volle melk", "per fles", 87, "De fles op de foto is 900 ml. De prijslijst heeft 500 ml (€1,65) en 1000 ml (€2,20).", "melk"),
+  dairy("inex-halfvolle-melk", "Inex halfvolle melk", 165, "per fles 500 ml", 86, "Halfvolle Inex-melk, fles van 500 ml.", "melk"),
+  dairy("inex-volle-melk", "Inex volle melk", 220, "per fles", 87, "Volle Inex-melk. De fles is 900 ml; dat sluit het dichtst aan bij de literprijs van €2,20.", "melk"),
 
   // Confituur — niet op de prijslijst
   pending("confituur", "rabeko-light-aardbei", "Rabeko Light aardbei", "per pot", 63, "Lichte confituur, aardbei."),
@@ -134,15 +135,15 @@ export const products = [
   ice("missault-vanille", "Missault vanille", 195, "per potje (100 ml)", 91, "Vanille-ijs in een potje van 100 ml.", "melk"),
   ice("missault-chocolade", "Missault chocolade", 195, "per potje (100 ml)", 92, "Chocolade-ijs in een potje van 100 ml.", "melk"),
   ice("missault-aardbei", "Missault aardbei", 195, "per potje (100 ml)", 93, "Aardbei-ijs in een potje van 100 ml.", "melk"),
-  pending("ijs", "missault-beker-chocoladesaus", "Missault beker met chocoladesaus", "per stuk", 94, "Lijkt op een swirl, maar de beker heeft geen smaaknaam.", "melk"),
-  pending("ijs", "missault-beker-karamel", "Missault beker met karamel", "per stuk", 95, "Lijkt op swirl caramel-speculoos, maar de beker heeft geen smaaknaam.", "melk"),
-  pending("ijs", "missault-ijsjes", "Missault ijsjes op een stokje", "per stuk", 96, "Drie losse ijsjes, geen doos Frisco's van 6 stuks.", "melk,noten"),
-  pending("ijs", "missault-ijstaart-framboos-meringue", "Missault ijstaart framboos-meringue", "per taart", 97, "De taart heeft geen smaaknaam. De lijst heeft Framboise 10p (€30) en Framboisier 9p (€29,95).", "melk,eieren"),
-  pending("ijs", "missault-ijstaart-rood-fruit", "Missault ijstaart rood fruit", "per taart", 98, "Rood glazuur, geen smaaknaam op de taart.", "melk"),
-  pending("ijs", "missault-ijstaart-passie", "Missault ijstaart geel glazuur", "per taart", 99, "Geel glazuur, mogelijk passion. Niet benoemd op de taart. De lijst heeft Passion taart 6p (€26).", "melk"),
-  pending("ijs", "missault-portie-chocolade", "Missault portie chocolade", "per stuk", 100, "De lijst heeft alleen portie chocolat suikervrij (€4,15). Op de foto staat geen suikervrij.", "melk"),
-  pending("ijs", "missault-portie-wit", "Missault portie wit", "per stuk", 101, "Wit gebakje, geen naam die op de lijst past.", "melk"),
-  pending("ijs", "missault-portie-noten", "Missault portie met noten", "per stuk", 102, "Notenkorst, geen naam die op de lijst past (portie Brésil is €4,15).", "melk,noten"),
+  ice("missault-beker-chocoladesaus", "Missault swirl dame blanche", 295, "per beker (140 ml)", 94, "Swirl dame blanche, beker van 140 ml.", "melk"),
+  ice("missault-beker-karamel", "Missault swirl caramel-speculoos", 295, "per beker (140 ml)", 95, "Swirl caramel-speculoos, beker van 140 ml.", "melk"),
+  ice("missault-ijsjes", "Missault Frisco's (6 stuks)", 1680, "per doos (6 stuks)", 96, "Doos Frisco's van 6 stuks. De foto toont de smaken.", "melk,noten"),
+  ice("missault-ijstaart-framboos-meringue", "Missault framboisier (9 personen)", 2995, "per taart", 97, "Ijstaart framboisier voor 9 personen.", "melk,eieren"),
+  ice("missault-ijstaart-rood-fruit", "Missault framboise (10 personen)", 3000, "per taart", 98, "Ijstaart framboise voor 10 personen.", "melk"),
+  ice("missault-ijstaart-passie", "Missault passion taart (6 personen)", 2600, "per taart", 99, "Passiontaart voor 6 personen.", "melk"),
+  ice("missault-portie-chocolade", "Missault portie chocolat suikervrij", 415, "per stuk", 100, "Suikervrije chocoladeportie.", "melk"),
+  ice("missault-portie-wit", "Missault portie tarte citron", 415, "per stuk", 101, "Portie tarte citron.", "melk"),
+  ice("missault-portie-noten", "Missault portie Brésil", 415, "per stuk", 102, "Portie Brésil.", "melk,noten"),
   pending("ijs", "missault-portie-framboos", "Missault portie met frambozen", "per stuk", 103, "Roomgebakje met frambozen, geen naam die op de lijst past.", "melk"),
 
   // Koffie en BARÚ — niet op de prijslijst

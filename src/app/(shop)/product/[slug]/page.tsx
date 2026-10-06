@@ -110,7 +110,7 @@ export default async function ProductPage({
           />
         ) : (
           <>
-        <div className="relative aspect-4/3 overflow-hidden bg-crumb shadow-warm-lg">
+        <div className="relative aspect-4/3 overflow-hidden">
           <ProductImage
             src={product.imageUrl}
             alt={product.name}

@@ -55,7 +55,7 @@ export function ProductChoices({
 
   return (
     <>
-      <div className="relative aspect-4/3 overflow-hidden bg-crumb shadow-warm-lg">
+      <div className="relative aspect-4/3 overflow-hidden">
         <ProductImage
           src={image}
           alt={`${product.name}, ${selected.label}`}

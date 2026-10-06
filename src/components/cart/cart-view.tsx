@@ -87,7 +87,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
 
   if (items.length === 0) {
     return (
-      <div className="mt-10 rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center">
+      <div className="mt-10 text-center">
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-secondary">
           <ShoppingBasketIcon className="size-7 text-crust" />
         </div>
@@ -126,12 +126,12 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           </div>
         )}
 
-        <ul className="divide-y divide-border overflow-hidden border border-border bg-card">
+        <ul className="divide-y divide-border/50">
           {items.map((line) => (
-            <li key={cartLineKey(line)} className="flex gap-4 p-4">
+            <li key={cartLineKey(line)} className="flex gap-4 py-4 first:pt-0">
               <Link
                 href={`/product/${line.slug}`}
-                className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
+                className="relative size-20 shrink-0 overflow-hidden sm:size-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 <ProductImage src={line.imageUrl} alt={line.name} sizes="96px" />
               </Link>
@@ -189,7 +189,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
       </div>
 
       <aside className="lg:sticky lg:top-32">
-        <div className="space-y-4 border border-border bg-card p-5 shadow-warm">
+        <div className="space-y-4 border-t border-border/50 pt-5">
           <h2 className="font-heading text-lg font-semibold">Overzicht</h2>
 
           <dl className="space-y-2 text-sm">

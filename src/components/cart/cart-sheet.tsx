@@ -80,7 +80,7 @@ export function CartSheet() {
                   <Link
                     href={`/product/${line.slug}`}
                     onClick={closeCart}
-                    className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-secondary"
+                    className="relative size-16 shrink-0 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     <ProductImage
                       src={line.imageUrl}
@@ -142,7 +142,7 @@ export function CartSheet() {
               ))}
             </ul>
 
-            <div className="space-y-3 border-t border-border bg-secondary/40 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+            <div className="space-y-3 border-t border-border/50 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Subtotaal</span>
                 <span className="font-medium tabular-nums">

@@ -201,13 +201,13 @@ export default async function HomePage() {
             <Link
               key={category.slug}
               href={`/assortiment?categorie=${category.slug}`}
-              className="min-w-[45%] snap-start border border-border bg-card p-4 shadow-warm transition-colors hover:bg-secondary/60 sm:min-w-0"
+              className="group min-w-[45%] snap-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:min-w-0"
             >
               <CategoryIcon
                 category={{ slug: category.slug, name: category.name }}
-                className="size-6 text-crust"
+                className="size-6 text-crust/50"
               />
-              <p className="mt-2 font-heading text-base font-semibold">
+              <p className="mt-2 font-heading text-base font-semibold group-hover:underline">
                 {category.name}
               </p>
               <p className="text-xs text-muted-foreground">

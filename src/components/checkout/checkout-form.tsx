@@ -151,7 +151,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
 
   if (!data || data.cart.lines.length === 0) {
     return (
-      <div className="mt-10 rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center">
+      <div className="mt-10 text-center">
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-secondary">
           <ShoppingBasketIcon className="size-7 text-crust" />
         </div>
@@ -220,7 +220,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             </Alert>
           )}
 
-          <section className="border border-border bg-card p-5 shadow-warm">
+          <section>
             <h2
               id="stap-bezorgwijze"
               className="font-heading text-lg font-semibold"
@@ -258,7 +258,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             )}
           </section>
 
-          <section className="border border-border bg-card p-5 shadow-warm">
+          <section className="border-t border-border/50 pt-6">
             <h2 id="stap-moment" className="font-heading text-lg font-semibold">
               2. Wanneer past het?
             </h2>
@@ -336,7 +336,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             )}
           </section>
 
-          <section className="border border-border bg-card p-5 shadow-warm">
+          <section className="border-t border-border/50 pt-6">
             <h2 className="font-heading text-lg font-semibold">3. Jouw gegevens</h2>
             <div className="mt-4 grid gap-4">
               <Field
@@ -380,7 +380,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               </div>
 
               {fulfillment === "delivery" && (
-                <div className="grid gap-4 rounded-xl bg-secondary/50 p-4">
+                <div className="grid gap-4">
                   <p className="text-sm font-medium">Leveringsadres</p>
                   <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
                     <Field
@@ -471,7 +471,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         </div>
 
         <aside className="lg:sticky lg:top-32">
-          <div className="space-y-4 border border-border bg-card p-5 shadow-warm">
+          <div className="space-y-4 border-t border-border/50 pt-5">
             <div className="flex items-center justify-between">
               <h2 className="font-heading text-lg font-semibold">Je bestelling</h2>
               <Link
@@ -485,7 +485,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             <ul className="space-y-3">
               {cart.lines.map((line) => (
                 <li key={cartLineKey(line)} className="flex items-center gap-3">
-                  <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-secondary">
+                  <span className="relative size-12 shrink-0 overflow-hidden">
                     <ProductImage
                       src={line.imageUrl}
                       alt={line.name}

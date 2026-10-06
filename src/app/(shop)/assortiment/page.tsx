@@ -110,25 +110,26 @@ export default async function AssortimentPage({
             <Link
               key={group.slug}
               href={`/assortiment?categorie=${group.slug}`}
-              className="border border-border bg-card p-3 shadow-warm transition-colors hover:bg-secondary/60 sm:p-4"
+              className="group block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              <div className="relative aspect-square overflow-hidden bg-crumb">
+              <div className="relative aspect-square overflow-hidden">
                 {group.imageUrl ? (
                   <ProductImage
                     src={group.imageUrl}
                     alt=""
                     sizes="(min-width: 1024px) 25vw, 50vw"
+                    className="transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="flex size-full items-center justify-center">
+                  <div className="flex size-full items-center justify-center bg-background">
                     <CategoryIcon
                       category={{ slug: group.slug, name: group.name }}
-                      className="size-6 text-crust"
+                      className="size-6 text-crust/40"
                     />
                   </div>
                 )}
               </div>
-              <p className="mt-2 font-heading text-base font-semibold sm:text-lg">
+              <p className="mt-2 font-heading text-base font-semibold group-hover:underline sm:text-lg">
                 {group.name}
               </p>
               <p className="text-xs text-muted-foreground sm:text-sm">

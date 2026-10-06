@@ -1,4 +1,9 @@
 import { parseAllergens, type AllergenCode } from "@/lib/allergens";
+import {
+  categoryDisplayName,
+  compareCategories,
+  resolveCategoryGroup,
+} from "@/lib/category-groups";
 import { prisma } from "@/lib/db";
 import { parseOptions, type VariantOptions } from "@/lib/variants";
 
@@ -40,20 +45,30 @@ export type CatalogProduct = {
    * zoals ze nu verkocht worden.
    */
   variants: CatalogVariant[];
-  category: {
-    id: string;
-    slug: string;
-    name: string;
-  };
+  category: CatalogCategoryRef;
 };
 
-export type CatalogCategory = {
+export type CatalogCategoryRef = {
   id: string;
   slug: string;
   name: string;
+  displayName: string;
+  groupSlug: string;
+  groupName: string;
+};
+
+export type CatalogCategory = CatalogCategoryRef & {
   description: string | null;
   icon: string | null;
   productCount: number;
+};
+
+export type CatalogGroup = {
+  slug: string;
+  name: string;
+  description: string | null;
+  productCount: number;
+  categories: CatalogCategory[];
 };
 
 const productSelect = {
@@ -90,6 +105,20 @@ type ProductRow = {
   category: { id: string; slug: string; name: string };
 };
 
+function enrichCategoryRef(category: {
+  id: string;
+  slug: string;
+  name: string;
+}): CatalogCategoryRef {
+  const group = resolveCategoryGroup(category.slug);
+  return {
+    ...category,
+    displayName: categoryDisplayName(category),
+    groupSlug: group.slug,
+    groupName: group.name,
+  };
+}
+
 function toCatalogProduct(
   row: ProductRow,
   variants: CatalogVariant[] = [],
@@ -99,6 +128,7 @@ function toCatalogProduct(
     allergens: parseAllergens(row.allergens),
     inStock: !row.trackStock || row.stock > 0,
     variants,
+    category: enrichCategoryRef(row.category),
   };
 }
 
@@ -179,14 +209,40 @@ export async function getActiveCategories(): Promise<CatalogCategory[]> {
 
   return categories
     .map((category) => ({
-      id: category.id,
-      slug: category.slug,
-      name: category.name,
+      ...enrichCategoryRef(category),
       description: category.description,
       icon: category.icon,
       productCount: category._count.products,
     }))
-    .filter((category) => category.productCount > 0);
+    .filter((category) => category.productCount > 0)
+    .sort(compareCategories);
+}
+
+export async function getCatalogGroups(): Promise<CatalogGroup[]> {
+  const categories = await getActiveCategories();
+  const groups = new Map<string, CatalogGroup>();
+
+  for (const category of categories) {
+    const existing = groups.get(category.groupSlug);
+    if (existing) {
+      existing.categories.push(category);
+      existing.productCount += category.productCount;
+      continue;
+    }
+    const group = resolveCategoryGroup(category.groupSlug);
+    groups.set(category.groupSlug, {
+      slug: category.groupSlug,
+      name: category.groupName,
+      description: group.description ?? category.description,
+      productCount: category.productCount,
+      categories: [category],
+    });
+  }
+
+  return [...groups.values()].sort(
+    (a, b) =>
+      resolveCategoryGroup(a.slug).index - resolveCategoryGroup(b.slug).index,
+  );
 }
 
 export async function getActiveProducts(options?: {
@@ -262,7 +318,12 @@ export async function getCatalogSections(
   ]);
 
   return categories
-    .filter((category) => !categorySlug || category.slug === categorySlug)
+    .filter((category) => {
+      if (!categorySlug) return true;
+      return (
+        category.slug === categorySlug || category.groupSlug === categorySlug
+      );
+    })
     .map((category) => ({
       category,
       products: products.filter(

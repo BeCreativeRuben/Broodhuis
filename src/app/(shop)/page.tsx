@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRightIcon,
@@ -14,13 +15,17 @@ import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
 import { ButtonLink } from "@/components/ui/button-link";
 import { capitalizeFirst } from "@/lib/datetime";
-import { getActiveCategories, getFeaturedProducts } from "@/lib/catalog";
+import { getCatalogGroups, getFeaturedProducts } from "@/lib/catalog";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
 import { getClosedDates } from "@/lib/settings";
 import { getAvailableSlots } from "@/lib/slots";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const steps = [
   {
@@ -43,7 +48,7 @@ const steps = [
 export default async function HomePage() {
   const [featured, categories, closedDates] = await Promise.all([
     getFeaturedProducts(4),
-    getActiveCategories(),
+    getCatalogGroups(),
     getClosedDates(),
   ]);
 
@@ -194,7 +199,10 @@ export default async function HomePage() {
               href={`/assortiment?categorie=${category.slug}`}
               className="min-w-[45%] snap-start border border-border bg-card p-4 shadow-warm transition-colors hover:bg-secondary/60 sm:min-w-0"
             >
-              <CategoryIcon category={category} className="size-6 text-crust" />
+              <CategoryIcon
+                category={{ slug: category.slug, name: category.name }}
+                className="size-6 text-crust"
+              />
               <p className="mt-2 font-heading text-base font-semibold">
                 {category.name}
               </p>

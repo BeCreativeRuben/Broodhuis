@@ -191,6 +191,36 @@ export function formatIsoDateNumeric(isoDate: IsoDate): string {
   }).format(isoDateAsUtcMidnight(isoDate));
 }
 
+/** "2026-12-25" -> "december 2026" */
+export function formatIsoMonthLong(isoDate: IsoDate): string {
+  return dateFormatter({
+    month: "long",
+    year: "numeric",
+  }).format(isoDateAsUtcMidnight(isoDate));
+}
+
+/** Groepeert items met een ISO-datum, in de bestaande volgorde, per maand. */
+export function groupByMonth<T extends { date: string }>(
+  items: readonly T[],
+): Array<{ monthKey: string; monthLabel: string; items: T[] }> {
+  const groups: Array<{ monthKey: string; monthLabel: string; items: T[] }> =
+    [];
+  for (const item of items) {
+    const monthKey = item.date.slice(0, 7);
+    const last = groups.at(-1);
+    if (last && last.monthKey === monthKey) {
+      last.items.push(item);
+    } else {
+      groups.push({
+        monthKey,
+        monthLabel: formatIsoMonthLong(item.date),
+        items: [item],
+      });
+    }
+  }
+  return groups;
+}
+
 /**
  * "donderdag 17 september" -> "Donderdag 17 september".
  * Bewust in JavaScript en niet met de CSS-klasse `capitalize`: die maakt er

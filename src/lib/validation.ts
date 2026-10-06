@@ -63,11 +63,17 @@ export const checkoutSchema = z
       .max(600, "Hou je opmerking wat korter (max. 600 tekens).")
       .optional()
       .default(""),
-    acceptTerms: z.literal(true, {
-      message: "Bevestig dat je de bestel- en betaalvoorwaarden aanvaardt.",
-    }),
+    acceptTerms: z.boolean(),
   })
   .superRefine((values, context) => {
+    if (values.acceptTerms !== true) {
+      context.addIssue({
+        code: "custom",
+        path: ["acceptTerms"],
+        message: "Bevestig dat je de bestel- en betaalvoorwaarden aanvaardt.",
+      });
+    }
+
     if (values.fulfillmentType !== "delivery") return;
 
     if (values.street === "") {

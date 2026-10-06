@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatEuro } from "@/lib/money";
+import { formatQuantityLabel } from "@/lib/weight";
 import { cn } from "@/lib/utils";
 import { cartLineKey, type CartNotice } from "@/lib/cart";
 import { revalidateCart } from "@/server/actions/cart";
@@ -142,6 +143,9 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                     </Link>
                     <p className="text-sm text-muted-foreground">
                       {formatEuro(line.priceCents)} {line.unit}
+                      {line.quantity > 1
+                        ? ` · ${formatQuantityLabel(line.quantity, line.unit)}`
+                        : ""}
                     </p>
                   </div>
                   <span className="shrink-0 font-heading text-base font-semibold tabular-nums">
@@ -154,12 +158,15 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                     value={line.quantity}
                     onChange={(next) => setQuantity(cartLineKey(line), next)}
                     label={line.name}
+                    formatValue={(value) =>
+                      formatQuantityLabel(value, line.unit)
+                    }
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-9 rounded-full text-muted-foreground"
+                    className="size-11 rounded-none text-muted-foreground"
                     onClick={() => removeItem(cartLineKey(line))}
                     aria-label={`${line.name} verwijderen`}
                   >

@@ -6,6 +6,7 @@ import { SHOP } from "@/lib/shop-config";
 export const metadata: Metadata = {
   title: "Afrekenen",
   robots: { index: false, follow: false },
+  alternates: { canonical: "/afrekenen" },
 };
 
 export default function CheckoutPage() {

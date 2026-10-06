@@ -35,6 +35,9 @@ export const metadata: Metadata = {
     description:
       "Vers brood, koffiekoeken en patisserie uit Waasmunster. Online besteld en betaald, klaar wanneer jij het wil.",
   },
+  twitter: {
+    card: "summary_large_image",
+  },
   robots: { index: true, follow: true },
 };
 
@@ -48,8 +51,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="nl-BE" suppressHydrationWarning>
-      <body className={`${display.variable} ${body.variable}`}>
+    <html
+      lang="nl-BE"
+      suppressHydrationWarning
+      className={`${display.variable} ${body.variable} font-sans`}
+    >
+      <body className="font-sans">
         {children}
         <Toaster position="top-center" richColors closeButton />
       </body>

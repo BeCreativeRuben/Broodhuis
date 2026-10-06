@@ -6,6 +6,7 @@ import { FULFILLMENT } from "@/lib/shop-config";
 export const metadata: Metadata = {
   title: "Winkelwagen",
   robots: { index: false, follow: false },
+  alternates: { canonical: "/winkelwagen" },
 };
 
 export default function CartPage() {

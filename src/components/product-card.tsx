@@ -22,12 +22,14 @@ export function ProductCard({
     <article className="group flex flex-col overflow-hidden border border-border bg-card shadow-warm transition-shadow hover:shadow-warm-lg">
       <Link
         href={`/product/${product.slug}`}
+        aria-label={product.name}
         className="relative aspect-4/3 overflow-hidden bg-secondary"
       >
         <ProductImage
           src={product.imageUrl}
           alt={product.name}
           priority={priority}
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="transition-transform duration-500 group-hover:scale-105"
         />
         {product.leadTimeDays > 0 && (
@@ -46,7 +48,10 @@ export function ProductCard({
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex-1 space-y-1">
           <h3 className="font-heading text-lg leading-tight font-semibold">
-            <Link href={`/product/${product.slug}`} className="hover:underline">
+            <Link
+              href={`/product/${product.slug}`}
+              className="inline-flex min-h-11 items-center hover:underline"
+            >
               {product.name}
             </Link>
           </h3>

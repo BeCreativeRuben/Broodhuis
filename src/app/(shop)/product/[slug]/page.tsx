@@ -37,6 +37,13 @@ export async function generateMetadata({
     description:
       product.description ??
       `${product.name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
+    alternates: { canonical: `/product/${product.slug}` },
+    openGraph: {
+      title: product.name,
+      description:
+        product.description ??
+        `${product.name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
+    },
   };
 }
 
@@ -67,11 +74,11 @@ export default async function ProductPage({
   return (
     <div className="page-shell py-6 lg:py-10">
       <Link
-        href={`/assortiment?categorie=${product.category.slug}`}
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        href={`/assortiment?categorie=${product.category.groupSlug}`}
+        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ChevronLeftIcon className="size-4" />
-        {product.category.name}
+        {product.category.displayName}
       </Link>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-2 lg:gap-12">
@@ -99,7 +106,7 @@ export default async function ProductPage({
         <div className="space-y-6">
           <div className="space-y-3">
             <Badge variant="secondary">
-              {product.category.name}
+              {product.category.displayName}
             </Badge>
             <h1 className="font-heading text-3xl font-semibold sm:text-4xl">
               {product.name}

@@ -25,11 +25,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { capitalizeFirst, formatIsoDateLong } from "@/lib/datetime";
+import {
+  capitalizeFirst,
+  formatIsoDateLong,
+  groupByMonth,
+} from "@/lib/datetime";
 import { cartLineKey } from "@/lib/cart";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
+import { formatQuantityLabel } from "@/lib/weight";
 import type { FulfillmentType } from "@/lib/shop-config";
 import { cn } from "@/lib/utils";
 import { getCheckoutData, placeOrder } from "@/server/actions/checkout";
@@ -286,15 +291,22 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 <div
                   role="radiogroup"
                   aria-labelledby="stap-moment"
-                  className="mt-4 space-y-2"
+                  className="mt-4 space-y-4"
                 >
-                  {visibleSlots.map((option) => (
-                    <SlotRow
-                      key={option.value}
-                      option={option}
-                      checked={slot === option.value}
-                      onSelect={() => setField("slot", option.value)}
-                    />
+                  {groupByMonth(visibleSlots).map((month) => (
+                    <div key={month.monthKey} className="space-y-2">
+                      <p className="eyebrow">
+                        {capitalizeFirst(month.monthLabel)}
+                      </p>
+                      {month.items.map((option) => (
+                        <SlotRow
+                          key={option.value}
+                          option={option}
+                          checked={slot === option.value}
+                          onSelect={() => setField("slot", option.value)}
+                        />
+                      ))}
+                    </div>
                   ))}
                 </div>
 
@@ -483,7 +495,8 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   <span className="min-w-0 flex-1 text-sm">
                     <span className="block truncate font-medium">{line.name}</span>
                     <span className="text-muted-foreground">
-                      {line.quantity} × {formatEuro(line.unitPriceCents)}
+                      {formatQuantityLabel(line.quantity, line.unit)} ×{" "}
+                      {formatEuro(line.unitPriceCents)}
                     </span>
                   </span>
                   <span className="shrink-0 text-sm font-medium tabular-nums">
@@ -521,8 +534,16 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 className="mt-0.5 size-5 shrink-0 rounded border-input accent-primary"
               />
               <span>
-                Ik weet dat ik nu online betaal en dat mijn bestelling pas vastligt
-                na een gelukte betaling.
+                Ik aanvaard de{" "}
+                <Link href="/voorwaarden" className="underline hover:text-foreground">
+                  bestel- en betaalvoorwaarden
+                </Link>{" "}
+                en de{" "}
+                <Link href="/privacy" className="underline hover:text-foreground">
+                  privacyverklaring
+                </Link>
+                . Ik weet dat ik nu online betaal en dat mijn bestelling pas
+                vastligt na een gelukte betaling.
               </span>
             </label>
             {errors.acceptTerms && (

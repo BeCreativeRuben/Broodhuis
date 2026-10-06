@@ -10,6 +10,7 @@ import {
   type PricedLine,
 } from "@/lib/cart";
 import { prisma } from "@/lib/db";
+import { portionUnit, portionUnitPriceCents } from "@/lib/weight";
 
 function sanitiseQuantity(quantity: unknown): number {
   const parsed =
@@ -144,8 +145,10 @@ export async function priceCart(
       continue;
     }
 
-    const unitPriceCents = variant?.priceCents ?? product.priceCents;
-    const unit = variant?.unit ?? product.unit;
+    const rawUnit = variant?.unit ?? product.unit;
+    const rawPriceCents = variant?.priceCents ?? product.priceCents;
+    const unitPriceCents = portionUnitPriceCents(rawPriceCents, rawUnit);
+    const unit = portionUnit(rawUnit);
     const name = variant ? `${product.name} — ${variant.label}` : product.name;
     const imageUrl =
       (variant?.sourceSlug ? imageBySlug.get(variant.sourceSlug) : null) ??

@@ -17,6 +17,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { formatEuro } from "@/lib/money";
+import { formatQuantityLabel } from "@/lib/weight";
 import { FULFILLMENT } from "@/lib/shop-config";
 
 export function CartSheet() {
@@ -108,12 +109,15 @@ export function CartSheet() {
                         onChange={(next) => setQuantity(cartLineKey(line), next)}
                         min={1}
                         label={line.name}
+                        formatValue={(value) =>
+                          formatQuantityLabel(value, line.unit)
+                        }
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="size-9 rounded-full text-muted-foreground"
+                        className="size-11 rounded-none text-muted-foreground"
                         onClick={() => removeItem(cartLineKey(line))}
                         aria-label={`${line.name} verwijderen`}
                       >

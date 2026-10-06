@@ -18,7 +18,7 @@ export function CartButton({ className }: { className?: string }) {
       className={cn("relative h-11 gap-2 rounded-none pr-4 pl-3", className)}
       aria-label={
         itemCount > 0
-          ? `Winkelwagen openen, ${itemCount} stuks, ${formatEuro(subtotalCents)}`
+          ? `Winkelwagen openen, ${itemCount} ${itemCount === 1 ? "stuk" : "stuks"}, ${formatEuro(subtotalCents)}`
           : "Winkelwagen openen"
       }
     >

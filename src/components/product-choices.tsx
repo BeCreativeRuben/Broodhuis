@@ -67,7 +67,7 @@ export function ProductChoices({
       <div className="space-y-6">
         <div className="space-y-3">
           <Badge variant="secondary">
-            {product.category.name}
+            {product.category.displayName}
           </Badge>
           <h1 className="font-heading text-3xl font-semibold sm:text-4xl">
             {product.name}

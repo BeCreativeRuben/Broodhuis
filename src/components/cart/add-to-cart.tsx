@@ -8,7 +8,14 @@ import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/cart-provider";
 import type { CatalogProduct } from "@/lib/catalog";
+import { formatEuro } from "@/lib/money";
 import { cn } from "@/lib/utils";
+import {
+  formatQuantityLabel,
+  isPerKgUnit,
+  portionUnit,
+  portionUnitPriceCents,
+} from "@/lib/weight";
 
 type AddToCartProps = {
   product: Pick<
@@ -40,8 +47,8 @@ export function AddToCart({
         variantId: product.variantId,
         slug: product.slug,
         name: product.name,
-        priceCents: product.priceCents,
-        unit: product.unit,
+        priceCents: portionUnitPriceCents(product.priceCents, product.unit),
+        unit: portionUnit(product.unit),
         imageUrl: product.imageUrl,
       },
       quantity,
@@ -50,10 +57,12 @@ export function AddToCart({
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 1600);
 
-    toast.success(
-      quantity === 1
-        ? `${product.name} in je winkelwagen`
-        : `${quantity} × ${product.name} in je winkelwagen`,
+    const addedLabel = isPerKgUnit(product.unit)
+      ? `${formatQuantityLabel(quantity, product.unit)} ${product.name}`
+      : quantity === 1
+        ? product.name
+        : `${quantity} × ${product.name}`;
+    toast.success(`${addedLabel} in je winkelwagen`,
       {
         action: { label: "Bekijken", onClick: openCart },
       },
@@ -104,6 +113,11 @@ export function AddToCart({
         max={maxQuantity}
         size="lg"
         className="self-start"
+        formatValue={
+          isPerKgUnit(product.unit)
+            ? (value) => formatQuantityLabel(value, product.unit)
+            : undefined
+        }
       />
       <Button
         type="button"
@@ -121,6 +135,14 @@ export function AddToCart({
           </>
         )}
       </Button>
+      {isPerKgUnit(product.unit) && (
+        <p className="w-full text-sm text-muted-foreground sm:col-span-2">
+          {formatEuro(
+            portionUnitPriceCents(product.priceCents, product.unit) * quantity,
+          )}{" "}
+          voor {formatQuantityLabel(quantity, product.unit)}
+        </p>
+      )}
     </div>
   );
 }

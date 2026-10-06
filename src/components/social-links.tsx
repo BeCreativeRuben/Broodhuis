@@ -39,7 +39,7 @@ export function SocialLinks({ className }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
         aria-label="Facebook van 't Broodhuis"
-        className="inline-flex size-9 items-center justify-center text-foreground/80 hover:text-foreground"
+        className="inline-flex size-11 items-center justify-center text-foreground/80 hover:text-foreground"
       >
         <FacebookIcon className="size-4" />
       </a>
@@ -48,7 +48,7 @@ export function SocialLinks({ className }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
         aria-label="Instagram van 't Broodhuis"
-        className="inline-flex size-9 items-center justify-center text-foreground/80 hover:text-foreground"
+        className="inline-flex size-11 items-center justify-center text-foreground/80 hover:text-foreground"
       >
         <InstagramIcon className="size-4" />
       </a>

@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   title: "Praktisch",
   description:
     "Hoe online bestellen werkt bij Bakkerij 't Broodhuis: afhalen of leveren, betalen met Bancontact, allergenen en feesttaarten.",
+  alternates: { canonical: "/info" },
 };
 
 export default function InfoPage() {
@@ -222,8 +223,9 @@ export default function InfoPage() {
           Allergenen en ingrediënten
         </h2>
         <p className="mt-2 max-w-prose text-sm text-muted-foreground">
-          Bij elk product vind je de ingrediënten en welke van de 14 wettelijke
-          allergenen erin zitten. Zo kan je thuis rustig nakijken wat je bestelt.
+          Staat de allergenen-info bij het product, dan zie je welke van de 14
+          wettelijke allergenen erin zitten. Ontbreekt die nog? Vraag gerust in
+          de winkel.
         </p>
         <div className="mt-4">
           <AllergenReference />

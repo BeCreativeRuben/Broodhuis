@@ -42,7 +42,7 @@ export function SiteFooter() {
             </span>
             <a
               href={`tel:${SHOP.phoneHref}`}
-              className="flex items-center gap-2 hover:text-foreground"
+              className="flex min-h-11 items-center gap-2 hover:text-foreground"
             >
               <PhoneIcon className="size-4 shrink-0" />
               {SHOP.phone}
@@ -51,7 +51,7 @@ export function SiteFooter() {
               href={SHOP.facebook}
               target="_blank"
               rel="noreferrer"
-              className="block hover:text-foreground"
+              className="flex min-h-11 items-center hover:text-foreground"
             >
               Contacteer ons op messenger
             </a>
@@ -85,18 +85,43 @@ export function SiteFooter() {
           <h2 className="font-heading text-lg">Bestellen</h2>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
             <li>
-              <Link href="/bestellen" className="hover:text-foreground">
+              <Link
+                href="/bestellen"
+                className="inline-flex min-h-11 items-center hover:text-foreground"
+              >
                 Bestellen
               </Link>
             </li>
             <li>
-              <Link href="/assortiment" className="hover:text-foreground">
+              <Link
+                href="/assortiment"
+                className="inline-flex min-h-11 items-center hover:text-foreground"
+              >
                 Assortiment
               </Link>
             </li>
             <li>
-              <Link href="/info" className="hover:text-foreground">
+              <Link
+                href="/info"
+                className="inline-flex min-h-11 items-center hover:text-foreground"
+              >
                 Afhalen, leveren &amp; betalen
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/voorwaarden"
+                className="inline-flex min-h-11 items-center hover:text-foreground"
+              >
+                Voorwaarden
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/privacy"
+                className="inline-flex min-h-11 items-center hover:text-foreground"
+              >
+                Privacy
               </Link>
             </li>
             <li>
@@ -104,7 +129,7 @@ export function SiteFooter() {
                 href={SHOP.website}
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-foreground"
+                className="inline-flex min-h-11 items-center hover:text-foreground"
               >
                 bakkerij-tbroodhuis.be
               </a>

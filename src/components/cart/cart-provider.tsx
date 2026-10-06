@@ -11,7 +11,7 @@ import {
 
 import { cartLineKey, MAX_QUANTITY_PER_LINE, type CartItem } from "@/lib/cart";
 
-const STORAGE_KEY = "broodhuis-winkelwagen-v1";
+const STORAGE_KEY = "broodhuis-winkelwagen-v2";
 
 type CartContextValue = {
   items: CartItem[];

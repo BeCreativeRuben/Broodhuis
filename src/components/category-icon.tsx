@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
  */
 const RULES: Array<{ match: RegExp; icon: typeof WheatIcon }> = [
   { match: /belegd|lunch|sandwich(es)?\b/i, icon: SandwichIcon },
+  { match: /thee|koffie$|dranken|zuivel|confituur|snoep|ijs/i, icon: ShoppingBasketIcon },
   { match: /koffiekoek|viennoiser/i, icon: CroissantIcon },
   { match: /vlaai|semoule|cake/i, icon: CakeIcon },
   { match: /taart/i, icon: CakeIcon },

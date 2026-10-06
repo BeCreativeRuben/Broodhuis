@@ -103,40 +103,40 @@ export function AddToCart({
   }
 
   return (
-    <div
-      className={cn("flex flex-col gap-3 sm:flex-row sm:items-center", className)}
-    >
-      <QuantityStepper
-        value={quantity}
-        onChange={(next) => setQuantity(Math.max(1, next))}
-        label={product.name}
-        max={maxQuantity}
-        size="lg"
-        className="self-start"
-        formatValue={
-          isPerKgUnit(product.unit)
-            ? (value) => formatQuantityLabel(value, product.unit)
-            : undefined
-        }
-      />
-      <Button
-        type="button"
-        onClick={handleAdd}
-        size="lg"
-        className="h-12 flex-1 rounded-none text-base"
-      >
-        {justAdded ? (
-          <>
-            <CheckIcon className="size-5" /> Toegevoegd
-          </>
-        ) : (
-          <>
-            <ShoppingBasketIcon className="size-5" /> In winkelwagen
-          </>
-        )}
-      </Button>
+    <div className={cn("flex flex-col gap-3", className)}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <QuantityStepper
+          value={quantity}
+          onChange={(next) => setQuantity(Math.max(1, next))}
+          label={product.name}
+          max={maxQuantity}
+          size="lg"
+          className="self-start"
+          formatValue={
+            isPerKgUnit(product.unit)
+              ? (value) => formatQuantityLabel(value, product.unit)
+              : undefined
+          }
+        />
+        <Button
+          type="button"
+          onClick={handleAdd}
+          size="lg"
+          className="h-12 flex-1 rounded-none text-base"
+        >
+          {justAdded ? (
+            <>
+              <CheckIcon className="size-5" /> Toegevoegd
+            </>
+          ) : (
+            <>
+              <ShoppingBasketIcon className="size-5" /> In winkelwagen
+            </>
+          )}
+        </Button>
+      </div>
       {isPerKgUnit(product.unit) && (
-        <p className="w-full text-sm text-muted-foreground sm:col-span-2">
+        <p className="text-sm text-muted-foreground">
           {formatEuro(
             portionUnitPriceCents(product.priceCents, product.unit) * quantity,
           )}{" "}

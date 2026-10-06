@@ -56,7 +56,7 @@ export function QuantityStepper({
         className={cn(
           "min-w-8 text-center font-medium tabular-nums",
           size === "lg" && "min-w-12 text-lg",
-          formatValue && "min-w-14",
+          formatValue && "min-w-16 px-1",
         )}
       >
         {formatValue ? formatValue(value) : value}

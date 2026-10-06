@@ -199,8 +199,8 @@ export default function InfoPage() {
           </span>
           <h2 className="mt-3 font-heading text-xl font-semibold">Betalen</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Online bestellen betekent online betalen: met Bancontact of je
-            bankkaart. Je bestelling is pas definitief wanneer de betaling gelukt is
+            Online bestellen betekent online betalen: met Bancontact of de
+            KBC/CBC-betaalknop. Je bestelling is pas definitief wanneer de betaling gelukt is
             — dan krijg je je bestelnummer te zien.
           </p>
           <ul className="mt-3 space-y-2 text-sm">

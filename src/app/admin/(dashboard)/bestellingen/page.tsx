@@ -135,7 +135,13 @@ export default async function AdminOrdersPage({
                     <p className="mt-1 truncate text-xs text-muted-foreground">
                       {order.items
                         .map((item) =>
-                          formatOrderLineLabel(item.quantity, item.unit, item.name),
+                          formatOrderLineLabel(
+                            item.quantity,
+                            item.unit,
+                            item.variantLabel
+                              ? `${item.name} (${item.variantLabel.replace(/https:\/\/\S+/g, "foto")})`
+                              : item.name,
+                          ),
                         )
                         .join(", ")}
                     </p>

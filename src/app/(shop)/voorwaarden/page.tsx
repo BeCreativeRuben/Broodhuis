@@ -98,7 +98,7 @@ export default function TermsPage() {
           </h2>
           <p>
             Online besteld is online betaald. Je betaalt vooraf via de beveiligde
-            betaalpagina (Bancontact of bankkaart). Wij zien je kaartgegevens
+            betaalpagina (Bancontact of KBC/CBC). Wij zien je kaartgegevens
             nooit. De bestelling is pas definitief wanneer de betaling gelukt
             is. Daarna krijg je een bestelnummer en een overzichtspagina.
           </p>

@@ -110,7 +110,7 @@ export default async function HomePage() {
               </div>
               <div className="border border-border/80 bg-card/70 p-3">
                 <dt className="text-xs text-muted-foreground">Betalen</dt>
-                <dd className="text-sm font-medium">Bancontact of bankkaart</dd>
+                <dd className="text-sm font-medium">Bancontact of KBC/CBC</dd>
               </div>
             </dl>
           </div>
@@ -232,7 +232,7 @@ export default async function HomePage() {
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {featured.map((product, index) => (
               <ProductCard
-                key={product.id}
+                key={product.slug}
                 product={product}
                 priority={index === 0}
               />

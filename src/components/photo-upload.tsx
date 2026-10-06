@@ -5,21 +5,20 @@ import { ImagePlusIcon, Loader2Icon, XIcon } from "lucide-react";
 
 import { ProductImage } from "@/components/product-image";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-export function ImageUpload({
-  name,
-  defaultValue,
-  productName,
-  label = "Foto",
+/**
+ * Foto bij een biscuittaart. De URL gaat mee in de winkelwagen en de
+ * bestelling. Nooit een mailadres tonen.
+ */
+export function PhotoUpload({
+  value,
+  onChange,
+  label = "Foto voor op de taart",
 }: {
-  name: string;
-  defaultValue: string | null;
-  productName: string;
+  value: string;
+  onChange: (url: string) => void;
   label?: string;
 }) {
-  const [value, setValue] = useState(defaultValue ?? "");
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,19 +29,21 @@ export function ImageUpload({
     try {
       const body = new FormData();
       body.append("file", file);
-      const response = await fetch("/api/admin/uploads", {
+      const response = await fetch("/api/uploads/fototaart", {
         method: "POST",
         body,
       });
       const payload: { url?: string; error?: string } = await response.json();
-
       if (!response.ok || !payload.url) {
-        setError(payload.error ?? "De foto kon niet opgeslagen worden.");
+        setError(
+          payload.error ??
+            "De foto kon niet worden opgeladen. Probeer het opnieuw of bel de bakkerij.",
+        );
         return;
       }
-      setValue(payload.url);
+      onChange(payload.url);
     } catch {
-      setError("De foto kon niet opgeslagen worden. Probeer het opnieuw.");
+      setError("De foto kon niet worden opgeladen. Probeer het opnieuw of bel de bakkerij.");
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -50,30 +51,30 @@ export function ImageUpload({
   }
 
   return (
-    <div className="space-y-3">
-      <Label htmlFor={`${name}-url`}>{label}</Label>
-
-      <div className="flex items-start gap-4">
-        <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary">
-          <ProductImage
-            src={value}
-            alt={productName || "Productfoto"}
-            sizes="96px"
-          />
-        </div>
-
+    <fieldset>
+      <legend className="font-heading text-lg font-semibold">{label}</legend>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Enkel bij biscuittaarten. Stuur een staande foto mee, dan bakken we die
+        erin.
+      </p>
+      <div className="mt-3 flex items-start gap-3">
+        {value ? (
+          <div className="relative size-20 overflow-hidden">
+            <ProductImage src={value} alt="Jouw foto voor op de taart" sizes="80px" />
+          </div>
+        ) : null}
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
               variant="outline"
-              className="rounded-full"
+              className="h-11 rounded-none"
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
             >
               {isUploading ? (
                 <>
-                  <Loader2Icon className="size-4 animate-spin" /> Bezig met opladen…
+                  <Loader2Icon className="size-4 animate-spin" /> Bezig…
                 </>
               ) : (
                 <>
@@ -81,43 +82,30 @@ export function ImageUpload({
                 </>
               )}
             </Button>
-            {value && (
+            {value ? (
               <Button
                 type="button"
                 variant="ghost"
-                className="rounded-full text-muted-foreground"
-                onClick={() => setValue("")}
+                className="h-11 rounded-none text-muted-foreground"
+                onClick={() => onChange("")}
               >
                 <XIcon className="size-4" /> Weghalen
               </Button>
-            )}
+            ) : null}
           </div>
-
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp"
             className="hidden"
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) void upload(file);
             }}
           />
-
-          <Input
-            id={`${name}-url`}
-            name={name}
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            placeholder="/uploads/foto.jpg of https://…"
-            className="h-11"
-          />
-          <p className="text-xs text-muted-foreground">
-            JPG, PNG of WebP tot 5 MB. Je kan ook de link naar een foto plakken.
-          </p>
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
         </div>
       </div>
-    </div>
+    </fieldset>
   );
 }

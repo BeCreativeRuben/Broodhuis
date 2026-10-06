@@ -85,6 +85,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         productId: line.productId,
         variantId: line.variantId,
         quantity: line.quantity,
+        selection: line.selection,
       })),
     )
       .then((result) => {
@@ -192,6 +193,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             productId: line.productId,
             variantId: line.variantId,
             quantity: line.quantity,
+            selection: line.selection,
           })),
         )}
       />
@@ -499,6 +501,16 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                         ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.unitPriceCents)} ${line.unit}`
                         : `${formatQuantityLabel(line.quantity, line.unit)} × ${formatEuro(line.unitPriceCents)}`}
                     </span>
+                    {line.photoUrl ? (
+                      <a
+                        href={line.photoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 block text-xs underline"
+                      >
+                        Foto voor de taart
+                      </a>
+                    ) : null}
                   </span>
                   <span className="shrink-0 text-sm font-medium tabular-nums">
                     {formatEuro(line.lineTotalCents)}
@@ -573,7 +585,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             <p className="hidden items-center justify-center gap-1.5 text-xs text-muted-foreground lg:flex">
               <LockIcon className="size-3" />
               Betalen via {data.payment.isSandbox ? "testmodus" : "Mollie"} —
-              Bancontact of bankkaart
+              Bancontact of KBC/CBC
             </p>
           </div>
         </aside>

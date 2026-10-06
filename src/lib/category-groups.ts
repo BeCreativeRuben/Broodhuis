@@ -75,7 +75,7 @@ export const CATEGORY_GROUPS: readonly CategoryGroupDef[] = [
   {
     slug: "confiserie",
     name: "Confiserie",
-    description: "Schuimpjes, tegels en ander zoetgoed.",
+    description: "Koekjes, chocolade, thee, koffie en ander zoetgoed.",
     kind: "bakery",
   },
   {
@@ -204,6 +204,37 @@ export function categoryDisplayName(category: {
 
 export function categoryGroupSortValue(slug: string): number {
   return resolveCategoryGroup(slug).index;
+}
+
+/**
+ * Thee, koffie en snoepgoed horen in de winkel onder Confiserie, met een
+ * eigen chip. De database blijft plat; dit is alleen de weergave.
+ */
+export const NESTED_UNDER: Record<string, string> = {
+  thee: "confiserie",
+  koffie: "confiserie",
+  snoepgoed: "confiserie",
+};
+
+const SUBCATEGORY_CHIP_ALIASES: Record<string, string> = {
+  snoepgoed: "Chocolade",
+};
+
+export function topLevelGroupSlug(slug: string): string {
+  const group = resolveCategoryGroup(slug);
+  return NESTED_UNDER[group.slug] ?? group.slug;
+}
+
+export function subcategoryChipName(category: {
+  slug: string;
+  name: string;
+}): string {
+  const group = resolveCategoryGroup(category.slug);
+  if (SUBCATEGORY_CHIP_ALIASES[group.slug]) {
+    return SUBCATEGORY_CHIP_ALIASES[group.slug];
+  }
+  if (group.slug === category.slug) return group.name;
+  return categoryDisplayName(category);
 }
 
 export function compareCategories(

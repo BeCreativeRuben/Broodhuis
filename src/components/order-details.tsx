@@ -12,6 +12,7 @@ import { allergenSummary } from "@/lib/allergens";
 import { formatEuro } from "@/lib/money";
 import type { CustomerOrder } from "@/lib/orders";
 import { SHOP } from "@/lib/shop-config";
+import { OrderLineChoice } from "@/components/order-line-choice";
 import { formatQuantityLabel, isWeightPortionUnit } from "@/lib/weight";
 
 /** Bestelde producten, moment en gegevens — gebruikt op de bestelpagina. */
@@ -34,6 +35,7 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-medium">{item.name}</span>
+                  <OrderLineChoice variantLabel={item.variantLabel} />
                   <span className="text-xs text-muted-foreground">
                     {formatEuro(item.unitPriceCents)} {item.unit}
                     {allergens ? ` · bevat ${allergens.toLowerCase()}` : ""}

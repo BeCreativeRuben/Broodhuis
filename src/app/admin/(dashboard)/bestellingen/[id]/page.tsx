@@ -17,6 +17,7 @@ import { allergenSummary } from "@/lib/allergens";
 import { capitalizeFirst, formatInstant } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { getOrderById } from "@/lib/orders";
+import { OrderLineChoice } from "@/components/order-line-choice";
 import { formatQuantityLabel, isWeightPortionUnit } from "@/lib/weight";
 import { paymentMethodLabel, paymentStatusLabel } from "@/lib/payments/types";
 import { SHOP } from "@/lib/shop-config";
@@ -90,6 +91,7 @@ export default async function AdminOrderPage({
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium">{item.name}</span>
+                    <OrderLineChoice variantLabel={item.variantLabel} />
                     <span className="text-xs text-muted-foreground">
                       {formatEuro(item.unitPriceCents)} {item.unit}
                       {allergens ? ` · ${allergens}` : ""}

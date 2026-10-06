@@ -5,6 +5,7 @@ import { ShoppingBasketIcon, Trash2Icon } from "lucide-react";
 
 import { useCart } from "@/components/cart/cart-provider";
 import { cartLineKey } from "@/lib/cart";
+import { formatSelectionSummary } from "@/lib/cart-selection";
 import { ProductImage } from "@/components/product-image";
 import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
@@ -104,6 +105,11 @@ export function CartSheet() {
                             ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.priceCents)} ${line.unit}`
                             : `${formatEuro(line.priceCents)} ${line.unit}`}
                         </p>
+                        {formatSelectionSummary(line.selection) ? (
+                          <p className="text-xs text-muted-foreground">
+                            {formatSelectionSummary(line.selection)}
+                          </p>
+                        ) : null}
                       </div>
                       <span className="shrink-0 font-medium tabular-nums">
                         {formatEuro(

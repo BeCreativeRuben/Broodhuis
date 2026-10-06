@@ -26,6 +26,7 @@ import {
 } from "@/lib/weight";
 import { cn } from "@/lib/utils";
 import { cartLineKey, type CartNotice } from "@/lib/cart";
+import { formatSelectionSummary } from "@/lib/cart-selection";
 import { revalidateCart } from "@/server/actions/cart";
 
 export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
@@ -57,6 +58,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           productId: line.productId,
           variantId: line.variantId,
           quantity: line.quantity,
+          selection: line.selection,
         })),
       );
 
@@ -150,6 +152,11 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                         ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.priceCents)} ${line.unit}`
                         : `${formatEuro(line.priceCents)} ${line.unit}`}
                     </p>
+                    {formatSelectionSummary(line.selection) ? (
+                      <p className="text-xs text-muted-foreground">
+                        {formatSelectionSummary(line.selection)}
+                      </p>
+                    ) : null}
                   </div>
                   <span className="shrink-0 font-heading text-base font-semibold tabular-nums">
                     {formatEuro(

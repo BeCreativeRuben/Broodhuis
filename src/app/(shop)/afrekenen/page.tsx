@@ -18,7 +18,7 @@ export default function CheckoutPage() {
           Afrekenen
         </h1>
         <p className="max-w-prose text-muted-foreground">
-          Kies je moment, vul je gegevens in en betaal met Bancontact of bankkaart.
+          Kies je moment, vul je gegevens in en betaal met Bancontact of KBC/CBC.
           Je bestelling ligt vast zodra de betaling gelukt is.
         </p>
       </header>

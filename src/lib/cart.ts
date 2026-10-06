@@ -1,4 +1,7 @@
 import type { AllergenCode } from "@/lib/allergens";
+import { selectionKey, type CartSelection } from "@/lib/cart-selection";
+
+export type { CartSelection };
 
 /**
  * Types en constanten van de winkelwagen. Dit bestand is bewust vrij van
@@ -17,14 +20,19 @@ export type CartItem = {
   priceCents: number;
   unit: string;
   imageUrl: string | null;
+  /** Opschrift, personen, deeg of fototaart — geen prijswijziging. */
+  selection?: CartSelection;
 };
 
-/** Twee smaken van hetzelfde product zijn twee lijnen. */
+/** Twee smaken of opschriften van hetzelfde product zijn twee lijnen. */
 export function cartLineKey(item: {
   productId: string;
   variantId?: string | null;
+  selection?: CartSelection | null;
 }): string {
-  return item.variantId ? `${item.productId}:${item.variantId}` : item.productId;
+  const base = item.variantId ? `${item.productId}:${item.variantId}` : item.productId;
+  const extra = selectionKey(item.selection);
+  return extra ? `${base}:${extra}` : base;
 }
 
 export const MAX_QUANTITY_PER_LINE = 40;
@@ -44,6 +52,8 @@ export type PricedLine = {
   leadTimeDays: number;
   /** null = onbeperkt beschikbaar */
   maxQuantity: number | null;
+  photoUrl: string | null;
+  selection?: CartSelection;
 };
 
 export type CartNotice = {

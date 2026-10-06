@@ -19,6 +19,7 @@ import { logout } from "@/server/actions/admin-auth";
 const links = [
   { href: "/admin", label: "Overzicht", icon: LayoutDashboardIcon },
   { href: "/admin/bestellingen", label: "Bestellingen", icon: ReceiptTextIcon },
+  { href: "/admin/bestellingen/daglijst", label: "Daglijst", icon: StoreIcon },
   { href: "/admin/producten", label: "Producten", icon: CroissantIcon },
   { href: "/admin/categorieen", label: "Categorieën", icon: TagsIcon },
   { href: "/admin/instellingen", label: "Instellingen", icon: SettingsIcon },

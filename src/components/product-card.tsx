@@ -6,7 +6,7 @@ import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button-link";
 import { allergenSummary } from "@/lib/allergens";
-import type { CatalogProduct } from "@/lib/catalog";
+import { productHasChoices, type CatalogProduct } from "@/lib/catalog";
 import { formatEuro } from "@/lib/money";
 
 export function ProductCard({
@@ -23,7 +23,7 @@ export function ProductCard({
       <Link
         href={`/product/${product.slug}`}
         aria-label={product.name}
-        className="relative aspect-4/3 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="relative aspect-4/5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <ProductImage
           src={product.imageUrl}
@@ -78,13 +78,13 @@ export function ProductCard({
           </p>
         )}
 
-        {product.variants.length > 0 ? (
+        {productHasChoices(product) ? (
           <ButtonLink
             href={`/product/${product.slug}`}
             variant="outline"
             className="h-11 w-full rounded-none text-sm"
           >
-            Kies een smaak
+            {product.choiceCta}
           </ButtonLink>
         ) : (
           <AddToCart

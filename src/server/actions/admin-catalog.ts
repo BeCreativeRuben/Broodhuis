@@ -9,6 +9,7 @@ import { prisma } from "@/lib/db";
 import type { FormState } from "@/lib/form-state";
 import { parseClosedDatesInput } from "@/lib/closed-dates";
 import { setClosedDates } from "@/lib/settings";
+import { joinProductImages } from "@/lib/product-images";
 import {
   categorySchema,
   fieldErrors,
@@ -73,6 +74,8 @@ export async function saveProduct(
     price: formData.get("price") ?? "",
     unit: formData.get("unit") ?? "per stuk",
     imageUrl: formData.get("imageUrl") ?? "",
+    imageUrl2: formData.get("imageUrl2") ?? "",
+    imageUrl3: formData.get("imageUrl3") ?? "",
     trackStock: formData.get("trackStock") === "on",
     stock: formData.get("stock") ?? "0",
     leadTimeDays: formData.get("leadTimeDays") ?? "0",
@@ -117,7 +120,9 @@ export async function saveProduct(
     allergens: serialiseAllergens(values.allergens),
     priceCents: values.price,
     unit: values.unit,
-    imageUrl: values.imageUrl || null,
+    imageUrl:
+      joinProductImages([values.imageUrl, values.imageUrl2, values.imageUrl3]) ??
+      null,
     trackStock: values.trackStock,
     stock: values.trackStock ? values.stock : 0,
     leadTimeDays: values.leadTimeDays,

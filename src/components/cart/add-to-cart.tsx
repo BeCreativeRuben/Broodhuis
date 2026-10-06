@@ -8,6 +8,7 @@ import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/cart-provider";
 import type { CatalogProduct } from "@/lib/catalog";
+import type { CartSelection } from "@/lib/cart";
 import { formatEuro } from "@/lib/money";
 import { cn } from "@/lib/utils";
 import {
@@ -20,7 +21,12 @@ type AddToCartProps = {
   product: Pick<
     CatalogProduct,
     "id" | "slug" | "name" | "priceCents" | "unit" | "imageUrl" | "inStock"
-  > & { stock?: number; trackStock?: boolean; variantId?: string };
+  > & {
+    stock?: number;
+    trackStock?: boolean;
+    variantId?: string;
+    selection?: CartSelection;
+  };
   /** "compact" = één knop in een productkaart, "full" = met aantalkiezer */
   variant?: "compact" | "full";
   className?: string;
@@ -37,7 +43,7 @@ export function AddToCart({
 
   const maxQuantity =
     product.trackStock && typeof product.stock === "number" ? product.stock : null;
-  const inCart = quantityOf(product.id, product.variantId);
+  const inCart = quantityOf(product.id, product.variantId, product.selection);
 
   function handleAdd() {
     addItem(
@@ -49,6 +55,7 @@ export function AddToCart({
         priceCents: product.priceCents,
         unit: product.unit,
         imageUrl: product.imageUrl,
+        selection: product.selection,
       },
       quantity,
     );

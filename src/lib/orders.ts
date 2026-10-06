@@ -510,7 +510,15 @@ export async function listOrders(filters: OrderListFilters = {}) {
     orderBy: [{ createdAt: "desc" }],
     take: 200,
     include: {
-      items: { select: { id: true, name: true, quantity: true, unit: true } },
+      items: {
+        select: {
+          id: true,
+          name: true,
+          quantity: true,
+          unit: true,
+          variantLabel: true,
+        },
+      },
     },
   });
 }

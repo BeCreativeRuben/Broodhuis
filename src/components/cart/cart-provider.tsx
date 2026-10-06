@@ -10,9 +10,10 @@ import {
 } from "react";
 
 import { cartLineKey, MAX_QUANTITY_PER_LINE, type CartItem } from "@/lib/cart";
+import { parseCartSelection } from "@/lib/cart-selection";
 import { displayItemCount, lineTotalCents } from "@/lib/weight";
 
-const STORAGE_KEY = "broodhuis-winkelwagen-v3";
+const STORAGE_KEY = "broodhuis-winkelwagen-v4";
 
 type CartContextValue = {
   items: CartItem[];
@@ -27,7 +28,11 @@ type CartContextValue = {
   setQuantity: (lineKey: string, quantity: number) => void;
   removeItem: (lineKey: string) => void;
   clear: () => void;
-  quantityOf: (productId: string, variantId?: string) => number;
+  quantityOf: (
+    productId: string,
+    variantId?: string,
+    selection?: CartItem["selection"],
+  ) => number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -45,6 +50,11 @@ function isCartItem(value: unknown): value is CartItem {
   );
 }
 
+function withSelection(item: CartItem): CartItem {
+  const selection = parseCartSelection(item.selection);
+  return selection ? { ...item, selection } : { ...item, selection: undefined };
+}
+
 function readStoredCart(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
@@ -52,13 +62,16 @@ function readStoredCart(): CartItem[] {
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(isCartItem).map((item) => ({
-      ...item,
-      quantity: Math.min(
-        Math.max(Math.trunc(item.quantity), 1),
-        MAX_QUANTITY_PER_LINE,
-      ),
-    }));
+    return parsed.filter(isCartItem).map((item) => {
+      const next = withSelection(item);
+      return {
+        ...next,
+        quantity: Math.min(
+          Math.max(Math.trunc(item.quantity), 1),
+          MAX_QUANTITY_PER_LINE,
+        ),
+      };
+    });
   } catch {
     return [];
   }
@@ -157,9 +170,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setQuantity,
       removeItem,
       clear,
-      quantityOf: (productId: string, variantId?: string) =>
+      quantityOf: (productId, variantId, selection) =>
         items.find(
-          (line) => cartLineKey(line) === cartLineKey({ productId, variantId }),
+          (line) =>
+            cartLineKey(line) === cartLineKey({ productId, variantId, selection }),
         )?.quantity ?? 0,
     };
   }, [items, isReady, isOpen, addItem, setQuantity, removeItem, clear]);

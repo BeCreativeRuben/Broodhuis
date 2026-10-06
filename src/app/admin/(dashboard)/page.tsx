@@ -96,14 +96,24 @@ export default async function AdminDashboardPage() {
           <h2 className="font-heading text-lg font-semibold">
             Eerstvolgende bestellingen
           </h2>
-          <ButtonLink
-            href="/admin/bestellingen"
-            variant="ghost"
-            size="sm"
-            className="rounded-full"
-          >
-            Alles bekijken <ArrowRightIcon className="size-4" />
-          </ButtonLink>
+          <div className="flex gap-2">
+            <ButtonLink
+              href="/admin/bestellingen/daglijst"
+              variant="ghost"
+              size="sm"
+              className="rounded-full"
+            >
+              Daglijst
+            </ButtonLink>
+            <ButtonLink
+              href="/admin/bestellingen"
+              variant="ghost"
+              size="sm"
+              className="rounded-full"
+            >
+              Alles bekijken <ArrowRightIcon className="size-4" />
+            </ButtonLink>
+          </div>
         </div>
 
         {stats.upcoming.length === 0 ? (

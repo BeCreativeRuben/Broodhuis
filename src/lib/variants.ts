@@ -10,6 +10,8 @@ const OPTION_TITLES: Record<string, string> = {
   personen: "Aantal personen",
   deeg: "Deeg",
   slagroom: "Slagroom",
+  verpakking: "Verpakking",
+  opschrift: "Opschrift",
 };
 
 export function parseOptions(raw: string): VariantOptions {

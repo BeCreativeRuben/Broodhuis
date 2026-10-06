@@ -5,6 +5,7 @@ import { CategoryIcon } from "@/components/category-icon";
 import { CategoryNav } from "@/components/category-nav";
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
+import { SubcategoryNav } from "@/components/subcategory-nav";
 import { getCatalogGroups, getCatalogSections } from "@/lib/catalog";
 import { SHOP } from "@/lib/shop-config";
 
@@ -104,6 +105,14 @@ export default async function AssortimentPage({
         activeSlug={categorie ? (activeGroup?.slug ?? categorie) : undefined}
       />
 
+      {activeGroup && isFiltered ? (
+        <SubcategoryNav
+          groupSlug={activeGroup.slug}
+          items={activeGroup.subcategories}
+          activeSlug={categorie}
+        />
+      ) : null}
+
       {!isFiltered ? (
         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {groups.map((group) => (
@@ -182,7 +191,7 @@ export default async function AssortimentPage({
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {section.products.map((product, productIndex) => (
                   <ProductCard
-                    key={product.id}
+                    key={product.slug}
                     product={product}
                     priority={sectionIndex === 0 && productIndex === 0}
                   />

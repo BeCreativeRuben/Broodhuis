@@ -148,7 +148,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {SHOP.legalName} — {SHOP.vat}
           </p>
           <p>
-            Betalen met Bancontact of bankkaart · Online besteld is online betaald.
+            Betalen met Bancontact of KBC/CBC · Online besteld is online betaald.
           </p>
         </div>
       </div>

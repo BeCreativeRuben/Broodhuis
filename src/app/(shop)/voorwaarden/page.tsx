@@ -21,8 +21,7 @@ export default function TermsPage() {
         </h1>
         <p className="text-muted-foreground">
           Deze voorwaarden gelden voor bestellingen via de webshop van{" "}
-          {SHOP.legalName}. Waar iets nog niet vastligt, staat dat als{" "}
-          <span className="font-medium">[aan te vullen]</span>.
+          {SHOP.legalName}.
         </p>
       </header>
 
@@ -39,10 +38,6 @@ export default function TermsPage() {
             Ondernemingsnummer / btw: {SHOP.vat}
             <br />
             Telefoon: {SHOP.phone}
-            <br />
-            E-mail: [aan te vullen]
-            <br />
-            Rechtsvorm: [aan te vullen]
           </p>
         </section>
 
@@ -82,17 +77,18 @@ export default function TermsPage() {
             Leveren kost {formatEuro(FULFILLMENT.deliveryFeeCents)} en kan
             voorlopig enkel in postcode{" "}
             {FULFILLMENT.deliveryPostalCodes.join(", ")}: donderdagvoormiddag,
-            vrijdagnamiddag of zondagvoormiddag. Woon je daarbuiten? Bel ons.
+            vrijdagnamiddag of zondagvoormiddag. Woon je daarbuiten? Bel ons op{" "}
+            {SHOP.phone}.
           </p>
         </section>
 
         <section className="space-y-2">
           <h2 className="font-heading text-xl font-semibold">5. Prijzen</h2>
           <p>
-            Prijzen staan in euro bij elk product. Of die prijzen inclusief btw
-            zijn: [aan te vullen]. Leveringskost komt erbij als je voor leveren
-            kiest. We rekenen de winkelwagen altijd opnieuw door op het moment
-            van bestellen.
+            Prijzen staan in euro bij elk product. Wat je in de webshop ziet, is
+            de prijs die je als klant betaalt. Leveringskost komt erbij als je
+            voor leveren kiest. We rekenen de winkelwagen altijd opnieuw door op
+            het moment van bestellen.
           </p>
         </section>
 
@@ -121,19 +117,20 @@ export default function TermsPage() {
           </p>
           <p>
             Wil je toch iets wijzigen of annuleren? Bel ons zo snel mogelijk op{" "}
-            {SHOP.phone}. Lukt het nog, dan regelen we dat samen. Terugbetaling
-            van een al betaalde bestelling: [aan te vullen — hoe en binnen welke
-            termijn].
+            {SHOP.phone}. Lukt het nog, dan regelen we dat samen. Als we een al
+            betaalde bestelling alsnog annuleren, betalen we het bedrag terug
+            via dezelfde betaalwijze.
           </p>
         </section>
 
         <section className="space-y-2">
           <h2 className="font-heading text-xl font-semibold">8. Klachten</h2>
           <p>
-            Niet tevreden? Laat het ons weten via {SHOP.phone} of in de winkel.
-            We zoeken graag een oplossing. Geschillen vallen onder Belgisch
-            recht, met als bevoegde rechtbanken die van het arrondissement van{" "}
-            {SHOP.city} — tenzij dwingend recht anders bepaalt.
+            Niet tevreden? Laat het ons weten via {SHOP.phone} of in de winkel
+            op {SHOP.street}, {SHOP.postalCode} {SHOP.city}. We zoeken graag een
+            oplossing. Geschillen vallen onder Belgisch recht, met als bevoegde
+            rechtbanken die van het arrondissement van {SHOP.city} — tenzij
+            dwingend recht anders bepaalt.
           </p>
         </section>
 

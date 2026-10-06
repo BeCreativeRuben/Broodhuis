@@ -8,6 +8,7 @@ import { formatInstant } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { listOrders, type OrderStatus } from "@/lib/orders";
 import { cn } from "@/lib/utils";
+import { formatOrderLineLabel } from "@/lib/weight";
 
 export const dynamic = "force-dynamic";
 
@@ -133,7 +134,9 @@ export default async function AdminOrdersPage({
                     </p>
                     <p className="mt-1 truncate text-xs text-muted-foreground">
                       {order.items
-                        .map((item) => `${item.quantity}× ${item.name}`)
+                        .map((item) =>
+                          formatOrderLineLabel(item.quantity, item.unit, item.name),
+                        )
                         .join(", ")}
                     </p>
                   </div>

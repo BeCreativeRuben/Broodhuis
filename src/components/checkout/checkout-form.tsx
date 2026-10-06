@@ -34,7 +34,7 @@ import { cartLineKey } from "@/lib/cart";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
-import { formatQuantityLabel } from "@/lib/weight";
+import { formatQuantityLabel, isWeightPortionUnit } from "@/lib/weight";
 import type { FulfillmentType } from "@/lib/shop-config";
 import { cn } from "@/lib/utils";
 import { getCheckoutData, placeOrder } from "@/server/actions/checkout";
@@ -495,8 +495,9 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   <span className="min-w-0 flex-1 text-sm">
                     <span className="block truncate font-medium">{line.name}</span>
                     <span className="text-muted-foreground">
-                      {formatQuantityLabel(line.quantity, line.unit)} ×{" "}
-                      {formatEuro(line.unitPriceCents)}
+                      {isWeightPortionUnit(line.unit)
+                        ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.unitPriceCents)} ${line.unit}`
+                        : `${formatQuantityLabel(line.quantity, line.unit)} × ${formatEuro(line.unitPriceCents)}`}
                     </span>
                   </span>
                   <span className="shrink-0 text-sm font-medium tabular-nums">

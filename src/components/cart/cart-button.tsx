@@ -5,10 +5,11 @@ import { ShoppingBasketIcon } from "lucide-react";
 import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { formatEuro } from "@/lib/money";
+import { formatCartCountLabel } from "@/lib/weight";
 import { cn } from "@/lib/utils";
 
 export function CartButton({ className }: { className?: string }) {
-  const { itemCount, subtotalCents, openCart, isReady } = useCart();
+  const { items, itemCount, subtotalCents, openCart, isReady } = useCart();
 
   return (
     <Button
@@ -18,7 +19,7 @@ export function CartButton({ className }: { className?: string }) {
       className={cn("relative h-11 gap-2 rounded-none pr-4 pl-3", className)}
       aria-label={
         itemCount > 0
-          ? `Winkelwagen openen, ${itemCount} ${itemCount === 1 ? "stuk" : "stuks"}, ${formatEuro(subtotalCents)}`
+          ? `Winkelwagen openen, ${formatCartCountLabel(items)}, ${formatEuro(subtotalCents)}`
           : "Winkelwagen openen"
       }
     >

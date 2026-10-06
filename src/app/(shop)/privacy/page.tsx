@@ -20,9 +20,7 @@ export default function PrivacyPage() {
         </h1>
         <p className="text-muted-foreground">
           Deze verklaring legt uit welke persoonsgegevens {SHOP.legalName}{" "}
-          verzamelt wanneer je online bestelt, en waarom. Wat we nog niet
-          kennen, staat als <span className="font-medium">[aan te vullen]</span>
-          .
+          verzamelt wanneer je online bestelt, en waarom.
         </p>
       </header>
 
@@ -39,8 +37,6 @@ export default function PrivacyPage() {
             Ondernemingsnummer / btw: {SHOP.vat}
             <br />
             Telefoon: {SHOP.phone}
-            <br />
-            E-mail: [aan te vullen]
           </p>
         </section>
 
@@ -74,8 +70,8 @@ export default function PrivacyPage() {
             om je te bereiken bij een vraag over de bestelling, en om de
             betaling en administratie te volgen. De grondslag is de uitvoering
             van de overeenkomst, en waar nodig ons gerechtvaardigd belang om de
-            bakkerij te runnen. Andere doelen (nieuwsbrieven, profilering):
-            doen we niet, tenzij dat later [aan te vullen] wordt.
+            bakkerij te runnen. We gebruiken je gegevens niet voor nieuwsbrieven
+            of profilering.
           </p>
         </section>
 
@@ -84,9 +80,8 @@ export default function PrivacyPage() {
             4. Hoe lang we bewaren
           </h2>
           <p>
-            Bestelgegevens bewaren we zolang nodig voor de uitvoering en voor de
-            wettelijke bewaarplicht van facturen en boekhouding. De concrete
-            termijn: [aan te vullen].
+            Bestelgegevens bewaren we zolang nodig om je bestelling uit te
+            voeren, en daarna zolang de wettelijke boekhoudplicht dat vraagt.
           </p>
         </section>
 
@@ -98,8 +93,9 @@ export default function PrivacyPage() {
             <li>
               de betaalprovider (Mollie), enkel wat nodig is om te betalen
             </li>
-            <li>de hoster van de webshop: [aan te vullen]</li>
-            <li>andere verwerkers: [aan te vullen]</li>
+            <li>
+              de hoster van de webshop (Vercel), zodat de site kan draaien
+            </li>
           </ul>
           <p>We verkopen je gegevens niet.</p>
         </section>
@@ -109,8 +105,8 @@ export default function PrivacyPage() {
           <p>
             De webshop bewaart je winkelwagen en een concept van het
             afrekenformulier in je browser (functionele opslag). Zonder die
-            opslag werkt bestellen niet. Tracking- of marketingcookies: [aan te
-            vullen].
+            opslag werkt bestellen niet. We plaatsen geen tracking- of
+            marketingcookies.
           </p>
         </section>
 
@@ -120,8 +116,8 @@ export default function PrivacyPage() {
             Je kan je gegevens inkijken, laten verbeteren of — waar de wet dat
             toelaat — laten wissen. Je kan ook een klacht indienen bij de
             Gegevensbeschermingsautoriteit (www.gegevensbeschermingsautoriteit.be).
-            Contacteer ons daarvoor op {SHOP.phone} of via [aan te vullen
-            e-mail].
+            Contacteer ons daarvoor op {SHOP.phone} of in de winkel op{" "}
+            {SHOP.street}, {SHOP.postalCode} {SHOP.city}.
           </p>
         </section>
 

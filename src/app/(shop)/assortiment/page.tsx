@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CategoryIcon } from "@/components/category-icon";
 import { CategoryNav } from "@/components/category-nav";
 import { ProductCard } from "@/components/product-card";
+import { ProductImage } from "@/components/product-image";
 import { getCatalogGroups, getCatalogSections } from "@/lib/catalog";
 import { SHOP } from "@/lib/shop-config";
 
@@ -32,6 +33,10 @@ export async function generateMetadata({
   );
   const category = group?.categories.find((entry) => entry.slug === categorie);
   const name = group && group.slug === categorie ? group.name : category?.displayName;
+  const description =
+    group && group.slug === categorie
+      ? group.description
+      : (category?.description ?? group?.description);
 
   if (!name) {
     return {
@@ -43,7 +48,10 @@ export async function generateMetadata({
 
   return {
     title: name,
-    description: `${name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
+    description:
+      description && description.trim() !== ""
+        ? description
+        : `${name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
     alternates: { canonical: `/assortiment?categorie=${categorie}` },
   };
 }
@@ -97,21 +105,33 @@ export default async function AssortimentPage({
       />
 
       {!isFiltered ? (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {groups.map((group) => (
             <Link
               key={group.slug}
               href={`/assortiment?categorie=${group.slug}`}
-              className="border border-border bg-card p-4 shadow-warm transition-colors hover:bg-secondary/60"
+              className="border border-border bg-card p-3 shadow-warm transition-colors hover:bg-secondary/60 sm:p-4"
             >
-              <CategoryIcon
-                category={{ slug: group.slug, name: group.name }}
-                className="size-6 text-crust"
-              />
-              <p className="mt-2 font-heading text-lg font-semibold">
+              <div className="relative aspect-square overflow-hidden bg-crumb">
+                {group.imageUrl ? (
+                  <ProductImage
+                    src={group.imageUrl}
+                    alt=""
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                  />
+                ) : (
+                  <div className="flex size-full items-center justify-center">
+                    <CategoryIcon
+                      category={{ slug: group.slug, name: group.name }}
+                      className="size-6 text-crust"
+                    />
+                  </div>
+                )}
+              </div>
+              <p className="mt-2 font-heading text-base font-semibold sm:text-lg">
                 {group.name}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground sm:text-sm">
                 {group.productCount}{" "}
                 {group.productCount === 1 ? "product" : "producten"}
               </p>

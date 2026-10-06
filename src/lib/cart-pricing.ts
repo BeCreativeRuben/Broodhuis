@@ -10,7 +10,12 @@ import {
   type PricedLine,
 } from "@/lib/cart";
 import { prisma } from "@/lib/db";
-import { portionUnit, portionUnitPriceCents } from "@/lib/weight";
+import {
+  displayItemCount,
+  formatQuantityLabel,
+  isWeightPortionUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 
 function sanitiseQuantity(quantity: unknown): number {
   const parsed =
@@ -125,9 +130,11 @@ export async function priceCart(
     if (quantity < requested) {
       notices.push({
         kind: "adjusted",
-        message: `Van ${product.name} ${
-          quantity === 1 ? "is er nog 1 stuk" : `zijn er nog ${quantity} stuks`
-        } beschikbaar. We hebben het aantal aangepast.`,
+        message: isWeightPortionUnit(product.unit)
+          ? `Van ${product.name} is er nog ${formatQuantityLabel(quantity, product.unit)} beschikbaar. We hebben het gewicht aangepast.`
+          : `Van ${product.name} ${
+              quantity === 1 ? "is er nog 1 stuk" : `zijn er nog ${quantity} stuks`
+            } beschikbaar. We hebben het aantal aangepast.`,
       });
     }
 
@@ -145,10 +152,8 @@ export async function priceCart(
       continue;
     }
 
-    const rawUnit = variant?.unit ?? product.unit;
-    const rawPriceCents = variant?.priceCents ?? product.priceCents;
-    const unitPriceCents = portionUnitPriceCents(rawPriceCents, rawUnit);
-    const unit = portionUnit(rawUnit);
+    const unit = variant?.unit ?? product.unit;
+    const unitPriceCents = variant?.priceCents ?? product.priceCents;
     const name = variant ? `${product.name} — ${variant.label}` : product.name;
     const imageUrl =
       (variant?.sourceSlug ? imageBySlug.get(variant.sourceSlug) : null) ??
@@ -164,7 +169,7 @@ export async function priceCart(
       imageUrl,
       unitPriceCents,
       quantity,
-      lineTotalCents: unitPriceCents * quantity,
+      lineTotalCents: lineTotalCents(unitPriceCents, quantity, unit),
       allergens: parseAllergens(product.allergens),
       leadTimeDays: product.leadTimeDays,
       maxQuantity,
@@ -177,7 +182,7 @@ export async function priceCart(
     (total, line) => total + line.lineTotalCents,
     0,
   );
-  const itemCount = lines.reduce((total, line) => total + line.quantity, 0);
+  const itemCount = displayItemCount(lines);
   const leadTimeLine = lines.reduce<PricedLine | null>(
     (longest, line) =>
       !longest || line.leadTimeDays > longest.leadTimeDays ? line : longest,

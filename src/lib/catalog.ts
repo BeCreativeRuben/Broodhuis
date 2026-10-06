@@ -68,8 +68,14 @@ export type CatalogGroup = {
   name: string;
   description: string | null;
   productCount: number;
+  /** Echte productfoto uit de groep, of null als er geen is. */
+  imageUrl: string | null;
   categories: CatalogCategory[];
 };
+
+function isRealProductPhoto(url: string | null | undefined): boolean {
+  return typeof url === "string" && url.trim() !== "";
+}
 
 const productSelect = {
   id: true,
@@ -235,8 +241,31 @@ export async function getCatalogGroups(): Promise<CatalogGroup[]> {
       name: category.groupName,
       description: group.description ?? category.description,
       productCount: category.productCount,
+      imageUrl: null,
       categories: [category],
     });
+  }
+
+  const photos = await prisma.product.findMany({
+    where: {
+      isActive: true,
+      imageUrl: { not: null },
+      category: { isActive: true },
+    },
+    orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
+    select: {
+      imageUrl: true,
+      category: { select: { slug: true } },
+    },
+  });
+
+  for (const product of photos) {
+    if (!isRealProductPhoto(product.imageUrl)) continue;
+    const groupSlug = resolveCategoryGroup(product.category.slug).slug;
+    const existing = groups.get(groupSlug);
+    if (existing && !existing.imageUrl) {
+      existing.imageUrl = product.imageUrl;
+    }
   }
 
   return [...groups.values()].sort(

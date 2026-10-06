@@ -13,8 +13,7 @@ import { cn } from "@/lib/utils";
 import {
   formatQuantityLabel,
   isPerKgUnit,
-  portionUnit,
-  portionUnitPriceCents,
+  lineTotalCents,
 } from "@/lib/weight";
 
 type AddToCartProps = {
@@ -47,8 +46,8 @@ export function AddToCart({
         variantId: product.variantId,
         slug: product.slug,
         name: product.name,
-        priceCents: portionUnitPriceCents(product.priceCents, product.unit),
-        unit: portionUnit(product.unit),
+        priceCents: product.priceCents,
+        unit: product.unit,
         imageUrl: product.imageUrl,
       },
       quantity,
@@ -95,7 +94,9 @@ export function AddToCart({
         ) : (
           <>
             <ShoppingBasketIcon className="size-4" />
-            {inCart > 0 ? `Nog een (${inCart} in wagen)` : "In winkelwagen"}
+            {inCart > 0
+              ? `Nog een (${formatQuantityLabel(inCart, product.unit)} in wagen)`
+              : "In winkelwagen"}
           </>
         )}
       </Button>
@@ -122,7 +123,7 @@ export function AddToCart({
           type="button"
           onClick={handleAdd}
           size="lg"
-          className="h-12 flex-1 rounded-none text-base"
+          className="h-12 min-h-11 w-full flex-none rounded-none text-base sm:flex-1"
         >
           {justAdded ? (
             <>
@@ -138,7 +139,7 @@ export function AddToCart({
       {isPerKgUnit(product.unit) && (
         <p className="text-sm text-muted-foreground">
           {formatEuro(
-            portionUnitPriceCents(product.priceCents, product.unit) * quantity,
+            lineTotalCents(product.priceCents, quantity, product.unit),
           )}{" "}
           voor {formatQuantityLabel(quantity, product.unit)}
         </p>

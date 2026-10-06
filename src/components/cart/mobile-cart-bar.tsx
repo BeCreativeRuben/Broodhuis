@@ -6,6 +6,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { useCart } from "@/components/cart/cart-provider";
 import { ButtonLink } from "@/components/ui/button-link";
 import { formatEuro } from "@/lib/money";
+import { formatCartCountLabel } from "@/lib/weight";
 
 /**
  * Vaste balk onderaan op gsm. Van Hoorick laat je op mobiel zoeken naar de
@@ -13,7 +14,7 @@ import { formatEuro } from "@/lib/money";
  * van je duim.
  */
 export function MobileCartBar() {
-  const { itemCount, subtotalCents, isReady } = useCart();
+  const { items, itemCount, subtotalCents, isReady } = useCart();
   const pathname = usePathname();
 
   const hiddenOn = ["/winkelwagen", "/afrekenen", "/betaling", "/bestelling"];
@@ -29,7 +30,7 @@ export function MobileCartBar() {
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xs text-muted-foreground">
-              {itemCount} {itemCount === 1 ? "stuk" : "stuks"} in je winkelwagen
+              {formatCartCountLabel(items)} in je winkelwagen
             </p>
             <p className="font-heading text-lg leading-tight font-semibold tabular-nums">
               {formatEuro(subtotalCents)}

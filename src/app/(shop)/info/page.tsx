@@ -92,7 +92,7 @@ export default function InfoPage() {
             target="_blank"
             rel="noreferrer"
             variant="outline"
-            className="mt-4 rounded-none"
+            className="mt-4 min-h-11 rounded-none"
           >
             Route naar de winkel
           </ButtonLink>

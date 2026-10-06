@@ -10,8 +10,9 @@ import {
 } from "react";
 
 import { cartLineKey, MAX_QUANTITY_PER_LINE, type CartItem } from "@/lib/cart";
+import { displayItemCount, lineTotalCents } from "@/lib/weight";
 
-const STORAGE_KEY = "broodhuis-winkelwagen-v2";
+const STORAGE_KEY = "broodhuis-winkelwagen-v3";
 
 type CartContextValue = {
   items: CartItem[];
@@ -39,6 +40,7 @@ function isCartItem(value: unknown): value is CartItem {
     typeof item.quantity === "number" &&
     typeof item.name === "string" &&
     typeof item.priceCents === "number" &&
+    typeof item.unit === "string" &&
     (item.variantId === undefined || typeof item.variantId === "string")
   );
 }
@@ -136,9 +138,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clear = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartContextValue>(() => {
-    const itemCount = items.reduce((total, line) => total + line.quantity, 0);
+    const itemCount = displayItemCount(items);
     const subtotalCents = items.reduce(
-      (total, line) => total + line.priceCents * line.quantity,
+      (total, line) =>
+        total + lineTotalCents(line.priceCents, line.quantity, line.unit),
       0,
     );
 

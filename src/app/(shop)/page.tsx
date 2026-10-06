@@ -187,7 +187,11 @@ export default async function HomePage() {
               Waar heb je vandaag zin in?
             </h2>
           </div>
-          <ButtonLink href="/assortiment" variant="ghost" className="rounded-none">
+          <ButtonLink
+            href="/assortiment"
+            variant="ghost"
+            className="min-h-11 rounded-none"
+          >
             Beginnen met bestellen <ArrowRightIcon className="size-4" />
           </ButtonLink>
         </div>

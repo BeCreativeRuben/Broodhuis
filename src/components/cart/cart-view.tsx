@@ -18,14 +18,18 @@ import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatEuro } from "@/lib/money";
-import { formatQuantityLabel } from "@/lib/weight";
+import {
+  formatCartCountLabel,
+  formatQuantityLabel,
+  isWeightPortionUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 import { cn } from "@/lib/utils";
 import { cartLineKey, type CartNotice } from "@/lib/cart";
 import { revalidateCart } from "@/server/actions/cart";
 
 export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
-  const { items, itemCount, subtotalCents, setQuantity, removeItem, isReady } =
-    useCart();
+  const { items, subtotalCents, setQuantity, removeItem, isReady } = useCart();
   const [notices, setNotices] = useState<CartNotice[]>([]);
   const [isChecking, startChecking] = useTransition();
   const lastSyncedRef = useRef<string>("");
@@ -142,14 +146,15 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                       {line.name}
                     </Link>
                     <p className="text-sm text-muted-foreground">
-                      {formatEuro(line.priceCents)} {line.unit}
-                      {line.quantity > 1
-                        ? ` · ${formatQuantityLabel(line.quantity, line.unit)}`
-                        : ""}
+                      {isWeightPortionUnit(line.unit)
+                        ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.priceCents)} ${line.unit}`
+                        : `${formatEuro(line.priceCents)} ${line.unit}`}
                     </p>
                   </div>
                   <span className="shrink-0 font-heading text-base font-semibold tabular-nums">
-                    {formatEuro(line.priceCents * line.quantity)}
+                    {formatEuro(
+                      lineTotalCents(line.priceCents, line.quantity, line.unit),
+                    )}
                   </span>
                 </div>
 
@@ -190,7 +195,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           <dl className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">
-                {itemCount} {itemCount === 1 ? "stuk" : "stuks"}
+                {formatCartCountLabel(items)}
               </dt>
               <dd className="font-medium tabular-nums">
                 {formatEuro(subtotalCents)}

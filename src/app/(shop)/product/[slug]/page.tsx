@@ -43,6 +43,22 @@ export async function generateMetadata({
       description:
         product.description ??
         `${product.name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
+      images: [
+        {
+          url:
+            product.imageUrl && product.imageUrl.trim() !== ""
+              ? product.imageUrl
+              : "/opengraph-image",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [
+        product.imageUrl && product.imageUrl.trim() !== ""
+          ? product.imageUrl
+          : "/opengraph-image",
+      ],
     },
   };
 }

@@ -17,7 +17,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { formatEuro } from "@/lib/money";
-import { formatQuantityLabel } from "@/lib/weight";
+import {
+  formatCartCountLabel,
+  formatQuantityLabel,
+  isWeightPortionUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 import { FULFILLMENT } from "@/lib/shop-config";
 
 export function CartSheet() {
@@ -42,7 +47,7 @@ export function CartSheet() {
           <SheetDescription>
             {itemCount === 0
               ? "Nog niets in je wagen."
-              : `${itemCount} ${itemCount === 1 ? "stuk" : "stuks"} — je kiest straks afhalen of leveren.`}
+              : `${formatCartCountLabel(items)} — je kiest straks afhalen of leveren.`}
           </SheetDescription>
         </SheetHeader>
 
@@ -95,11 +100,19 @@ export function CartSheet() {
                           {line.name}
                         </Link>
                         <p className="text-xs text-muted-foreground">
-                          {formatEuro(line.priceCents)} {line.unit}
+                          {isWeightPortionUnit(line.unit)
+                            ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.priceCents)} ${line.unit}`
+                            : `${formatEuro(line.priceCents)} ${line.unit}`}
                         </p>
                       </div>
                       <span className="shrink-0 font-medium tabular-nums">
-                        {formatEuro(line.priceCents * line.quantity)}
+                        {formatEuro(
+                          lineTotalCents(
+                            line.priceCents,
+                            line.quantity,
+                            line.unit,
+                          ),
+                        )}
                       </span>
                     </div>
 

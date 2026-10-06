@@ -509,7 +509,9 @@ export async function listOrders(filters: OrderListFilters = {}) {
     where,
     orderBy: [{ createdAt: "desc" }],
     take: 200,
-    include: { items: { select: { id: true, name: true, quantity: true } } },
+    include: {
+      items: { select: { id: true, name: true, quantity: true, unit: true } },
+    },
   });
 }
 

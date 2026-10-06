@@ -12,6 +12,7 @@ import { allergenSummary } from "@/lib/allergens";
 import { formatEuro } from "@/lib/money";
 import type { CustomerOrder } from "@/lib/orders";
 import { SHOP } from "@/lib/shop-config";
+import { formatQuantityLabel, isWeightPortionUnit } from "@/lib/weight";
 
 /** Bestelde producten, moment en gegevens — gebruikt op de bestelpagina. */
 export function OrderDetails({ order }: { order: CustomerOrder }) {
@@ -26,8 +27,10 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
             const allergens = allergenSummary(item.allergens);
             return (
               <li key={item.id} className="flex items-start gap-3 py-3">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-medium tabular-nums">
-                  {item.quantity}
+                <span className="flex min-w-8 shrink-0 items-center justify-center rounded-full bg-secondary px-2 text-sm font-medium tabular-nums">
+                  {isWeightPortionUnit(item.unit)
+                    ? formatQuantityLabel(item.quantity, item.unit)
+                    : item.quantity}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-medium">{item.name}</span>

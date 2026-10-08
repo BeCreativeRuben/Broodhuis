@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRightIcon } from "lucide-react";
 
-import { ButtonLink } from "@/components/ui/button-link";
+import { StartOrderLink } from "@/components/start-order-link";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
 
@@ -42,21 +42,18 @@ export default function HomePage() {
         </p>
 
         <div className="flex flex-col gap-3 pt-1 sm:flex-row">
-          <ButtonLink
-            href="/bestellen?levering=0"
-            size="lg"
+          <StartOrderLink
+            intent="pickup"
             className="h-12 min-h-12 w-full rounded-none px-7 text-base sm:w-auto"
           >
             Bestelling plaatsen <ArrowRightIcon className="size-4" />
-          </ButtonLink>
-          <ButtonLink
-            href="/bestellen?levering=1"
-            variant="outline"
-            size="lg"
+          </StartOrderLink>
+          <StartOrderLink
+            intent="delivery"
             className="h-12 min-h-12 w-full rounded-none px-7 text-base sm:w-auto"
           >
             Levering aanvragen <ArrowRightIcon className="size-4" />
-          </ButtonLink>
+          </StartOrderLink>
         </div>
       </header>
 

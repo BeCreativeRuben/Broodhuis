@@ -3,12 +3,22 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ADMIN_COOKIE_NAME, verifySessionToken } from "@/lib/auth/session";
 import { FULFILLMENT_INTENT_COOKIE } from "@/lib/delivery-intent";
 
+function isPrefetch(request: NextRequest) {
+  return (
+    request.headers.get("next-router-prefetch") === "1" ||
+    request.headers.get("next-router-segment-prefetch") !== null ||
+    request.headers.get("purpose") === "prefetch" ||
+    request.headers.get("sec-purpose") === "prefetch"
+  );
+}
+
 function redirectToAssortiment(request: NextRequest) {
   const destination = new URL("/assortiment", request.url);
   const response = NextResponse.redirect(destination);
   const levering = request.nextUrl.searchParams.get("levering");
 
-  if (levering === "1" || levering === "0") {
+  // Prefetch van de twee knoppen mag de keuze niet al wegschrijven.
+  if (!isPrefetch(request) && (levering === "1" || levering === "0")) {
     response.cookies.set(
       FULFILLMENT_INTENT_COOKIE,
       levering === "1" ? "delivery" : "pickup",

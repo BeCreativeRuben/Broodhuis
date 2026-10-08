@@ -8,6 +8,8 @@ type ButtonLinkProps = {
   href: string;
   className?: string;
   children?: React.ReactNode;
+  /** Alleen voor interne routes. `false` voorkomt dat Next de link al ophaalt. */
+  prefetch?: boolean;
 } & VariantProps<typeof buttonVariants> &
   Omit<React.ComponentProps<"a">, "href" | "className">;
 
@@ -25,6 +27,7 @@ export function ButtonLink({
   size,
   className,
   children,
+  prefetch,
   ...props
 }: ButtonLinkProps) {
   const classes = cn(buttonVariants({ variant, size }), className);
@@ -32,7 +35,7 @@ export function ButtonLink({
 
   if (isInternalRoute) {
     return (
-      <Link href={href} className={classes} {...props}>
+      <Link href={href} className={classes} prefetch={prefetch} {...props}>
         {children}
       </Link>
     );

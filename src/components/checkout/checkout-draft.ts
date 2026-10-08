@@ -75,6 +75,20 @@ function readDraft(): CheckoutDraft | null {
   }
 }
 
+/** De startpagina kiest afhalen of leveren vóór de klant in de kassa staat. */
+export function rememberFulfillment(intent: FulfillmentType): void {
+  if (typeof window === "undefined") return;
+  try {
+    const stored = readDraft() ?? { ...EMPTY_DRAFT };
+    if (stored.fulfillmentType !== intent) stored.slot = "";
+    stored.fulfillmentType = intent;
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    document.cookie = `${FULFILLMENT_INTENT_COOKIE}=${intent}; path=/; max-age=43200; samesite=lax`;
+  } catch {
+    // Zonder opslag kiest de klant alsnog in de kassa.
+  }
+}
+
 export function clearCheckoutDraft(): void {
   if (typeof window === "undefined") return;
   try {

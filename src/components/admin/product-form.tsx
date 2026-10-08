@@ -316,7 +316,7 @@ export function ProductForm({
             <span>
               <span className="block font-medium">Uitgelicht</span>
               <span className="text-muted-foreground">
-                Verschijnt bij &ldquo;Onze klassiekers&rdquo; op de homepage.
+                Blijft op het product bewaard. De startpagina toont ze niet.
               </span>
             </span>
           </label>

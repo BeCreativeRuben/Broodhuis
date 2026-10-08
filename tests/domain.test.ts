@@ -12,6 +12,7 @@ import {
   formatEuro,
   parseEuroInputToCents,
 } from "../src/lib/money";
+import { fulfillmentIntentFromCookie } from "../src/lib/delivery-intent";
 import { deliversToPostalCode, findWindow } from "../src/lib/shop-config";
 import { parseClosedDatesInput } from "../src/lib/closed-dates";
 import { slugify } from "../src/lib/validation";
@@ -62,6 +63,13 @@ test("het leveringsgebied wordt afgetoetst op postcode", () => {
   assert.equal(deliversToPostalCode("9250"), true);
   assert.equal(deliversToPostalCode(" 9250 "), true);
   assert.equal(deliversToPostalCode("2000"), false);
+});
+
+test("de startpagina kan afhalen of leveren vooraf kiezen", () => {
+  assert.equal(fulfillmentIntentFromCookie("delivery"), "delivery");
+  assert.equal(fulfillmentIntentFromCookie("pickup"), "pickup");
+  assert.equal(fulfillmentIntentFromCookie("iets-anders"), null);
+  assert.equal(fulfillmentIntentFromCookie(undefined), null);
 });
 
 test("een tijdslot hoort bij één soort levering", () => {

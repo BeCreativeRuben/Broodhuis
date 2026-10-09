@@ -31,7 +31,13 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-export function SocialLinks({ className }: { className?: string }) {
+export function SocialLinks({
+  className,
+  compact = false,
+}: {
+  className?: string;
+  compact?: boolean;
+}) {
   return (
     <div className={cn("flex items-center gap-1", className)}>
       <a
@@ -39,7 +45,10 @@ export function SocialLinks({ className }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
         aria-label="Facebook van 't Broodhuis"
-        className="inline-flex size-12 items-center justify-center text-foreground/80 hover:text-foreground"
+        className={cn(
+          "inline-flex items-center justify-center text-foreground/80 hover:text-foreground",
+          compact ? "size-9" : "size-12",
+        )}
       >
         <FacebookIcon className="size-4" />
       </a>
@@ -48,7 +57,10 @@ export function SocialLinks({ className }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
         aria-label="Instagram van 't Broodhuis"
-        className="inline-flex size-12 items-center justify-center text-foreground/80 hover:text-foreground"
+        className={cn(
+          "inline-flex items-center justify-center text-foreground/80 hover:text-foreground",
+          compact ? "size-9" : "size-12",
+        )}
       >
         <InstagramIcon className="size-4" />
       </a>

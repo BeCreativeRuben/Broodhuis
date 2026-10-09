@@ -26,13 +26,13 @@ export function SiteFooter() {
             {SHOP.tagline}. Elke bakdag versgebakken brood, koffiekoeken en
             patisserie — online besteld, klaar wanneer jij het wil.
           </p>
-          <SocialLinks />
+          <SocialLinks compact />
         </div>
 
         <div className="space-y-3">
           <h2 className="font-heading text-lg">Waar vind je ons</h2>
-          <address className="space-y-2 text-sm text-muted-foreground not-italic">
-            <span className="flex items-start gap-2">
+          <address className="text-sm leading-5 text-muted-foreground not-italic">
+            <span className="flex items-start gap-2 py-1.5">
               <MapPinIcon className="mt-0.5 size-4 shrink-0" />
               <span>
                 {SHOP.street}
@@ -42,7 +42,7 @@ export function SiteFooter() {
             </span>
             <a
               href={`tel:${SHOP.phoneHref}`}
-              className="flex min-h-12 items-center gap-2 hover:text-foreground"
+              className="flex min-h-9 items-center gap-2 py-1.5 hover:text-foreground"
             >
               <PhoneIcon className="size-4 shrink-0" />
               {SHOP.phone}
@@ -51,7 +51,7 @@ export function SiteFooter() {
               href={SHOP.facebook}
               target="_blank"
               rel="noreferrer"
-              className="flex min-h-12 items-center hover:text-foreground"
+              className="flex min-h-9 items-center py-1.5 hover:text-foreground"
             >
               Contacteer ons op messenger
             </a>
@@ -83,11 +83,11 @@ export function SiteFooter() {
 
         <div className="space-y-3">
           <h2 className="font-heading text-lg">Bestellen</h2>
-          <ul className="space-y-1.5 text-sm text-muted-foreground">
+          <ul className="text-sm leading-5 text-muted-foreground">
             <li>
               <Link
                 href="/bestellen"
-                className="inline-flex min-h-12 items-center hover:text-foreground"
+                className="inline-flex min-h-9 items-center py-1.5 hover:text-foreground"
               >
                 Bestellen
               </Link>
@@ -95,7 +95,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/assortiment"
-                className="inline-flex min-h-12 items-center hover:text-foreground"
+                className="inline-flex min-h-9 items-center py-1.5 hover:text-foreground"
               >
                 Assortiment
               </Link>
@@ -103,7 +103,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/info"
-                className="inline-flex min-h-12 items-center hover:text-foreground"
+                className="inline-flex min-h-9 items-center py-1.5 hover:text-foreground"
               >
                 Afhalen, leveren &amp; betalen
               </Link>
@@ -111,7 +111,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/voorwaarden"
-                className="inline-flex min-h-12 items-center hover:text-foreground"
+                className="inline-flex min-h-9 items-center py-1.5 hover:text-foreground"
               >
                 Voorwaarden
               </Link>
@@ -119,7 +119,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/privacy"
-                className="inline-flex min-h-12 items-center hover:text-foreground"
+                className="inline-flex min-h-9 items-center py-1.5 hover:text-foreground"
               >
                 Privacy
               </Link>
@@ -129,7 +129,7 @@ export function SiteFooter() {
                 href={SHOP.website}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-12 items-center hover:text-foreground"
+                className="inline-flex min-h-9 items-center py-1.5 hover:text-foreground"
               >
                 bakkerij-tbroodhuis.be
               </a>

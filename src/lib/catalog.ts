@@ -7,7 +7,7 @@ import {
   topLevelGroupSlug,
 } from "@/lib/category-groups";
 import { prisma } from "@/lib/db";
-import { primaryProductImage } from "@/lib/product-images";
+import { resolveProductPhoto, resolveVariantPhoto } from "@/lib/generated-product-photos";
 import {
   baruFlavourKey,
   baruFlavourName,
@@ -191,7 +191,7 @@ function toCatalogProduct(
   row: ProductRow,
   variants: CatalogVariant[] = [],
 ): CatalogProduct {
-  const imageUrl = primaryProductImage(row.imageUrl);
+  const imageUrl = resolveProductPhoto(row.slug, row.imageUrl);
   const base: CatalogProduct = {
     ...row,
     imageUrl,
@@ -228,11 +228,13 @@ async function variantsFor(rows: ProductRow[]): Promise<Map<string, CatalogVaria
           select: { slug: true, imageUrl: true, description: true },
         });
   const sourceBySlug = new Map(sources.map((source) => [source.slug, source]));
+  const rowById = new Map(rows.map((row) => [row.id, row]));
 
   for (const variant of variantRows) {
     const source = variant.sourceSlug
       ? sourceBySlug.get(variant.sourceSlug)
       : undefined;
+    const parent = rowById.get(variant.productId);
     const list = byProduct.get(variant.productId) ?? [];
     list.push({
       id: variant.id,
@@ -240,7 +242,12 @@ async function variantsFor(rows: ProductRow[]): Promise<Map<string, CatalogVaria
       priceCents: variant.priceCents,
       unit: variant.unit,
       options: parseOptions(variant.optionsJson),
-      imageUrl: source?.imageUrl ?? null,
+      imageUrl: resolveVariantPhoto(
+        parent?.slug,
+        parent?.imageUrl,
+        variant.sourceSlug,
+        source?.imageUrl,
+      ),
       description: source?.description ?? null,
       sortOrder: variant.sortOrder,
       sourceSlug: variant.sourceSlug,
@@ -474,18 +481,18 @@ export async function getCatalogGroups(): Promise<CatalogGroup[]> {
   const photos = await prisma.product.findMany({
     where: {
       isActive: true,
-      imageUrl: { not: null },
       category: { isActive: true },
     },
     orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
     select: {
+      slug: true,
       imageUrl: true,
       category: { select: { slug: true } },
     },
   });
 
   for (const product of photos) {
-    const imageUrl = primaryProductImage(product.imageUrl);
+    const imageUrl = resolveProductPhoto(product.slug, product.imageUrl);
     if (!isRealProductPhoto(imageUrl)) continue;
     const groupSlug = topLevelGroupSlug(product.category.slug);
     const existing = groups.get(groupSlug);

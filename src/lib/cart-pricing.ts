@@ -17,6 +17,7 @@ import {
 } from "@/lib/cart-selection";
 import { formatChoiceLine } from "@/lib/product-options";
 import { prisma } from "@/lib/db";
+import { resolveProductPhoto } from "@/lib/generated-product-photos";
 import {
   displayItemCount,
   formatQuantityLabel,
@@ -172,9 +173,13 @@ export async function priceCart(
 
     const unit = variant?.unit ?? product.unit;
     const unitPriceCents = variant?.priceCents ?? product.priceCents;
-    const imageUrl =
-      (variant?.sourceSlug ? imageBySlug.get(variant.sourceSlug) : null) ??
-      product.imageUrl;
+    const sourceImage = variant?.sourceSlug
+      ? resolveProductPhoto(
+          variant.sourceSlug,
+          imageBySlug.get(variant.sourceSlug) ?? null,
+        )
+      : null;
+    const imageUrl = sourceImage ?? resolveProductPhoto(product.slug, product.imageUrl);
     const choice = formatChoiceLine({
       slug: product.slug,
       name: product.name,

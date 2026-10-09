@@ -7,7 +7,7 @@ import {
   topLevelGroupSlug,
 } from "@/lib/category-groups";
 import { prisma } from "@/lib/db";
-import { primaryProductImage } from "@/lib/product-images";
+import { resolveProductPhoto } from "@/lib/generated-product-photos";
 import {
   baruFlavourKey,
   baruFlavourName,
@@ -191,7 +191,7 @@ function toCatalogProduct(
   row: ProductRow,
   variants: CatalogVariant[] = [],
 ): CatalogProduct {
-  const imageUrl = primaryProductImage(row.imageUrl);
+  const imageUrl = resolveProductPhoto(row.slug, row.imageUrl);
   const base: CatalogProduct = {
     ...row,
     imageUrl,
@@ -240,7 +240,7 @@ async function variantsFor(rows: ProductRow[]): Promise<Map<string, CatalogVaria
       priceCents: variant.priceCents,
       unit: variant.unit,
       options: parseOptions(variant.optionsJson),
-      imageUrl: source?.imageUrl ?? null,
+      imageUrl: resolveProductPhoto(variant.sourceSlug, source?.imageUrl),
       description: source?.description ?? null,
       sortOrder: variant.sortOrder,
       sourceSlug: variant.sourceSlug,
@@ -479,13 +479,14 @@ export async function getCatalogGroups(): Promise<CatalogGroup[]> {
     },
     orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
     select: {
+      slug: true,
       imageUrl: true,
       category: { select: { slug: true } },
     },
   });
 
   for (const product of photos) {
-    const imageUrl = primaryProductImage(product.imageUrl);
+    const imageUrl = resolveProductPhoto(product.slug, product.imageUrl);
     if (!isRealProductPhoto(imageUrl)) continue;
     const groupSlug = topLevelGroupSlug(product.category.slug);
     const existing = groups.get(groupSlug);

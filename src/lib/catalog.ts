@@ -481,7 +481,6 @@ export async function getCatalogGroups(): Promise<CatalogGroup[]> {
   const photos = await prisma.product.findMany({
     where: {
       isActive: true,
-      imageUrl: { not: null },
       category: { isActive: true },
     },
     orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }, { name: "asc" }],

@@ -12,6 +12,7 @@ import {
 } from "@/lib/cart";
 import {
   combineVariantLabel,
+  combineVariantSummary,
   parseCartSelection,
 } from "@/lib/cart-selection";
 import { formatChoiceLine } from "@/lib/product-options";
@@ -181,7 +182,8 @@ export async function priceCart(
       variantLabel: variant?.label ?? null,
     });
     const variantLabel = combineVariantLabel(choice.variantLabel, request.selection);
-    const name = variantLabel ? `${choice.name} — ${variantLabel}` : choice.name;
+    const summary = combineVariantSummary(choice.variantLabel, request.selection);
+    const name = summary ? `${choice.name} — ${summary}` : choice.name;
 
     lines.push({
       productId: product.id,

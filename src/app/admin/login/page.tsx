@@ -36,7 +36,7 @@ export default async function AdminLoginPage({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-warm">
+        <div>
           <LoginForm next={volgende ?? null} />
         </div>
 
@@ -50,7 +50,7 @@ export default async function AdminLoginPage({
         )}
 
         <p className="text-center text-sm">
-          <Link href="/" className="text-muted-foreground hover:text-foreground">
+          <Link href="/" className="inline-flex min-h-12 items-center text-muted-foreground hover:text-foreground">
             ← Terug naar de webshop
           </Link>
         </p>

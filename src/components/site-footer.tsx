@@ -42,7 +42,7 @@ export function SiteFooter() {
             </span>
             <a
               href={`tel:${SHOP.phoneHref}`}
-              className="flex min-h-11 items-center gap-2 hover:text-foreground"
+              className="flex min-h-12 items-center gap-2 hover:text-foreground"
             >
               <PhoneIcon className="size-4 shrink-0" />
               {SHOP.phone}
@@ -51,7 +51,7 @@ export function SiteFooter() {
               href={SHOP.facebook}
               target="_blank"
               rel="noreferrer"
-              className="flex min-h-11 items-center hover:text-foreground"
+              className="flex min-h-12 items-center hover:text-foreground"
             >
               Contacteer ons op messenger
             </a>
@@ -87,7 +87,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/bestellen"
-                className="inline-flex min-h-11 items-center hover:text-foreground"
+                className="inline-flex min-h-12 items-center hover:text-foreground"
               >
                 Bestellen
               </Link>
@@ -95,7 +95,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/assortiment"
-                className="inline-flex min-h-11 items-center hover:text-foreground"
+                className="inline-flex min-h-12 items-center hover:text-foreground"
               >
                 Assortiment
               </Link>
@@ -103,7 +103,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/info"
-                className="inline-flex min-h-11 items-center hover:text-foreground"
+                className="inline-flex min-h-12 items-center hover:text-foreground"
               >
                 Afhalen, leveren &amp; betalen
               </Link>
@@ -111,7 +111,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/voorwaarden"
-                className="inline-flex min-h-11 items-center hover:text-foreground"
+                className="inline-flex min-h-12 items-center hover:text-foreground"
               >
                 Voorwaarden
               </Link>
@@ -119,7 +119,7 @@ export function SiteFooter() {
             <li>
               <Link
                 href="/privacy"
-                className="inline-flex min-h-11 items-center hover:text-foreground"
+                className="inline-flex min-h-12 items-center hover:text-foreground"
               >
                 Privacy
               </Link>
@@ -129,7 +129,7 @@ export function SiteFooter() {
                 href={SHOP.website}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-11 items-center hover:text-foreground"
+                className="inline-flex min-h-12 items-center hover:text-foreground"
               >
                 bakkerij-tbroodhuis.be
               </a>

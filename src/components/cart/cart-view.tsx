@@ -178,7 +178,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-11 rounded-none text-muted-foreground"
+                    className="size-12 rounded-none text-muted-foreground"
                     onClick={() => removeItem(cartLineKey(line))}
                     aria-label={`${line.name} verwijderen`}
                   >
@@ -214,7 +214,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
             </div>
           </dl>
 
-          <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3 text-xs text-muted-foreground">
+          <p className="flex items-start gap-2 text-xs text-muted-foreground">
             <TruckIcon className="mt-0.5 size-3.5 shrink-0" />
             Bij het afrekenen kies je afhalen (gratis) of leveren. Daar zie je ook
             de beschikbare momenten.

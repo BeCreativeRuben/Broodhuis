@@ -33,7 +33,7 @@ export function ProductCard({
           className="transition-transform duration-500 group-hover:scale-105"
         />
         {product.leadTimeDays > 0 && (
-          <Badge className="absolute top-3 left-3 gap-1 border-transparent bg-card/95 text-foreground shadow-warm backdrop-blur">
+          <Badge className="absolute top-3 left-3 gap-1 border-transparent bg-background/95 text-foreground">
             <CalendarClockIcon className="size-3" />
             {product.leadTimeDays} dagen vooraf
           </Badge>
@@ -50,7 +50,7 @@ export function ProductCard({
           <h3 className="font-heading text-lg leading-tight font-semibold">
             <Link
               href={`/product/${product.slug}`}
-              className="inline-flex min-h-11 items-center hover:underline"
+              className="inline-flex min-h-12 items-center hover:underline"
             >
               {product.name}
             </Link>
@@ -82,7 +82,7 @@ export function ProductCard({
           <ButtonLink
             href={`/product/${product.slug}`}
             variant="outline"
-            className="h-11 w-full rounded-none text-sm"
+            className="h-12 w-full rounded-none text-sm"
           >
             {product.choiceCta}
           </ButtonLink>

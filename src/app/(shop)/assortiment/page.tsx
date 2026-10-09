@@ -149,7 +149,7 @@ export default async function AssortimentPage({
           ))}
         </div>
       ) : sections.length === 0 ? (
-        <div className="mt-12 border border-dashed border-border bg-card/60 p-10 text-center">
+        <div className="mt-12 py-6 text-center">
           <h2 className="font-heading text-xl font-semibold">
             Hier staat nog niets
           </h2>
@@ -159,7 +159,7 @@ export default async function AssortimentPage({
           </p>
           <Link
             href="/assortiment"
-            className="mt-4 inline-flex h-11 items-center bg-primary px-5 text-sm font-medium text-primary-foreground"
+            className="mt-4 inline-flex h-12 min-h-12 items-center bg-primary px-5 text-sm font-medium text-primary-foreground"
           >
             Volledig assortiment
           </Link>

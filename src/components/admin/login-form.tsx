@@ -31,7 +31,7 @@ export function LoginForm({ next }: { next: string | null }) {
           autoComplete="username"
           autoCapitalize="none"
           required
-          className="h-11"
+          className="h-12"
         />
       </div>
 
@@ -43,14 +43,14 @@ export function LoginForm({ next }: { next: string | null }) {
           type="password"
           autoComplete="current-password"
           required
-          className="h-11"
+          className="h-12"
         />
       </div>
 
       <Button
         type="submit"
         disabled={isPending}
-        className="h-11 w-full rounded-full"
+        className="h-12 min-h-12 w-full rounded-none"
       >
         {isPending ? (
           <>

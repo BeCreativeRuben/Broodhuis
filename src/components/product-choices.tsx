@@ -177,7 +177,7 @@ export function ProductChoices({
                   onChange={(event) => setInscription(event.target.value.slice(0, 80))}
                   maxLength={80}
                   placeholder="Bv. Gefeliciteerd oma"
-                  className="mt-2 h-11 w-full border-b border-border bg-transparent px-0 text-base outline-none focus-visible:border-primary"
+                  className="mt-2 h-12 w-full border-b border-border bg-transparent px-0 text-base outline-none focus-visible:border-primary"
                 />
               </label>
             )}
@@ -213,11 +213,11 @@ export function ProductChoices({
         />
 
         <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-          <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3">
+          <p className="flex items-start gap-2">
             <TruckIcon className="mt-0.5 size-4 shrink-0" />
             Afhalen is gratis, leveren kost {deliveryFeeLabel}
           </p>
-          <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3">
+          <p className="flex items-start gap-2">
             <InfoIcon className="mt-0.5 size-4 shrink-0" />
             Bestel tot {cutoffHour}u de dag ervoor
           </p>

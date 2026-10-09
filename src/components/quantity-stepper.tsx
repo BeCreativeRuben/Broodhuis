@@ -32,12 +32,12 @@ export function QuantityStepper({
   formatValue,
 }: QuantityStepperProps) {
   const upperBound = Math.min(max ?? MAX_QUANTITY_PER_LINE, MAX_QUANTITY_PER_LINE);
-  const buttonSize = "size-11";
+  const buttonSize = "size-12";
 
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1 border border-border bg-card p-1",
+        "inline-flex items-center gap-1",
         className,
       )}
     >

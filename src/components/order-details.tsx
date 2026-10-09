@@ -21,14 +21,14 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section>
         <h2 className="font-heading text-lg font-semibold">Je bestelling</h2>
         <ul className="mt-3 divide-y divide-border">
           {order.items.map((item) => {
             const allergens = allergenSummary(item.allergens);
             return (
               <li key={item.id} className="flex items-start gap-3 py-3">
-                <span className="flex min-w-8 shrink-0 items-center justify-center rounded-full bg-secondary px-2 text-sm font-medium tabular-nums">
+                <span className="min-w-8 shrink-0 text-sm font-medium tabular-nums">
                   {isWeightPortionUnit(item.unit)
                     ? formatQuantityLabel(item.quantity, item.unit)
                     : item.quantity}
@@ -72,7 +72,7 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
       </section>
 
       <div className="space-y-4">
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section>
           <h2 className="flex items-center gap-2 font-heading text-lg font-semibold">
             {isDelivery ? (
               <TruckIcon className="size-4 text-crust" />
@@ -113,7 +113,7 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section>
           <h2 className="font-heading text-lg font-semibold">Jouw gegevens</h2>
           <div className="mt-3 space-y-2 text-sm">
             <p className="font-medium">{order.customerName}</p>
@@ -126,7 +126,7 @@ export function OrderDetails({ order }: { order: CustomerOrder }) {
               {order.customerPhone}
             </p>
             {order.note ? (
-              <p className="rounded-lg bg-secondary/60 p-3 text-muted-foreground">
+              <p className="text-muted-foreground">
                 <span className="font-medium text-foreground">Opmerking: </span>
                 {order.note}
               </p>

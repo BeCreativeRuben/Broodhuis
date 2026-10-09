@@ -77,3 +77,13 @@ export function combineVariantLabel(
   if (variantLabel && extra) return `${variantLabel} · ${extra}`;
   return variantLabel || extra || null;
 }
+
+/** Zelfde tekst als op de bestelling, maar zonder de ruwe fotolink. */
+export function combineVariantSummary(
+  variantLabel: string | null | undefined,
+  selection?: CartSelection | null,
+): string | null {
+  const extra = formatSelectionSummary(selection);
+  if (variantLabel && extra) return `${variantLabel} · ${extra}`;
+  return variantLabel || extra || null;
+}

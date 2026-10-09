@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { AllergenReference } from "@/components/allergen-list";
+import { PracticalFaq } from "@/components/practical-faq";
 import { ButtonLink } from "@/components/ui/button-link";
 import { formatTime, WEEKDAY_NAMES_NL } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
@@ -43,8 +44,8 @@ export default function InfoPage() {
       </header>
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
-        <section className="border border-border bg-card p-6">
-          <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-crust">
+        <section>
+          <span className="flex size-12 items-center text-crust">
             <StoreIcon className="size-5" />
           </span>
           <h2 className="mt-3 font-heading text-xl font-semibold">
@@ -92,14 +93,14 @@ export default function InfoPage() {
             target="_blank"
             rel="noreferrer"
             variant="outline"
-            className="mt-4 min-h-11 rounded-none"
+            className="mt-4 h-12 min-h-12 rounded-none"
           >
             Route naar de winkel
           </ButtonLink>
         </section>
 
-        <section className="border border-border bg-card p-6">
-          <span className="flex size-11 items-center justify-center rounded-full bg-accent text-accent-foreground">
+        <section>
+          <span className="flex size-12 items-center text-crust">
             <TruckIcon className="size-5" />
           </span>
           <h2 className="mt-3 font-heading text-xl font-semibold">
@@ -128,7 +129,7 @@ export default function InfoPage() {
             ))}
           </ul>
 
-          <dl className="mt-4 space-y-2 rounded-xl bg-secondary/60 p-4 text-sm">
+          <dl className="mt-4 space-y-2 text-sm">
             <div className="flex items-center justify-between gap-3">
               <dt className="text-muted-foreground">Leveringskost</dt>
               <dd className="font-medium">
@@ -156,8 +157,8 @@ export default function InfoPage() {
           </p>
         </section>
 
-        <section className="border border-border bg-card p-6">
-          <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-crust">
+        <section>
+          <span className="flex size-12 items-center text-crust">
             <ClockIcon className="size-5" />
           </span>
           <h2 className="mt-3 font-heading text-xl font-semibold">
@@ -193,8 +194,8 @@ export default function InfoPage() {
           </ul>
         </section>
 
-        <section className="border border-border bg-card p-6">
-          <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-crust">
+        <section>
+          <span className="flex size-12 items-center text-crust">
             <BanknoteIcon className="size-5" />
           </span>
           <h2 className="mt-3 font-heading text-xl font-semibold">Betalen</h2>
@@ -218,7 +219,7 @@ export default function InfoPage() {
         </section>
       </div>
 
-      <section className="mt-10 border border-border bg-card p-6">
+      <section className="mt-10 border-t border-border/60 pt-8">
         <h2 className="font-heading text-xl font-semibold">
           Allergenen en ingrediënten
         </h2>
@@ -237,7 +238,9 @@ export default function InfoPage() {
         </p>
       </section>
 
-      <section className="mt-6 flex flex-col items-start gap-4 bg-secondary/60 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <PracticalFaq />
+
+      <section className="mt-8 flex flex-col items-start gap-4 border-t border-border/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-heading text-xl font-semibold">Nog een vraag?</h2>
           <p className="text-sm text-muted-foreground">
@@ -247,14 +250,14 @@ export default function InfoPage() {
         <div className="flex flex-wrap gap-2">
           <ButtonLink
             href={`tel:${SHOP.phoneHref}`}
-            className="h-11 rounded-none px-5"
+            className="h-12 min-h-12 rounded-none px-5"
           >
             <PhoneIcon className="size-4" /> {SHOP.phone}
           </ButtonLink>
           <ButtonLink
             href="/assortiment"
             variant="outline"
-            className="h-11 rounded-none px-5"
+            className="h-12 min-h-12 rounded-none px-5"
           >
             Naar het assortiment
           </ButtonLink>

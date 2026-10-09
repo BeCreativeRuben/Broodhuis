@@ -7,6 +7,7 @@ import {
   GENERATED_PRODUCT_PHOTO_BY_SLUG,
   generatedProductPhoto,
   resolveProductPhoto,
+  resolveVariantPhoto,
 } from "../src/lib/generated-product-photos";
 
 const REPLACEMENTS = [
@@ -78,6 +79,32 @@ test("een gegenereerde foto wint van een gedeelde stand-in en vult een lege foto
   for (const slug of REPLACEMENTS) {
     assert.equal(generatedProductPhoto(slug)?.endsWith(`/${slug}.webp`), true);
   }
+});
+
+test("een mini-variant toont niet langer de gedeelde stand-in", () => {
+  assert.equal(
+    resolveVariantPhoto(
+      "pistolet-wit",
+      "/images/products/pistolets.jpg",
+      "pistolet-mini-wit",
+      "/images/products/pistolets.jpg",
+    ),
+    "/images/products/generated/pistolet-wit.webp",
+  );
+  assert.equal(
+    resolveVariantPhoto(
+      "ronde-rozijnenkoek",
+      "/images/products/rozijnenkoek.jpg",
+      "mini-ronde-rozijnenkoek",
+      "/images/products/rozijnenkoek.jpg",
+    ),
+    "/images/products/generated/ronde-rozijnenkoek.webp",
+  );
+  const brand = "https://pdkjehbfhzkvtawd.public.blob.vercel-storage.com/products/marie/62.webp";
+  assert.equal(
+    resolveVariantPhoto("appelaere-33cl", brand, "appelaere-75cl", brand),
+    brand,
+  );
 });
 
 test("merkfoto's en Marie's foto's blijven de databasefoto", () => {

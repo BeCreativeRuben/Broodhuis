@@ -7,7 +7,7 @@ import {
   topLevelGroupSlug,
 } from "@/lib/category-groups";
 import { prisma } from "@/lib/db";
-import { resolveProductPhoto } from "@/lib/generated-product-photos";
+import { resolveProductPhoto, resolveVariantPhoto } from "@/lib/generated-product-photos";
 import {
   baruFlavourKey,
   baruFlavourName,
@@ -228,11 +228,13 @@ async function variantsFor(rows: ProductRow[]): Promise<Map<string, CatalogVaria
           select: { slug: true, imageUrl: true, description: true },
         });
   const sourceBySlug = new Map(sources.map((source) => [source.slug, source]));
+  const rowById = new Map(rows.map((row) => [row.id, row]));
 
   for (const variant of variantRows) {
     const source = variant.sourceSlug
       ? sourceBySlug.get(variant.sourceSlug)
       : undefined;
+    const parent = rowById.get(variant.productId);
     const list = byProduct.get(variant.productId) ?? [];
     list.push({
       id: variant.id,
@@ -240,7 +242,12 @@ async function variantsFor(rows: ProductRow[]): Promise<Map<string, CatalogVaria
       priceCents: variant.priceCents,
       unit: variant.unit,
       options: parseOptions(variant.optionsJson),
-      imageUrl: resolveProductPhoto(variant.sourceSlug, source?.imageUrl),
+      imageUrl: resolveVariantPhoto(
+        parent?.slug,
+        parent?.imageUrl,
+        variant.sourceSlug,
+        source?.imageUrl,
+      ),
       description: source?.description ?? null,
       sortOrder: variant.sortOrder,
       sourceSlug: variant.sourceSlug,

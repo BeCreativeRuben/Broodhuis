@@ -202,10 +202,42 @@ export function generatedProductPhoto(slug: string | null | undefined): string |
   return GENERATED_PRODUCT_PHOTO_BY_SLUG[slug] ?? null;
 }
 
+/**
+ * Oude landschapsfoto's die meerdere producten deelden. Een product met een
+ * eigen foto mag die niet meer als stand-in van een verwante variant tonen.
+ */
+const STAND_IN_PRODUCT_PHOTOS = new Set([
+  "/images/products/pistolets.jpg",
+  "/images/products/rozijnenkoek.jpg",
+  "/images/products/croissant.jpg",
+  "/images/products/eclair.jpg",
+  "/images/products/wit-brood.jpg",
+  "/images/products/chocoladebroodje.jpg",
+  "/images/products/rijsttaart.jpg",
+]);
+
 /** Gegenereerde foto als die er is, anders de foto uit de database. */
 export function resolveProductPhoto(
   slug: string | null | undefined,
   imageUrl: string | null | undefined,
 ): string | null {
   return generatedProductPhoto(slug) ?? primaryProductImage(imageUrl);
+}
+
+/**
+ * Foto van een gekozen variant. De gedeelde stand-in van een verwante rij
+ * (mini-pistolet, mini-rozijnenkoek, …) wijkt voor de eigen foto van het product.
+ */
+export function resolveVariantPhoto(
+  parentSlug: string | null | undefined,
+  parentImageUrl: string | null | undefined,
+  sourceSlug: string | null | undefined,
+  sourceImageUrl: string | null | undefined,
+): string | null {
+  const parent = resolveProductPhoto(parentSlug, parentImageUrl);
+  const source = resolveProductPhoto(sourceSlug, sourceImageUrl);
+  if (source && STAND_IN_PRODUCT_PHOTOS.has(source) && parent && parent !== source) {
+    return parent;
+  }
+  return source ?? parent;
 }

@@ -68,7 +68,7 @@ export function PhotoUpload({
             <Button
               type="button"
               variant="outline"
-              className="h-11 rounded-none"
+              className="h-12 min-h-12 rounded-none"
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
             >
@@ -86,7 +86,7 @@ export function PhotoUpload({
               <Button
                 type="button"
                 variant="ghost"
-                className="h-11 rounded-none text-muted-foreground"
+                className="h-12 min-h-12 rounded-none text-muted-foreground"
                 onClick={() => onChange("")}
               >
                 <XIcon className="size-4" /> Weghalen
@@ -97,7 +97,8 @@ export function PhotoUpload({
             ref={fileInputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            className="hidden"
+            aria-label={label}
+            className="sr-only"
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) void upload(file);

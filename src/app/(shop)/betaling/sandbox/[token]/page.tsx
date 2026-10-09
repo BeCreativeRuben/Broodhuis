@@ -41,9 +41,9 @@ export default async function SandboxPaymentPage({
 
   return (
     <div className="page-shell flex min-h-[70vh] items-center justify-center py-10">
-      <div className="w-full max-w-md space-y-5 rounded-3xl border border-border bg-card p-6 shadow-warm-lg">
+      <div className="w-full max-w-md space-y-5">
         <div className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-full bg-warning/20 text-warning-foreground">
+          <span className="flex size-12 items-center justify-center text-foreground">
             <FlaskConicalIcon className="size-5" />
           </span>
           <div>
@@ -64,7 +64,7 @@ export default async function SandboxPaymentPage({
           </AlertDescription>
         </Alert>
 
-        <dl className="space-y-2 rounded-2xl bg-secondary/60 p-4 text-sm">
+        <dl className="space-y-2 text-sm">
           <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">Bestelling</dt>
             <dd className="font-medium">{order.orderNumber}</dd>
@@ -93,7 +93,7 @@ export default async function SandboxPaymentPage({
             <Button
               type="submit"
               size="lg"
-              className="h-12 w-full rounded-full text-base"
+              className="h-12 min-h-12 w-full rounded-none text-base"
             >
               <CheckIcon className="size-4" /> Betaling laten slagen
             </Button>
@@ -110,7 +110,7 @@ export default async function SandboxPaymentPage({
             <Button
               type="submit"
               variant="outline"
-              className="h-11 w-full rounded-full"
+              className="h-12 min-h-12 w-full rounded-none"
             >
               <XIcon className="size-4" /> Betaling laten mislukken
             </Button>
@@ -127,7 +127,7 @@ export default async function SandboxPaymentPage({
             <Button
               type="submit"
               variant="ghost"
-              className="h-11 w-full rounded-full"
+              className="h-12 min-h-12 w-full rounded-none"
             >
               Annuleren
             </Button>

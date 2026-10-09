@@ -96,7 +96,7 @@ export default async function ProductPage({
     <div className="page-shell py-6 lg:py-10">
       <Link
         href={`/assortiment?categorie=${product.category.groupSlug}`}
-        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-12 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ChevronLeftIcon className="size-4" />
         {product.category.displayName}
@@ -143,7 +143,7 @@ export default async function ProductPage({
           </div>
 
           {product.leadTimeDays > 0 && (
-            <div className="flex gap-3 border border-accent/60 bg-accent/25 p-4">
+            <div className="flex gap-3">
               <CalendarClockIcon className="mt-0.5 size-5 shrink-0 text-accent-foreground" />
               <div className="text-sm">
                 <p className="font-medium">
@@ -188,12 +188,12 @@ export default async function ProductPage({
           />
 
           <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-            <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3">
+            <p className="flex items-start gap-2">
               <TruckIcon className="mt-0.5 size-4 shrink-0" />
               Afhalen is gratis, leveren kost{" "}
               {formatEuro(FULFILLMENT.deliveryFeeCents)}
             </p>
-            <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3">
+            <p className="flex items-start gap-2">
               <InfoIcon className="mt-0.5 size-4 shrink-0" />
               Bestel tot {FULFILLMENT.orderCutoff.hour}u de dag ervoor
             </p>

@@ -266,7 +266,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             </h2>
 
             {cart.maxLeadTimeDays > 0 && (
-              <div className="mt-3 flex gap-3 rounded-xl border border-accent/60 bg-accent/25 p-3 text-sm">
+              <div className="mt-3 flex min-w-0 gap-3 text-sm">
                 <CalendarClockIcon className="mt-0.5 size-4 shrink-0 text-accent-foreground" />
                 <p>
                   <span className="font-medium">{cart.leadTimeProductName}</span>{" "}
@@ -538,7 +538,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               </div>
             </dl>
 
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-secondary/50 p-3 text-sm">
+            <label className="flex min-h-12 cursor-pointer items-start gap-3 py-2 text-sm">
               <input
                 type="checkbox"
                 name="acceptTerms"
@@ -592,7 +592,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
       </div>
 
       {/* Vaste betaalbalk op gsm: totaal en knop altijd binnen duimbereik */}
-      <div className="print-hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-warm-lg backdrop-blur lg:hidden">
+      <div className="print-hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs text-muted-foreground">
@@ -642,10 +642,8 @@ function FulfillmentOption({
   return (
     <label
       className={cn(
-        "flex cursor-pointer gap-3 rounded-xl border-2 p-4 transition-colors",
-        checked
-          ? "border-primary bg-accent/25"
-          : "border-border bg-card hover:bg-secondary/50",
+        "flex min-h-12 cursor-pointer items-center gap-3 py-3 transition-colors",
+        checked ? "text-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
       <input
@@ -658,10 +656,8 @@ function FulfillmentOption({
       />
       <span
         className={cn(
-          "flex size-10 shrink-0 items-center justify-center rounded-full",
-          checked
-            ? "bg-primary text-primary-foreground"
-            : "bg-secondary text-crust",
+          "flex size-12 shrink-0 items-center justify-center",
+          checked ? "text-foreground" : "text-muted-foreground",
         )}
       >
         <Icon className="size-5" />
@@ -691,10 +687,8 @@ function SlotRow({
   return (
     <label
       className={cn(
-        "flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
-        checked
-          ? "border-primary bg-accent/25"
-          : "border-border hover:bg-secondary/50",
+        "flex min-h-14 cursor-pointer items-center gap-3 px-1 py-3 transition-colors",
+        checked ? "text-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
       <input

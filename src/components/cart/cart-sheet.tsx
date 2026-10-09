@@ -68,7 +68,7 @@ export function CartSheet() {
             <ButtonLink
               href="/assortiment"
               onClick={closeCart}
-              className="h-11 rounded-none px-6"
+              className="h-12 min-h-12 rounded-none px-6"
             >
               Naar het assortiment
             </ButtonLink>
@@ -136,7 +136,7 @@ export function CartSheet() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="size-11 rounded-none text-muted-foreground"
+                        className="size-12 rounded-none text-muted-foreground"
                         onClick={() => removeItem(cartLineKey(line))}
                         aria-label={`${line.name} verwijderen`}
                       >
@@ -170,7 +170,7 @@ export function CartSheet() {
                 href="/winkelwagen"
                 onClick={closeCart}
                 variant="ghost"
-                className="h-10 w-full rounded-none"
+                className="h-12 min-h-12 w-full rounded-none"
               >
                 Winkelwagen bekijken
               </ButtonLink>

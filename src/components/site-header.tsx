@@ -46,7 +46,7 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-11 rounded-none lg:hidden"
+                  className="size-12 rounded-none lg:hidden"
                   aria-label="Menu openen"
                 />
               }
@@ -65,7 +65,7 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex min-h-11 items-center px-3 py-3 text-base font-medium hover:bg-secondary"
+                    className="flex min-h-12 items-center px-3 py-3 text-base font-medium hover:bg-secondary"
                   >
                     {link.label}
                   </Link>
@@ -76,7 +76,7 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
                     key={category.slug}
                     href={`/assortiment?categorie=${category.slug}`}
                     onClick={() => setMobileOpen(false)}
-                    className="flex min-h-11 items-center gap-2.5 px-3 py-3 text-base hover:bg-secondary"
+                    className="flex min-h-12 items-center gap-2.5 px-3 py-3 text-base hover:bg-secondary"
                   >
                     <CategoryIcon
                       category={category}
@@ -109,8 +109,8 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "inline-flex min-h-11 items-center px-3 py-2 text-[13px] font-medium tracking-wide uppercase transition-colors hover:text-crust",
-                  pathname.startsWith(link.href) && "text-crust",
+                  "inline-flex min-h-12 items-center px-3 py-2 text-[13px] font-medium tracking-wide uppercase transition-colors hover:text-foreground",
+                  pathname.startsWith(link.href) && "text-foreground",
                 )}
               >
                 {link.label}
@@ -121,7 +121,7 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
 
         <Link
           href="/"
-          className="justify-self-center"
+          className="inline-flex min-h-12 items-center justify-self-center"
           aria-label="Naar de startpagina"
         >
           <BrandLogo priority />
@@ -133,7 +133,7 @@ export function SiteHeader({ categories }: { categories: NavCategory[] }) {
             href={`tel:${SHOP.phoneHref}`}
             variant="ghost"
             size="icon"
-            className="size-11 rounded-none lg:hidden"
+            className="size-12 rounded-none lg:hidden"
             aria-label={`Bel de bakkerij op ${SHOP.phone}`}
           >
             <PhoneIcon className="size-5" />

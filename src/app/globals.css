@@ -86,7 +86,7 @@
   --input: #d7cec0;
   --ring: #a19589;
 
-  --crust: #a19589;
+  --crust: #6e6256;
   --crumb: #ece8de;
 
   --radius: 0.45rem;
@@ -140,8 +140,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  html {
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-wrap: anywhere;
   }
 
   h1,

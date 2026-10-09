@@ -80,7 +80,7 @@ export function AddToCart({
       <Button
         disabled
         variant="secondary"
-        className={cn("h-11 w-full rounded-none", className)}
+        className={cn("h-12 w-full rounded-none", className)}
       >
         Uitverkocht
       </Button>
@@ -92,7 +92,7 @@ export function AddToCart({
       <Button
         type="button"
         onClick={handleAdd}
-        className={cn("h-11 w-full rounded-none text-sm", className)}
+        className={cn("h-12 w-full rounded-none text-sm", className)}
       >
         {justAdded ? (
           <>
@@ -130,7 +130,7 @@ export function AddToCart({
           type="button"
           onClick={handleAdd}
           size="lg"
-          className="h-12 min-h-11 w-full flex-none rounded-none text-base sm:flex-1"
+          className="h-12 min-h-12 w-full flex-none rounded-none text-base sm:flex-1"
         >
           {justAdded ? (
             <>

@@ -18,13 +18,19 @@ import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatEuro } from "@/lib/money";
+import {
+  formatCartCountLabel,
+  formatQuantityLabel,
+  isWeightPortionUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 import { cn } from "@/lib/utils";
 import { cartLineKey, type CartNotice } from "@/lib/cart";
+import { formatSelectionSummary } from "@/lib/cart-selection";
 import { revalidateCart } from "@/server/actions/cart";
 
 export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
-  const { items, itemCount, subtotalCents, setQuantity, removeItem, isReady } =
-    useCart();
+  const { items, subtotalCents, setQuantity, removeItem, isReady } = useCart();
   const [notices, setNotices] = useState<CartNotice[]>([]);
   const [isChecking, startChecking] = useTransition();
   const lastSyncedRef = useRef<string>("");
@@ -52,6 +58,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           productId: line.productId,
           variantId: line.variantId,
           quantity: line.quantity,
+          selection: line.selection,
         })),
       );
 
@@ -82,7 +89,7 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
 
   if (items.length === 0) {
     return (
-      <div className="mt-10 rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center">
+      <div className="mt-10 text-center">
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-secondary">
           <ShoppingBasketIcon className="size-7 text-crust" />
         </div>
@@ -121,12 +128,12 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
           </div>
         )}
 
-        <ul className="divide-y divide-border overflow-hidden border border-border bg-card">
+        <ul className="divide-y divide-border/50">
           {items.map((line) => (
-            <li key={cartLineKey(line)} className="flex gap-4 p-4">
+            <li key={cartLineKey(line)} className="flex gap-4 py-4 first:pt-0">
               <Link
                 href={`/product/${line.slug}`}
-                className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
+                className="relative size-20 shrink-0 overflow-hidden sm:size-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 <ProductImage src={line.imageUrl} alt={line.name} sizes="96px" />
               </Link>
@@ -141,11 +148,20 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                       {line.name}
                     </Link>
                     <p className="text-sm text-muted-foreground">
-                      {formatEuro(line.priceCents)} {line.unit}
+                      {isWeightPortionUnit(line.unit)
+                        ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.priceCents)} ${line.unit}`
+                        : `${formatEuro(line.priceCents)} ${line.unit}`}
                     </p>
+                    {formatSelectionSummary(line.selection) ? (
+                      <p className="text-xs text-muted-foreground">
+                        {formatSelectionSummary(line.selection)}
+                      </p>
+                    ) : null}
                   </div>
                   <span className="shrink-0 font-heading text-base font-semibold tabular-nums">
-                    {formatEuro(line.priceCents * line.quantity)}
+                    {formatEuro(
+                      lineTotalCents(line.priceCents, line.quantity, line.unit),
+                    )}
                   </span>
                 </div>
 
@@ -154,12 +170,15 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
                     value={line.quantity}
                     onChange={(next) => setQuantity(cartLineKey(line), next)}
                     label={line.name}
+                    formatValue={(value) =>
+                      formatQuantityLabel(value, line.unit)
+                    }
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-9 rounded-full text-muted-foreground"
+                    className="size-11 rounded-none text-muted-foreground"
                     onClick={() => removeItem(cartLineKey(line))}
                     aria-label={`${line.name} verwijderen`}
                   >
@@ -177,13 +196,13 @@ export function CartView({ deliveryFeeCents }: { deliveryFeeCents: number }) {
       </div>
 
       <aside className="lg:sticky lg:top-32">
-        <div className="space-y-4 border border-border bg-card p-5 shadow-warm">
+        <div className="space-y-4 border-t border-border/50 pt-5">
           <h2 className="font-heading text-lg font-semibold">Overzicht</h2>
 
           <dl className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">
-                {itemCount} {itemCount === 1 ? "stuk" : "stuks"}
+                {formatCartCountLabel(items)}
               </dt>
               <dd className="font-medium tabular-nums">
                 {formatEuro(subtotalCents)}

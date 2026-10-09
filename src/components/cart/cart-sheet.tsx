@@ -5,6 +5,7 @@ import { ShoppingBasketIcon, Trash2Icon } from "lucide-react";
 
 import { useCart } from "@/components/cart/cart-provider";
 import { cartLineKey } from "@/lib/cart";
+import { formatSelectionSummary } from "@/lib/cart-selection";
 import { ProductImage } from "@/components/product-image";
 import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { formatEuro } from "@/lib/money";
+import {
+  formatCartCountLabel,
+  formatQuantityLabel,
+  isWeightPortionUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 import { FULFILLMENT } from "@/lib/shop-config";
 
 export function CartSheet() {
@@ -41,7 +48,7 @@ export function CartSheet() {
           <SheetDescription>
             {itemCount === 0
               ? "Nog niets in je wagen."
-              : `${itemCount} ${itemCount === 1 ? "stuk" : "stuks"} — je kiest straks afhalen of leveren.`}
+              : `${formatCartCountLabel(items)} — je kiest straks afhalen of leveren.`}
           </SheetDescription>
         </SheetHeader>
 
@@ -74,7 +81,7 @@ export function CartSheet() {
                   <Link
                     href={`/product/${line.slug}`}
                     onClick={closeCart}
-                    className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-secondary"
+                    className="relative size-16 shrink-0 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     <ProductImage
                       src={line.imageUrl}
@@ -94,11 +101,24 @@ export function CartSheet() {
                           {line.name}
                         </Link>
                         <p className="text-xs text-muted-foreground">
-                          {formatEuro(line.priceCents)} {line.unit}
+                          {isWeightPortionUnit(line.unit)
+                            ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.priceCents)} ${line.unit}`
+                            : `${formatEuro(line.priceCents)} ${line.unit}`}
                         </p>
+                        {formatSelectionSummary(line.selection) ? (
+                          <p className="text-xs text-muted-foreground">
+                            {formatSelectionSummary(line.selection)}
+                          </p>
+                        ) : null}
                       </div>
                       <span className="shrink-0 font-medium tabular-nums">
-                        {formatEuro(line.priceCents * line.quantity)}
+                        {formatEuro(
+                          lineTotalCents(
+                            line.priceCents,
+                            line.quantity,
+                            line.unit,
+                          ),
+                        )}
                       </span>
                     </div>
 
@@ -108,12 +128,15 @@ export function CartSheet() {
                         onChange={(next) => setQuantity(cartLineKey(line), next)}
                         min={1}
                         label={line.name}
+                        formatValue={(value) =>
+                          formatQuantityLabel(value, line.unit)
+                        }
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="size-9 rounded-full text-muted-foreground"
+                        className="size-11 rounded-none text-muted-foreground"
                         onClick={() => removeItem(cartLineKey(line))}
                         aria-label={`${line.name} verwijderen`}
                       >
@@ -125,7 +148,7 @@ export function CartSheet() {
               ))}
             </ul>
 
-            <div className="space-y-3 border-t border-border bg-secondary/40 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+            <div className="space-y-3 border-t border-border/50 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Subtotaal</span>
                 <span className="font-medium tabular-nums">

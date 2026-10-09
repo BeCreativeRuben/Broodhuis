@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { AlertTriangleIcon, Loader2Icon, SaveIcon } from "lucide-react";
 
 import { ImageUpload } from "@/components/admin/image-upload";
+import { parseProductImages } from "@/lib/product-images";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
@@ -150,11 +151,31 @@ export function ProductForm({
           </AdminField>
         </div>
 
-        <ImageUpload
-          name="imageUrl"
-          defaultValue={values.imageUrl}
-          productName={name}
-        />
+        {(() => {
+          const photos = parseProductImages(values.imageUrl);
+          return (
+            <div className="space-y-4">
+              <ImageUpload
+                name="imageUrl"
+                label="Hoofdfoto"
+                defaultValue={photos[0] ?? ""}
+                productName={name}
+              />
+              <ImageUpload
+                name="imageUrl2"
+                label="2de foto"
+                defaultValue={photos[1] ?? ""}
+                productName={name}
+              />
+              <ImageUpload
+                name="imageUrl3"
+                label="3de foto"
+                defaultValue={photos[2] ?? ""}
+                productName={name}
+              />
+            </div>
+          );
+        })()}
       </section>
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
@@ -295,7 +316,7 @@ export function ProductForm({
             <span>
               <span className="block font-medium">Uitgelicht</span>
               <span className="text-muted-foreground">
-                Verschijnt bij &ldquo;Onze klassiekers&rdquo; op de homepage.
+                Blijft op het product bewaard. De startpagina toont ze niet.
               </span>
             </span>
           </label>

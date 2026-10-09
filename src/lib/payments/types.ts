@@ -1,6 +1,6 @@
 /**
  * Eén smalle interface voor betalingen, zodat we van provider kunnen wisselen
- * zonder de checkout aan te passen. Vandaag: Mollie (Bancontact, kaart) en een
+ * zonder de checkout aan te passen. Vandaag: Mollie (Bancontact, KBC/CBC) en een
  * ingebouwde sandbox. Later kan hier een Worldline-implementatie naast staan.
  */
 

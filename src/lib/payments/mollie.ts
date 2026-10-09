@@ -45,15 +45,23 @@ function mapStatus(status: string): PaymentStatus {
   }
 }
 
-/** MOLLIE_METHODS beperkt de aangeboden methodes, bv. "bancontact,creditcard". */
-function configuredMethods(): string[] | undefined {
-  const raw = process.env.MOLLIE_METHODS?.trim();
-  if (!raw) return undefined;
-  const methods = raw
+/** Enkel Bancontact en KBC/CBC, nooit kredietkaart. */
+export const MOLLIE_SHOP_METHODS = ["bancontact", "kbc"] as const;
+
+export function resolveMollieMethods(raw?: string | null): string[] {
+  const requested = (raw ?? "")
     .split(",")
     .map((method) => method.trim().toLowerCase())
-    .filter((method) => method !== "");
-  return methods.length > 0 ? methods : undefined;
+    .filter((method) => method !== "" && method !== "creditcard");
+  const allowed = new Set<string>(MOLLIE_SHOP_METHODS);
+  const filtered = (requested.length > 0 ? requested : [...MOLLIE_SHOP_METHODS]).filter(
+    (method) => allowed.has(method),
+  );
+  return filtered.length > 0 ? filtered : [...MOLLIE_SHOP_METHODS];
+}
+
+function configuredMethods(): string[] {
+  return resolveMollieMethods(process.env.MOLLIE_METHODS);
 }
 
 export function isMollieConfigured(): boolean {
@@ -142,9 +150,7 @@ export const mollieGateway: PaymentGateway = {
     if (input.webhookUrl) {
       body.webhookUrl = input.webhookUrl;
     }
-    if (methods) {
-      body.method = methods;
-    }
+    body.method = methods;
     if (input.customerEmail) {
       body.billingEmail = input.customerEmail;
     }

@@ -65,8 +65,11 @@ export const FULFILLMENT = {
    */
   orderCutoff: { daysBefore: 1, hour: 18 },
 
-  /** Hoe ver vooruit kan een klant een moment kiezen? */
-  weeksAhead: 4,
+  /**
+   * Hoe ver vooruit kan een klant een moment kiezen?
+   * 13 weken dekt vanaf begin oktober minstens tot 31 december.
+   */
+  weeksAhead: 13,
 
   /** Afhaalmomenten — placeholder op basis van een klassiek bakkerijritme. */
   pickupWindows: [

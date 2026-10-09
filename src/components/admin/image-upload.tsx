@@ -12,10 +12,12 @@ export function ImageUpload({
   name,
   defaultValue,
   productName,
+  label = "Foto",
 }: {
   name: string;
   defaultValue: string | null;
   productName: string;
+  label?: string;
 }) {
   const [value, setValue] = useState(defaultValue ?? "");
   const [isUploading, setIsUploading] = useState(false);
@@ -49,7 +51,7 @@ export function ImageUpload({
 
   return (
     <div className="space-y-3">
-      <Label htmlFor={`${name}-url`}>Foto</Label>
+      <Label htmlFor={`${name}-url`}>{label}</Label>
 
       <div className="flex items-start gap-4">
         <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary">

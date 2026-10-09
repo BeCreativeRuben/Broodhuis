@@ -59,6 +59,28 @@ export async function POST(request: Request) {
 
   const baseName = slugify(file.name.replace(/\.[^.]+$/, "")) || "foto";
   const fileName = `${baseName}-${randomUUID().slice(0, 8)}.${extension}`;
+  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+
+  if (token) {
+    try {
+      const { put } = await import("@vercel/blob");
+      const stored = await put(`producten/${fileName}`, file, {
+        access: "public",
+        token,
+        addRandomSuffix: false,
+      });
+      return NextResponse.json({ url: stored.url });
+    } catch (error) {
+      console.error("[broodhuis] Blob-upload mislukte:", error);
+      return NextResponse.json(
+        {
+          error:
+            "De foto kon niet naar Vercel Blob. Plak in plaats daarvan de link naar een foto.",
+        },
+        { status: 500 },
+      );
+    }
+  }
 
   try {
     await mkdir(UPLOAD_DIR, { recursive: true });

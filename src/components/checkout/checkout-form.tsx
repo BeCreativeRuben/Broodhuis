@@ -25,11 +25,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { capitalizeFirst, formatIsoDateLong } from "@/lib/datetime";
+import {
+  capitalizeFirst,
+  formatIsoDateLong,
+  groupByMonth,
+} from "@/lib/datetime";
 import { cartLineKey } from "@/lib/cart";
 import type { CheckoutData, SlotOption } from "@/lib/checkout-types";
 import { EMPTY_CHECKOUT_STATE } from "@/lib/form-state";
 import { formatEuro } from "@/lib/money";
+import { formatQuantityLabel, isWeightPortionUnit } from "@/lib/weight";
 import type { FulfillmentType } from "@/lib/shop-config";
 import { cn } from "@/lib/utils";
 import { getCheckoutData, placeOrder } from "@/server/actions/checkout";
@@ -80,6 +85,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         productId: line.productId,
         variantId: line.variantId,
         quantity: line.quantity,
+        selection: line.selection,
       })),
     )
       .then((result) => {
@@ -146,7 +152,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
 
   if (!data || data.cart.lines.length === 0) {
     return (
-      <div className="mt-10 rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center">
+      <div className="mt-10 text-center">
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-secondary">
           <ShoppingBasketIcon className="size-7 text-crust" />
         </div>
@@ -187,6 +193,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             productId: line.productId,
             variantId: line.variantId,
             quantity: line.quantity,
+            selection: line.selection,
           })),
         )}
       />
@@ -215,7 +222,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             </Alert>
           )}
 
-          <section className="border border-border bg-card p-5 shadow-warm">
+          <section>
             <h2
               id="stap-bezorgwijze"
               className="font-heading text-lg font-semibold"
@@ -253,7 +260,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             )}
           </section>
 
-          <section className="border border-border bg-card p-5 shadow-warm">
+          <section className="border-t border-border/50 pt-6">
             <h2 id="stap-moment" className="font-heading text-lg font-semibold">
               2. Wanneer past het?
             </h2>
@@ -286,15 +293,22 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 <div
                   role="radiogroup"
                   aria-labelledby="stap-moment"
-                  className="mt-4 space-y-2"
+                  className="mt-4 space-y-4"
                 >
-                  {visibleSlots.map((option) => (
-                    <SlotRow
-                      key={option.value}
-                      option={option}
-                      checked={slot === option.value}
-                      onSelect={() => setField("slot", option.value)}
-                    />
+                  {groupByMonth(visibleSlots).map((month) => (
+                    <div key={month.monthKey} className="space-y-2">
+                      <p className="eyebrow">
+                        {capitalizeFirst(month.monthLabel)}
+                      </p>
+                      {month.items.map((option) => (
+                        <SlotRow
+                          key={option.value}
+                          option={option}
+                          checked={slot === option.value}
+                          onSelect={() => setField("slot", option.value)}
+                        />
+                      ))}
+                    </div>
                   ))}
                 </div>
 
@@ -324,7 +338,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             )}
           </section>
 
-          <section className="border border-border bg-card p-5 shadow-warm">
+          <section className="border-t border-border/50 pt-6">
             <h2 className="font-heading text-lg font-semibold">3. Jouw gegevens</h2>
             <div className="mt-4 grid gap-4">
               <Field
@@ -368,7 +382,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
               </div>
 
               {fulfillment === "delivery" && (
-                <div className="grid gap-4 rounded-xl bg-secondary/50 p-4">
+                <div className="grid gap-4">
                   <p className="text-sm font-medium">Leveringsadres</p>
                   <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
                     <Field
@@ -459,7 +473,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
         </div>
 
         <aside className="lg:sticky lg:top-32">
-          <div className="space-y-4 border border-border bg-card p-5 shadow-warm">
+          <div className="space-y-4 border-t border-border/50 pt-5">
             <div className="flex items-center justify-between">
               <h2 className="font-heading text-lg font-semibold">Je bestelling</h2>
               <Link
@@ -473,7 +487,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             <ul className="space-y-3">
               {cart.lines.map((line) => (
                 <li key={cartLineKey(line)} className="flex items-center gap-3">
-                  <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-secondary">
+                  <span className="relative size-12 shrink-0 overflow-hidden">
                     <ProductImage
                       src={line.imageUrl}
                       alt={line.name}
@@ -483,8 +497,20 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                   <span className="min-w-0 flex-1 text-sm">
                     <span className="block truncate font-medium">{line.name}</span>
                     <span className="text-muted-foreground">
-                      {line.quantity} × {formatEuro(line.unitPriceCents)}
+                      {isWeightPortionUnit(line.unit)
+                        ? `${formatQuantityLabel(line.quantity, line.unit)} · ${formatEuro(line.unitPriceCents)} ${line.unit}`
+                        : `${formatQuantityLabel(line.quantity, line.unit)} × ${formatEuro(line.unitPriceCents)}`}
                     </span>
+                    {line.photoUrl ? (
+                      <a
+                        href={line.photoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 block text-xs underline"
+                      >
+                        Foto voor de taart
+                      </a>
+                    ) : null}
                   </span>
                   <span className="shrink-0 text-sm font-medium tabular-nums">
                     {formatEuro(line.lineTotalCents)}
@@ -521,8 +547,16 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
                 className="mt-0.5 size-5 shrink-0 rounded border-input accent-primary"
               />
               <span>
-                Ik weet dat ik nu online betaal en dat mijn bestelling pas vastligt
-                na een gelukte betaling.
+                Ik aanvaard de{" "}
+                <Link href="/voorwaarden" className="underline hover:text-foreground">
+                  bestel- en betaalvoorwaarden
+                </Link>{" "}
+                en de{" "}
+                <Link href="/privacy" className="underline hover:text-foreground">
+                  privacyverklaring
+                </Link>
+                . Ik weet dat ik nu online betaal en dat mijn bestelling pas
+                vastligt na een gelukte betaling.
               </span>
             </label>
             {errors.acceptTerms && (
@@ -551,7 +585,7 @@ export function CheckoutForm({ shopCity }: { shopCity: string }) {
             <p className="hidden items-center justify-center gap-1.5 text-xs text-muted-foreground lg:flex">
               <LockIcon className="size-3" />
               Betalen via {data.payment.isSandbox ? "testmodus" : "Mollie"} —
-              Bancontact of bankkaart
+              Bancontact of KBC/CBC
             </p>
           </div>
         </aside>

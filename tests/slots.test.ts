@@ -213,6 +213,17 @@ test("de keuzelijst blijft binnen het ingestelde aantal weken", () => {
   );
 });
 
+test("vanaf begin oktober kan Marie tot het einde van het jaar bestellen", () => {
+  const october = zonedWallTimeToInstant("2026-10-06", "10:00");
+  const pickup = getAvailableSlots({ type: "pickup", now: october });
+  const delivery = getAvailableSlots({ type: "delivery", now: october });
+
+  assert.ok(pickup.some((slot) => slot.date === "2026-12-31"));
+  assert.ok(delivery.some((slot) => slot.date === "2026-12-31"));
+  assert.ok(pickup.every((slot) => slot.weekday !== 1 && slot.weekday !== 2));
+  assert.ok(delivery.every((slot) => slot.weekday !== 1 && slot.weekday !== 2));
+});
+
 test("datums worden in het Nederlands geschreven", () => {
   assert.equal(formatIsoDateLong("2026-09-17"), "donderdag 17 september");
   assert.equal(formatIsoDateLong("2026-12-25"), "vrijdag 25 december");

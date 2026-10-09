@@ -17,6 +17,8 @@ import { allergenSummary } from "@/lib/allergens";
 import { capitalizeFirst, formatInstant } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { getOrderById } from "@/lib/orders";
+import { OrderLineChoice } from "@/components/order-line-choice";
+import { formatQuantityLabel, isWeightPortionUnit } from "@/lib/weight";
 import { paymentMethodLabel, paymentStatusLabel } from "@/lib/payments/types";
 import { SHOP } from "@/lib/shop-config";
 import { setOrderStatus } from "@/server/actions/admin-orders";
@@ -82,11 +84,14 @@ export default async function AdminOrderPage({
               const allergens = allergenSummary(item.allergens);
               return (
                 <li key={item.id} className="flex items-start gap-3 py-3">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary font-medium tabular-nums">
-                    {item.quantity}
+                  <span className="flex min-w-9 shrink-0 items-center justify-center rounded-full bg-secondary px-2 font-medium tabular-nums">
+                    {isWeightPortionUnit(item.unit)
+                      ? formatQuantityLabel(item.quantity, item.unit)
+                      : item.quantity}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium">{item.name}</span>
+                    <OrderLineChoice variantLabel={item.variantLabel} />
                     <span className="text-xs text-muted-foreground">
                       {formatEuro(item.unitPriceCents)} {item.unit}
                       {allergens ? ` · ${allergens}` : ""}

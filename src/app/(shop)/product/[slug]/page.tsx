@@ -13,10 +13,15 @@ import { AllergenList } from "@/components/allergen-list";
 import { AddToCart } from "@/components/cart/add-to-cart";
 import { ProductChoices } from "@/components/product-choices";
 import { ProductCard } from "@/components/product-card";
-import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getProductBySlug, getRelatedProducts, getVariantRedirect } from "@/lib/catalog";
+import {
+  getProductBySlug,
+  getRelatedProducts,
+  getVariantRedirect,
+  productHasChoices,
+} from "@/lib/catalog";
+import { ProductGallery } from "@/components/product-gallery";
 import { addDays, currentIsoDate, formatIsoDateLong } from "@/lib/datetime";
 import { formatEuro } from "@/lib/money";
 import { FULFILLMENT, SHOP } from "@/lib/shop-config";
@@ -37,6 +42,29 @@ export async function generateMetadata({
     description:
       product.description ??
       `${product.name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
+    alternates: { canonical: `/product/${product.slug}` },
+    openGraph: {
+      title: product.name,
+      description:
+        product.description ??
+        `${product.name} bestellen bij Bakkerij 't Broodhuis in ${SHOP.city}.`,
+      images: [
+        {
+          url:
+            product.imageUrl && product.imageUrl.trim() !== ""
+              ? product.imageUrl
+              : "/opengraph-image",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [
+        product.imageUrl && product.imageUrl.trim() !== ""
+          ? product.imageUrl
+          : "/opengraph-image",
+      ],
+    },
   };
 }
 
@@ -67,15 +95,15 @@ export default async function ProductPage({
   return (
     <div className="page-shell py-6 lg:py-10">
       <Link
-        href={`/assortiment?categorie=${product.category.slug}`}
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        href={`/assortiment?categorie=${product.category.groupSlug}`}
+        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ChevronLeftIcon className="size-4" />
-        {product.category.name}
+        {product.category.displayName}
       </Link>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-2 lg:gap-12">
-        {product.variants.length > 0 ? (
+        {productHasChoices(product) ? (
           <ProductChoices
             product={product}
             initialVariantId={keuze}
@@ -87,19 +115,16 @@ export default async function ProductPage({
           />
         ) : (
           <>
-        <div className="relative aspect-4/3 overflow-hidden bg-crumb shadow-warm-lg">
-          <ProductImage
-            src={product.imageUrl}
-            alt={product.name}
-            priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
-          />
-        </div>
+        <ProductGallery
+          imageUrl={product.imageUrl}
+          alt={product.name}
+          priority
+        />
 
         <div className="space-y-6">
           <div className="space-y-3">
             <Badge variant="secondary">
-              {product.category.name}
+              {product.category.displayName}
             </Badge>
             <h1 className="font-heading text-3xl font-semibold sm:text-4xl">
               {product.name}
@@ -207,7 +232,7 @@ export default async function ProductPage({
           </h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((item) => (
-              <ProductCard key={item.id} product={item} />
+              <ProductCard key={item.slug} product={item} />
             ))}
           </div>
         </section>

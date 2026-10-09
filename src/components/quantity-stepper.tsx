@@ -14,6 +14,7 @@ type QuantityStepperProps = {
   label: string;
   size?: "default" | "lg";
   className?: string;
+  formatValue?: (value: number) => string;
 };
 
 /**
@@ -28,9 +29,10 @@ export function QuantityStepper({
   label,
   size = "default",
   className,
+  formatValue,
 }: QuantityStepperProps) {
   const upperBound = Math.min(max ?? MAX_QUANTITY_PER_LINE, MAX_QUANTITY_PER_LINE);
-  const buttonSize = size === "lg" ? "size-11" : "size-9";
+  const buttonSize = "size-11";
 
   return (
     <div
@@ -53,10 +55,11 @@ export function QuantityStepper({
         aria-live="polite"
         className={cn(
           "min-w-8 text-center font-medium tabular-nums",
-          size === "lg" && "min-w-10 text-lg",
+          size === "lg" && "min-w-12 text-lg",
+          formatValue && "min-w-[4.75rem] px-1 whitespace-nowrap",
         )}
       >
-        {value}
+        {formatValue ? formatValue(value) : value}
       </span>
       <Button
         type="button"

@@ -6,7 +6,7 @@ import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button-link";
 import { allergenSummary } from "@/lib/allergens";
-import type { CatalogProduct } from "@/lib/catalog";
+import { productHasChoices, type CatalogProduct } from "@/lib/catalog";
 import { formatEuro } from "@/lib/money";
 
 export function ProductCard({
@@ -19,15 +19,17 @@ export function ProductCard({
   const allergens = allergenSummary(product.allergens.join(","));
 
   return (
-    <article className="group flex flex-col overflow-hidden border border-border bg-card shadow-warm transition-shadow hover:shadow-warm-lg">
+    <article className="group flex flex-col">
       <Link
         href={`/product/${product.slug}`}
-        className="relative aspect-4/3 overflow-hidden bg-secondary"
+        aria-label={product.name}
+        className="relative aspect-4/5 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <ProductImage
           src={product.imageUrl}
           alt={product.name}
           priority={priority}
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="transition-transform duration-500 group-hover:scale-105"
         />
         {product.leadTimeDays > 0 && (
@@ -43,10 +45,13 @@ export function ProductCard({
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
+      <div className="mt-3 flex flex-1 flex-col gap-3">
         <div className="flex-1 space-y-1">
           <h3 className="font-heading text-lg leading-tight font-semibold">
-            <Link href={`/product/${product.slug}`} className="hover:underline">
+            <Link
+              href={`/product/${product.slug}`}
+              className="inline-flex min-h-11 items-center hover:underline"
+            >
               {product.name}
             </Link>
           </h3>
@@ -73,13 +78,13 @@ export function ProductCard({
           </p>
         )}
 
-        {product.variants.length > 0 ? (
+        {productHasChoices(product) ? (
           <ButtonLink
             href={`/product/${product.slug}`}
             variant="outline"
             className="h-11 w-full rounded-none text-sm"
           >
-            Kies een smaak
+            {product.choiceCta}
           </ButtonLink>
         ) : (
           <AddToCart

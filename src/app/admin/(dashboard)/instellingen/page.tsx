@@ -93,9 +93,9 @@ export default async function AdminSettingsPage() {
           </div>
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          Om live te gaan: zet je Mollie live-sleutel in MOLLIE_API_KEY. Wil je geen
-          kredietkaartkosten? Zet dan enkel Bancontact aan in je Mollie-dashboard,
-          of gebruik MOLLIE_METHODS=bancontact.
+          Mollie blijft in testmodus tot Ruben de live-sleutel zet. In de code
+          staan alleen Bancontact en de KBC/CBC-betaalknop aan, geen
+          kredietkaarten.
         </p>
       </section>
 

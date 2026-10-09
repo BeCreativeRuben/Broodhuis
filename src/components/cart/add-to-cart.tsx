@@ -8,13 +8,25 @@ import { QuantityStepper } from "@/components/quantity-stepper";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/cart-provider";
 import type { CatalogProduct } from "@/lib/catalog";
+import type { CartSelection } from "@/lib/cart";
+import { formatEuro } from "@/lib/money";
 import { cn } from "@/lib/utils";
+import {
+  formatQuantityLabel,
+  isPerKgUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 
 type AddToCartProps = {
   product: Pick<
     CatalogProduct,
     "id" | "slug" | "name" | "priceCents" | "unit" | "imageUrl" | "inStock"
-  > & { stock?: number; trackStock?: boolean; variantId?: string };
+  > & {
+    stock?: number;
+    trackStock?: boolean;
+    variantId?: string;
+    selection?: CartSelection;
+  };
   /** "compact" = één knop in een productkaart, "full" = met aantalkiezer */
   variant?: "compact" | "full";
   className?: string;
@@ -31,7 +43,7 @@ export function AddToCart({
 
   const maxQuantity =
     product.trackStock && typeof product.stock === "number" ? product.stock : null;
-  const inCart = quantityOf(product.id, product.variantId);
+  const inCart = quantityOf(product.id, product.variantId, product.selection);
 
   function handleAdd() {
     addItem(
@@ -43,6 +55,7 @@ export function AddToCart({
         priceCents: product.priceCents,
         unit: product.unit,
         imageUrl: product.imageUrl,
+        selection: product.selection,
       },
       quantity,
     );
@@ -50,10 +63,12 @@ export function AddToCart({
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 1600);
 
-    toast.success(
-      quantity === 1
-        ? `${product.name} in je winkelwagen`
-        : `${quantity} × ${product.name} in je winkelwagen`,
+    const addedLabel = isPerKgUnit(product.unit)
+      ? `${formatQuantityLabel(quantity, product.unit)} ${product.name}`
+      : quantity === 1
+        ? product.name
+        : `${quantity} × ${product.name}`;
+    toast.success(`${addedLabel} in je winkelwagen`,
       {
         action: { label: "Bekijken", onClick: openCart },
       },
@@ -86,7 +101,9 @@ export function AddToCart({
         ) : (
           <>
             <ShoppingBasketIcon className="size-4" />
-            {inCart > 0 ? `Nog een (${inCart} in wagen)` : "In winkelwagen"}
+            {inCart > 0
+              ? `Nog een (${formatQuantityLabel(inCart, product.unit)} in wagen)`
+              : "In winkelwagen"}
           </>
         )}
       </Button>
@@ -94,33 +111,46 @@ export function AddToCart({
   }
 
   return (
-    <div
-      className={cn("flex flex-col gap-3 sm:flex-row sm:items-center", className)}
-    >
-      <QuantityStepper
-        value={quantity}
-        onChange={(next) => setQuantity(Math.max(1, next))}
-        label={product.name}
-        max={maxQuantity}
-        size="lg"
-        className="self-start"
-      />
-      <Button
-        type="button"
-        onClick={handleAdd}
-        size="lg"
-        className="h-12 flex-1 rounded-none text-base"
-      >
-        {justAdded ? (
-          <>
-            <CheckIcon className="size-5" /> Toegevoegd
-          </>
-        ) : (
-          <>
-            <ShoppingBasketIcon className="size-5" /> In winkelwagen
-          </>
-        )}
-      </Button>
+    <div className={cn("flex flex-col gap-3", className)}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <QuantityStepper
+          value={quantity}
+          onChange={(next) => setQuantity(Math.max(1, next))}
+          label={product.name}
+          max={maxQuantity}
+          size="lg"
+          className="self-start"
+          formatValue={
+            isPerKgUnit(product.unit)
+              ? (value) => formatQuantityLabel(value, product.unit)
+              : undefined
+          }
+        />
+        <Button
+          type="button"
+          onClick={handleAdd}
+          size="lg"
+          className="h-12 min-h-11 w-full flex-none rounded-none text-base sm:flex-1"
+        >
+          {justAdded ? (
+            <>
+              <CheckIcon className="size-5" /> Toegevoegd
+            </>
+          ) : (
+            <>
+              <ShoppingBasketIcon className="size-5" /> In winkelwagen
+            </>
+          )}
+        </Button>
+      </div>
+      {isPerKgUnit(product.unit) && (
+        <p className="text-sm text-muted-foreground">
+          {formatEuro(
+            lineTotalCents(product.priceCents, quantity, product.unit),
+          )}{" "}
+          voor {formatQuantityLabel(quantity, product.unit)}
+        </p>
+      )}
     </div>
   );
 }

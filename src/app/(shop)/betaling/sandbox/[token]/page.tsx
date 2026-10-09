@@ -136,7 +136,7 @@ export default async function SandboxPaymentPage({
 
         <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
           <BanknoteIcon className="size-3.5" />
-          In productie: Bancontact, bankkaart of iDEAL via Mollie
+          In productie: Bancontact of KBC/CBC via Mollie
         </p>
       </div>
     </div>

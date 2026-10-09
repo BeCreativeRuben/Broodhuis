@@ -4,8 +4,7 @@ export function AllergenList({ codes }: { codes: AllergenCode[] }) {
   if (codes.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Voor dit product zijn geen van de 14 wettelijke allergenen aangeduid.
-        Twijfel je? Bel ons even.
+        Allergenen-info: vraag gerust in de winkel.
       </p>
     );
   }

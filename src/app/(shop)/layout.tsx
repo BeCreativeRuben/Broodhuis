@@ -3,7 +3,7 @@ import { CartSheet } from "@/components/cart/cart-sheet";
 import { MobileCartBar } from "@/components/cart/mobile-cart-bar";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getActiveCategories } from "@/lib/catalog";
+import { getCatalogGroups } from "@/lib/catalog";
 
 /**
  * De categorienavigatie komt uit de database, dus deze schil (en alles
@@ -18,15 +18,15 @@ export default async function ShopLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await getActiveCategories();
+  const groups = await getCatalogGroups();
 
   return (
     <CartProvider>
       <div className="flex min-h-dvh flex-col">
         <SiteHeader
-          categories={categories.map((category) => ({
-            slug: category.slug,
-            name: category.name,
+          categories={groups.map((group) => ({
+            slug: group.slug,
+            name: group.name,
           }))}
         />
         <main className="flex-1">{children}</main>

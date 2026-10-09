@@ -56,25 +56,26 @@ export function ProductImage({
 }
 
 export function ProductImageFallback({
-  alt,
   className,
 }: {
-  alt: string;
+  alt?: string;
   className?: string;
 }) {
-  const initial = alt.trim().charAt(0).toUpperCase() || "B";
-
   return (
     <div
       aria-hidden
       className={cn(
-        "absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_30%_20%,var(--crumb),var(--secondary))]",
+        "absolute inset-0 flex items-center justify-center bg-background",
         className,
       )}
     >
-      <span className="font-heading text-4xl font-semibold text-crust/40">
-        {initial}
-      </span>
+      <Image
+        src="/brand/logo-zwart.png"
+        alt=""
+        width={168}
+        height={70}
+        className="h-[28%] w-auto max-h-12 opacity-[0.14]"
+      />
     </div>
   );
 }

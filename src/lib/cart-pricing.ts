@@ -6,10 +6,22 @@ import {
   EMPTY_CART,
   MAX_QUANTITY_PER_LINE,
   type CartNotice,
+  type CartSelection,
   type PricedCart,
   type PricedLine,
 } from "@/lib/cart";
+import {
+  combineVariantLabel,
+  parseCartSelection,
+} from "@/lib/cart-selection";
+import { formatChoiceLine } from "@/lib/product-options";
 import { prisma } from "@/lib/db";
+import {
+  displayItemCount,
+  formatQuantityLabel,
+  isWeightPortionUnit,
+  lineTotalCents,
+} from "@/lib/weight";
 
 function sanitiseQuantity(quantity: unknown): number {
   const parsed =
@@ -28,11 +40,17 @@ export async function priceCart(
     productId: string;
     quantity: number | string;
     variantId?: string | null;
+    selection?: CartSelection | null;
   }>,
 ): Promise<PricedCart> {
   const wanted = new Map<
     string,
-    { productId: string; variantId?: string; quantity: number }
+    {
+      productId: string;
+      variantId?: string;
+      quantity: number;
+      selection?: CartSelection;
+    }
   >();
   for (const item of items) {
     if (typeof item?.productId !== "string" || item.productId === "") continue;
@@ -42,10 +60,11 @@ export async function priceCart(
       typeof item.variantId === "string" && item.variantId !== ""
         ? item.variantId
         : undefined;
-    const key = cartLineKey({ productId: item.productId, variantId });
+    const selection = parseCartSelection(item.selection);
+    const key = cartLineKey({ productId: item.productId, variantId, selection });
     const existing = wanted.get(key);
     if (existing) existing.quantity += quantity;
-    else wanted.set(key, { productId: item.productId, variantId, quantity });
+    else wanted.set(key, { productId: item.productId, variantId, quantity, selection });
   }
 
   if (wanted.size === 0) return EMPTY_CART;
@@ -124,17 +143,23 @@ export async function priceCart(
     if (quantity < requested) {
       notices.push({
         kind: "adjusted",
-        message: `Van ${product.name} ${
-          quantity === 1 ? "is er nog 1 stuk" : `zijn er nog ${quantity} stuks`
-        } beschikbaar. We hebben het aantal aangepast.`,
+        message: isWeightPortionUnit(product.unit)
+          ? `Van ${product.name} is er nog ${formatQuantityLabel(quantity, product.unit)} beschikbaar. We hebben het gewicht aangepast.`
+          : `Van ${product.name} ${
+              quantity === 1 ? "is er nog 1 stuk" : `zijn er nog ${quantity} stuks`
+            } beschikbaar. We hebben het aantal aangepast.`,
       });
     }
 
+    const isVirtualPack =
+      typeof request.variantId === "string" &&
+      request.variantId.startsWith("pack:");
     const variant = request.variantId
       ? variantById.get(request.variantId)
       : undefined;
     if (
       request.variantId &&
+      !isVirtualPack &&
       (!variant || !variant.isActive || variant.productId !== product.id)
     ) {
       notices.push({
@@ -144,27 +169,36 @@ export async function priceCart(
       continue;
     }
 
-    const unitPriceCents = variant?.priceCents ?? product.priceCents;
     const unit = variant?.unit ?? product.unit;
-    const name = variant ? `${product.name} — ${variant.label}` : product.name;
+    const unitPriceCents = variant?.priceCents ?? product.priceCents;
     const imageUrl =
       (variant?.sourceSlug ? imageBySlug.get(variant.sourceSlug) : null) ??
       product.imageUrl;
+    const choice = formatChoiceLine({
+      slug: product.slug,
+      name: product.name,
+      unit,
+      variantLabel: variant?.label ?? null,
+    });
+    const variantLabel = combineVariantLabel(choice.variantLabel, request.selection);
+    const name = variantLabel ? `${choice.name} — ${variantLabel}` : choice.name;
 
     lines.push({
       productId: product.id,
       variantId: variant?.id,
-      variantLabel: variant?.label ?? null,
+      variantLabel,
       slug: product.slug,
       name,
       unit,
       imageUrl,
       unitPriceCents,
       quantity,
-      lineTotalCents: unitPriceCents * quantity,
+      lineTotalCents: lineTotalCents(unitPriceCents, quantity, unit),
       allergens: parseAllergens(product.allergens),
       leadTimeDays: product.leadTimeDays,
       maxQuantity,
+      photoUrl: request.selection?.photoUrl ?? null,
+      selection: request.selection,
     });
   }
 
@@ -174,7 +208,7 @@ export async function priceCart(
     (total, line) => total + line.lineTotalCents,
     0,
   );
-  const itemCount = lines.reduce((total, line) => total + line.quantity, 0);
+  const itemCount = displayItemCount(lines);
   const leadTimeLine = lines.reduce<PricedLine | null>(
     (longest, line) =>
       !longest || line.leadTimeDays > longest.leadTimeDays ? line : longest,

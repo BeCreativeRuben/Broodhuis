@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import {
+  FULFILLMENT_INTENT_COOKIE,
+  fulfillmentIntentFromCookie,
+} from "@/lib/delivery-intent";
 import type { FulfillmentType } from "@/lib/shop-config";
 
 /**
@@ -71,6 +75,20 @@ function readDraft(): CheckoutDraft | null {
   }
 }
 
+/** De startpagina kiest afhalen of leveren vóór de klant in de kassa staat. */
+export function rememberFulfillment(intent: FulfillmentType): void {
+  if (typeof window === "undefined") return;
+  try {
+    const stored = readDraft() ?? { ...EMPTY_DRAFT };
+    if (stored.fulfillmentType !== intent) stored.slot = "";
+    stored.fulfillmentType = intent;
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    document.cookie = `${FULFILLMENT_INTENT_COOKIE}=${intent}; path=/; max-age=43200; samesite=lax`;
+  } catch {
+    // Zonder opslag kiest de klant alsnog in de kassa.
+  }
+}
+
 export function clearCheckoutDraft(): void {
   if (typeof window === "undefined") return;
   try {
@@ -80,13 +98,38 @@ export function clearCheckoutDraft(): void {
   }
 }
 
+/** Eén keer lezen en wissen, zodat een latere keuze van de klant blijft staan. */
+function consumeFulfillmentIntent(): FulfillmentType | null {
+  if (typeof document === "undefined") return null;
+  const prefix = `${FULFILLMENT_INTENT_COOKIE}=`;
+  const hit = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(prefix));
+  if (!hit) return null;
+  document.cookie = `${FULFILLMENT_INTENT_COOKIE}=; path=/; max-age=0`;
+  return fulfillmentIntentFromCookie(
+    decodeURIComponent(hit.slice(prefix.length)),
+  );
+}
+
 export function useCheckoutDraft() {
   const [draft, setDraft] = useState<CheckoutDraft>(EMPTY_DRAFT);
   const isRestoredRef = useRef(false);
 
   useEffect(() => {
     const stored = readDraft();
-    if (stored) setDraft(stored);
+    const intent = consumeFulfillmentIntent();
+    if (intent) {
+      setDraft({
+        ...(stored ?? EMPTY_DRAFT),
+        fulfillmentType: intent,
+        slot:
+          stored && stored.fulfillmentType !== intent ? "" : (stored?.slot ?? ""),
+      });
+    } else if (stored) {
+      setDraft(stored);
+    }
     isRestoredRef.current = true;
   }, []);
 

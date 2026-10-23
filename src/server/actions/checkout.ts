@@ -17,6 +17,7 @@ import {
   reopenOrderForRetry,
 } from "@/lib/orders";
 import { getPaymentGateway, paymentMode } from "@/lib/payments";
+import { isAllowedPaymentRedirect } from "@/lib/payments/redirect";
 import { PaymentError } from "@/lib/payments/types";
 import { getClosedDates } from "@/lib/settings";
 import {
@@ -26,7 +27,7 @@ import {
   type FulfillmentType,
 } from "@/lib/shop-config";
 import { getAvailableSlots, validateSlotSelection } from "@/lib/slots";
-import { absoluteUrl, webhookUrl } from "@/lib/site-url";
+import { absoluteUrl, siteUrl, webhookUrl } from "@/lib/site-url";
 import { checkoutSchema, fieldErrors } from "@/lib/validation";
 
 function toSlotOptions(
@@ -238,6 +239,12 @@ export async function placeOrder(
       customerEmail: order.customerEmail,
     });
 
+    if (!isAllowedPaymentRedirect(payment.checkoutUrl, siteUrl())) {
+      throw new PaymentError(
+        "De betaling kon niet gestart worden. Probeer het opnieuw of bel ons.",
+      );
+    }
+
     await recordPaymentAttempt({
       orderId: order.id,
       provider: payment.provider,
@@ -294,6 +301,12 @@ export async function retryPayment(publicToken: string): Promise<void> {
       webhookUrl: webhookUrl("/api/webhooks/mollie"),
       customerEmail: order.customerEmail,
     });
+
+    if (!isAllowedPaymentRedirect(payment.checkoutUrl, siteUrl())) {
+      throw new PaymentError(
+        "De betaling kon niet opnieuw gestart worden. Probeer het later nog eens of bel ons.",
+      );
+    }
 
     await recordPaymentAttempt({
       orderId: order.id,

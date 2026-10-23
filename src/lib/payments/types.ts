@@ -45,6 +45,9 @@ export type FetchedPayment = {
   status: PaymentStatus;
   method: string | null;
   paidAt: Date | null;
+  /** Centen die de provider effectief aanrekent. Ontbreekt bij de sandbox. */
+  amountCents?: number;
+  currency?: string | null;
   raw?: unknown;
 };
 

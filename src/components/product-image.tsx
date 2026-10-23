@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { isDisplayableImageSrc, isOptimizableLocalImage } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
 
 type ProductImageProps = {
@@ -24,16 +25,15 @@ export function ProductImage({
   sizes = "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw",
   priority = false,
 }: ProductImageProps) {
-  if (!src || src.trim() === "") {
+  const trimmed = src?.trim() ?? "";
+  if (trimmed === "" || !isDisplayableImageSrc(trimmed)) {
     return <ProductImageFallback alt={alt} className={className} />;
   }
 
-  const isLocal = src.startsWith("/");
-
-  if (isLocal) {
+  if (isOptimizableLocalImage(trimmed)) {
     return (
       <Image
-        src={src}
+        src={trimmed}
         alt={alt}
         fill
         sizes={sizes}
@@ -46,7 +46,7 @@ export function ProductImage({
   return (
     // eslint-disable-next-line @next/next/no-img-element -- externe URL uit de admin, bewust zonder optimalisatie
     <img
-      src={src}
+      src={trimmed}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
       decoding="async"

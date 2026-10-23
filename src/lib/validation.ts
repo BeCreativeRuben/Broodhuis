@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { ALLERGENS } from "@/lib/allergens";
 import { parseEuroInputToCents } from "@/lib/money";
+import { isDisplayableImageSrc } from "@/lib/product-images";
 
 /** Zet zod-fouten om naar een simpele map per veld, klaar voor het formulier. */
 export function fieldErrors(error: z.ZodError): Record<string, string> {
@@ -108,6 +109,18 @@ export const checkoutSchema = z
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
+const imageField = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .optional()
+    .default("")
+    .refine(
+      (value) => value === "" || isDisplayableImageSrc(value),
+      "Gebruik een link die begint met http(s):// of een pad dat begint met /.",
+    );
+
 const allergenCodes = ALLERGENS.map((allergen) => allergen.code);
 
 const priceField = z
@@ -182,9 +195,9 @@ export const productSchema = z.object({
   allergens: z.array(z.enum(allergenCodes)).optional().default([]),
   price: priceField,
   unit: z.string().trim().min(1, "Vul een eenheid in.").max(40).default("per stuk"),
-  imageUrl: z.string().trim().max(2000).optional().default(""),
-  imageUrl2: z.string().trim().max(600).optional().default(""),
-  imageUrl3: z.string().trim().max(600).optional().default(""),
+  imageUrl: imageField(2000),
+  imageUrl2: imageField(600),
+  imageUrl3: imageField(600),
   trackStock: z.boolean().optional().default(false),
   stock: optionalNumber("Voorraad", 100_000),
   leadTimeDays: optionalNumber("Bestelperiode", 365),

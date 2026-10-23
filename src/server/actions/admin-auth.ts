@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { adminAuthConfig, checkCredentials } from "@/lib/auth/session";
+import { adminAuthConfig, checkCredentials, safeAdminNextPath } from "@/lib/auth/session";
 import { endAdminSession, startAdminSession } from "@/lib/auth/server";
 import type { LoginState } from "@/lib/form-state";
 import { loginSchema } from "@/lib/validation";
@@ -71,10 +71,7 @@ export async function login(
   attempts.delete(throttleKey);
   await startAdminSession(parsed.data.user);
 
-  const next = formData.get("volgende");
-  const target =
-    typeof next === "string" && next.startsWith("/admin") ? next : "/admin";
-  redirect(target);
+  redirect(safeAdminNextPath(formData.get("volgende")));
 }
 
 export async function logout(): Promise<void> {

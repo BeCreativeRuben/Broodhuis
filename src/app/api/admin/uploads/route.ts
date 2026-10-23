@@ -5,17 +5,17 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 
 import { getAdminSession } from "@/lib/auth/server";
+import {
+  imageMimeType,
+  inspectImageUpload,
+  type RasterImageKind,
+} from "@/lib/image-bytes";
 import { slugify } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
 const MAX_BYTES = 5 * 1024 * 1024;
-const EXTENSIONS: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/avif": "avif",
-};
+const ALLOWED: readonly RasterImageKind[] = ["jpg", "png", "webp", "avif"];
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
@@ -42,32 +42,38 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Geen bestand gekozen." }, { status: 400 });
   }
 
-  const extension = EXTENSIONS[file.type];
-  if (!extension) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const inspected = inspectImageUpload(bytes, file.size, MAX_BYTES, ALLOWED);
+  if ("error" in inspected) {
+    if (inspected.error === "too-large") {
+      return NextResponse.json(
+        { error: "Die foto is groter dan 5 MB. Maak ze wat kleiner." },
+        { status: 413 },
+      );
+    }
+    if (inspected.error === "empty") {
+      return NextResponse.json({ error: "Geen bestand gekozen." }, { status: 400 });
+    }
     return NextResponse.json(
       { error: "Kies een JPG, PNG, WebP of AVIF." },
       { status: 415 },
     );
   }
 
-  if (file.size > MAX_BYTES) {
-    return NextResponse.json(
-      { error: "Die foto is groter dan 5 MB. Maak ze wat kleiner." },
-      { status: 413 },
-    );
-  }
-
+  const extension = inspected.kind;
   const baseName = slugify(file.name.replace(/\.[^.]+$/, "")) || "foto";
   const fileName = `${baseName}-${randomUUID().slice(0, 8)}.${extension}`;
   const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+  const payload = Buffer.from(bytes);
 
   if (token) {
     try {
       const { put } = await import("@vercel/blob");
-      const stored = await put(`producten/${fileName}`, file, {
+      const stored = await put(`producten/${fileName}`, payload, {
         access: "public",
         token,
         addRandomSuffix: false,
+        contentType: imageMimeType(extension),
       });
       return NextResponse.json({ url: stored.url });
     } catch (error) {
@@ -84,10 +90,7 @@ export async function POST(request: Request) {
 
   try {
     await mkdir(UPLOAD_DIR, { recursive: true });
-    await writeFile(
-      path.join(UPLOAD_DIR, fileName),
-      Buffer.from(await file.arrayBuffer()),
-    );
+    await writeFile(path.join(UPLOAD_DIR, fileName), payload);
   } catch (error) {
     console.error("[broodhuis] Upload mislukte:", error);
     return NextResponse.json(

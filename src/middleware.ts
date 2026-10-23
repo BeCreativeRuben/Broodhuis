@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { ADMIN_COOKIE_NAME, verifySessionToken } from "@/lib/auth/session";
+import {
+  ADMIN_COOKIE_NAME,
+  safeAdminNextPath,
+  verifySessionToken,
+} from "@/lib/auth/session";
 import { FULFILLMENT_INTENT_COOKIE } from "@/lib/delivery-intent";
 
 function isPrefetch(request: NextRequest) {
@@ -63,7 +67,7 @@ export async function middleware(request: NextRequest) {
 
   if (!session) {
     const loginUrl = new URL("/admin/login", request.url);
-    const target = `${pathname}${search}`;
+    const target = safeAdminNextPath(`${pathname}${search}`);
     if (target !== "/admin") {
       loginUrl.searchParams.set("volgende", target);
     }

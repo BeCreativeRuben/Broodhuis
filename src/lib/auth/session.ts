@@ -23,8 +23,16 @@ export type AdminSession = {
   exp: number;
 };
 
-function isProduction(): boolean {
-  return process.env.NODE_ENV === "production";
+/**
+ * De vaste dev-login mag alleen op een gewone ontwikkelmachine. Productie én
+ * een publieke Vercel-preview vallen dicht als het wachtwoord ontbreekt.
+ */
+export function allowsDevAuthFallback(
+  env: { NODE_ENV?: string; VERCEL_ENV?: string } = process.env,
+): boolean {
+  if (env.NODE_ENV === "production") return false;
+  if (env.VERCEL_ENV === "production" || env.VERCEL_ENV === "preview") return false;
+  return true;
 }
 
 /**
@@ -48,7 +56,7 @@ export function adminAuthConfig(): {
     return { user, password, secret, configured: true, usingDevFallback: false };
   }
 
-  if (isProduction()) {
+  if (!allowsDevAuthFallback()) {
     return {
       user,
       password,
@@ -150,6 +158,30 @@ export async function verifySessionToken(
     return { user: decoded.user, exp: decoded.exp };
   } catch {
     return null;
+  }
+}
+
+/**
+ * Alleen een pad binnen /admin. Een waarde die met "/admin" begint maar na
+ * normalisatie ergens anders uitkomt (backslashes, //, /admin/..) valt terug
+ * op het overzicht.
+ */
+export function safeAdminNextPath(value: unknown): string {
+  if (typeof value !== "string") return "/admin";
+  if (value.length === 0 || value.length > 300) return "/admin";
+  if (/[\u0000-\u001F\u007F\\]/.test(value)) return "/admin";
+  if (!value.startsWith("/admin") || value.startsWith("//") || value.includes("://")) {
+    return "/admin";
+  }
+
+  try {
+    const url = new URL(value, "https://broodhuis.invalid");
+    if (url.origin !== "https://broodhuis.invalid") return "/admin";
+    if (url.username !== "" || url.password !== "") return "/admin";
+    if (url.pathname !== "/admin" && !url.pathname.startsWith("/admin/")) return "/admin";
+    return `${url.pathname}${url.search}`;
+  } catch {
+    return "/admin";
   }
 }
 

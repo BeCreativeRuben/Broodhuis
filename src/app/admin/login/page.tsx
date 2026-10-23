@@ -3,7 +3,7 @@ import Link from "next/link";
 import { WheatIcon } from "lucide-react";
 
 import { LoginForm } from "@/components/admin/login-form";
-import { adminAuthConfig } from "@/lib/auth/session";
+import { adminAuthConfig, safeAdminNextPath } from "@/lib/auth/session";
 import { SHOP } from "@/lib/shop-config";
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default async function AdminLoginPage({
         </div>
 
         <div>
-          <LoginForm next={volgende ?? null} />
+          <LoginForm next={volgende ? safeAdminNextPath(volgende) : null} />
         </div>
 
         {config.usingDevFallback && (

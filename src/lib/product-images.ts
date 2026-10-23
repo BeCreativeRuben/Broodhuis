@@ -35,6 +35,35 @@ export function joinProductImages(urls: Array<string | null | undefined>): strin
   return unique.length > 0 ? unique.join("\n") : null;
 }
 
+/** Lokaal bestand dat next/image mag optimaliseren. `//host` is dat niet. */
+export function isOptimizableLocalImage(src: string): boolean {
+  if (!src.startsWith("/") || src.startsWith("//")) return false;
+  if (/[\u0000-\u001F\u007F\\]/.test(src)) return false;
+
+  try {
+    const url = new URL(src, "https://broodhuis.invalid");
+    if (url.origin !== "https://broodhuis.invalid") return false;
+    if (url.username !== "" || url.password !== "") return false;
+    return url.pathname.startsWith("/");
+  } catch {
+    return false;
+  }
+}
+
+/** Wat de browser mag laden: een lokaal pad, of http(s) zonder userinfo. */
+export function isDisplayableImageSrc(src: string): boolean {
+  if (isOptimizableLocalImage(src)) return true;
+  if (/[\u0000-\u001F\u007F\\]/.test(src)) return false;
+
+  try {
+    const url = new URL(src);
+    if (url.username !== "" || url.password !== "") return false;
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 export function isAllowedCustomerPhotoUrl(url: string): boolean {
   try {
     const parsed = new URL(url);

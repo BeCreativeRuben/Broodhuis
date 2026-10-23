@@ -5,6 +5,9 @@ import { mollieGateway, isMollieConfigured } from "@/lib/payments/mollie";
 
 export const dynamic = "force-dynamic";
 
+/** Mollie-betaal-id's zijn `tr_` plus letters en cijfers. */
+const MOLLIE_PAYMENT_ID = /^tr_[A-Za-z0-9]{4,64}$/;
+
 /**
  * Mollie roept deze URL aan bij elke statuswijziging. De melding bevat enkel
  * het betaal-id; de status halen we daarna zelf op bij Mollie. Dat is ook de
@@ -29,18 +32,19 @@ export async function POST(request: Request) {
     if (contentType.includes("application/json")) {
       const body: unknown = await request.json();
       if (typeof body === "object" && body !== null && "id" in body) {
-        paymentId = String((body as { id?: unknown }).id);
+        const id = (body as { id?: unknown }).id;
+        if (typeof id === "string") paymentId = id.trim();
       }
     } else {
       const form = await request.formData();
       const value = form.get("id");
-      if (typeof value === "string") paymentId = value;
+      if (typeof value === "string") paymentId = value.trim();
     }
   } catch {
     return NextResponse.json({ error: "Ongeldige melding." }, { status: 400 });
   }
 
-  if (!paymentId) {
+  if (!paymentId || !MOLLIE_PAYMENT_ID.test(paymentId)) {
     return NextResponse.json({ error: "Geen betaal-id." }, { status: 400 });
   }
 

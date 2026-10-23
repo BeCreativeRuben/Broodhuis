@@ -4,6 +4,7 @@ import type { PricedCart } from "@/lib/cart";
 import { currentIsoDate, type IsoDate } from "@/lib/datetime";
 import { prisma } from "@/lib/db";
 import { paymentGatewayById } from "@/lib/payments";
+import { mayApplyPaidStatus } from "@/lib/payments/consistency";
 import type { FetchedPayment, PaymentStatus } from "@/lib/payments/types";
 import type { FulfillmentType } from "@/lib/shop-config";
 import type { Slot } from "@/lib/slots";
@@ -265,6 +266,31 @@ export async function applyPaymentUpdate(fetched: FetchedPayment) {
     });
 
     if (!payment) return null;
+
+    if (payment.provider !== fetched.provider) {
+      console.error(
+        `[broodhuis] Betaalupdate geweigerd voor ${payment.providerPaymentId}: provider komt niet overeen.`,
+      );
+      return null;
+    }
+
+    if (
+      !mayApplyPaidStatus({
+        provider: payment.provider,
+        storedAmountCents: payment.amountCents,
+        status: fetched.status,
+        amountCents: fetched.amountCents,
+        currency: fetched.currency,
+      })
+    ) {
+      console.error(
+        `[broodhuis] Betaalupdate geweigerd voor ${payment.providerPaymentId}: bedrag of munt komt niet overeen met de bestelling.`,
+      );
+      return tx.order.findUnique({
+        where: { id: payment.orderId },
+        include: { items: true, payments: { orderBy: { createdAt: "desc" } } },
+      });
+    }
 
     await tx.payment.update({
       where: { id: payment.id },

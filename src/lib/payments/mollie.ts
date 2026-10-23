@@ -27,6 +27,19 @@ type MolliePayment = {
  * "authorized" komt voor bij kaartbetalingen die nog gecaptured moeten worden;
  * die behandelen we als "in verwerking" tot de webhook "paid" doorgeeft.
  */
+function readMollieAmount(amount: MollieAmount | undefined): {
+  amountCents?: number;
+  currency?: string;
+} {
+  if (!amount || typeof amount.value !== "string") return {};
+  const currency = typeof amount.currency === "string" ? amount.currency : undefined;
+  if (!/^\d+\.\d{2}$/.test(amount.value)) return { currency };
+  const [euros, cents] = amount.value.split(".");
+  const amountCents = Number(euros) * 100 + Number(cents);
+  if (!Number.isSafeInteger(amountCents)) return { currency };
+  return { amountCents, currency };
+}
+
 function mapStatus(status: string): PaymentStatus {
   switch (status) {
     case "paid":
@@ -182,12 +195,16 @@ export const mollieGateway: PaymentGateway = {
       `/payments/${encodeURIComponent(providerPaymentId)}`,
     );
 
+    const amount = readMollieAmount(payment.amount);
+
     return {
       provider: this.id,
       providerPaymentId: payment.id,
       status: mapStatus(payment.status),
       method: payment.method ?? null,
       paidAt: payment.paidAt ? new Date(payment.paidAt) : null,
+      amountCents: amount.amountCents,
+      currency: amount.currency ?? null,
       raw: payment,
     };
   },

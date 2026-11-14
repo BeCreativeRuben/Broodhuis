@@ -64,6 +64,7 @@
     "postcss": "^8.5.31",
     "zod": "4.6.6",
     "@hono/node-server": "2.1.6",
+    "hono": "4.13.16",
     "systeminformation": "5.33.16",
     "@vercel/blob": {
       "undici": "6.29.1"
